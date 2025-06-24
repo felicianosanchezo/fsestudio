@@ -1,0 +1,228 @@
+﻿@page "/venta-servicio-cliente-listar"
+@inject NavigationManager navigationManager
+@inject IRepositorio repositorio
+@inject AuthenticationProviderJWT AuthProvider
+@using System.Net
+@using Microsoft.AspNetCore.Components.Forms
+@inject IJSRuntime JS
+
+
+<div class="dashboard-main-1">
+
+    <ListaGenerica MiLista="Venta_Servicios">
+        <Cargando>
+
+            <div class="table-container-1">
+            <p>Estoy en ello....</p>
+
+            </div>
+        </Cargando>
+        <Cuerpo>
+            <div class="table-container-1">
+
+                 <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Numero de Orden</th>
+                            <th>Nombre Comprador</th>
+                            <th>Nombre Colaborador</th>
+                            <th>Nombre Servicio</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Importe</th>
+                            <th>Total</th>
+                            <th>Descuento aplicado</th>
+                            <th>Numero de Revisiones</th>
+                            <th>Fecha Creación</th>
+                            <th>Fecha Entrega</th>
+                            <th>Metodo de pago</th>
+                            <th>Pago realizado</th>
+                            <th>Fecha de pago</th>
+                            <th>Metodo de entrega</th>
+                            <th>Estado</th>
+                            <th>Modificar</th>
+                            <th>Más</th>
+
+
+              
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Venta_Servicios != null && Venta_Servicios.Any())
+                        {
+                            @foreach (Venta_ServicioDTO c in Venta_Servicios)
+                            {
+                                <tr>
+                                    <td>@c.IdVenta_Servicio</td>
+                                    <td>@c.NumeroOrden</td>
+                                    <td>@c.NombreComprador</td>
+                                    <td>@c.NombreColaborador</td>
+                                    <td>@c.NombreServicio</td>
+                                    <td>@c.Cantidad</td>
+                                    <td>@c.Precio</td>
+                                    <td>@c.Importe</td>
+                                    <td>@c.Total</td>
+                                    <td>@c.Descuento</td>
+                                    <td>@c.Revision</td>
+                                    <td>@c.FechaCreacion</td>
+                                    <td>@c.FechaEntregaEstimada</td>
+                                    <td>@c.MetodoPago</td>
+                                    <td>@c.PagoRealizado</td>
+                                    <td>@c.FechaPago</td>
+                                    <td>@c.MetodoEntrega</td>
+                                    <td>@c.Estado</td>
+                                
+
+
+
+
+
+
+
+                         
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="12" class="text-center">No hay ventas de servicios disponibles.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </Cuerpo>
+    </ListaGenerica>
+
+</div>
+
+@code {
+    public List<Venta_ServicioDTO>? Venta_Servicios { get; set; }
+    private bool mostrarModalImagenes = false;
+    private int IdServicioSeleccionado;
+    private string? NombreServicioSeleccionado;
+    private int IdUsuario { get; set; }
+    private string? Rol { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            // Obtener el ID del usuario
+            IdUsuario = AuthProvider.GetIdUsuario();
+
+            await  Cargar(IdUsuario);
+
+        }
+        else
+        {
+            // Si el usuario no está autenticado, mostrar un mensaje de error
+       
+            await JS.InvokeVoidAsync("Swal.fire", new
+            {
+                title = "Advertencia",
+                text = "Usuario no autenticado. Por favor, inicia sesión.",
+                icon = "info",
+                background = "#fdfefe", // Fondo blanco
+                color = "#616a6b",      // Texto negro
+                confirmButtonColor = "#3085d6",// Botón azul SweetAlert
+
+
+                customClass = new { popup = "my-custom-class" }
+            });
+
+
+
+
+
+
+
+        }
+    }
+
+    private async Task Cargar(int IdCliente)
+    {
+        var response = await repositorio.Get<List<Venta_ServicioDTO>>($"/api/cliente-servicio/listar-cliente/{IdCliente}");
+        if (response != null && response.Response != null)
+        {
+            Venta_Servicios = response.Response;
+
+
+        }
+    }
+
+
+
+
+
+
+    private void NavegarAServicioInsertar()
+    {
+        navigationManager.NavigateTo("/servicio-insertar", forceLoad: false);
+    }
+
+    private void NavegarModificar(int idServicio)
+    {
+        navigationManager.NavigateTo($"/servicio/modificar/{idServicio}");
+    }
+
+    private void AbrirModalImagenes(int idServicio, string nombreServicio)
+    {
+        IdServicioSeleccionado = idServicio;
+        NombreServicioSeleccionado = nombreServicio;
+        mostrarModalImagenes = true;
+    }
+
+    private void CerrarModal()
+    {
+        mostrarModalImagenes = false;
+    }
+
+
+    private async Task ConfirmarEliminarServicio(int idServicio)
+    {
+        // var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+        //     {
+        //         Title = "Confirmación",
+        //         Text = "¿Estás seguro de eliminar este servicio?",
+        //         Icon = SweetAlertIcon.Warning,
+        //         ShowCancelButton = true,
+        //         ConfirmButtonText = "Sí, eliminar",
+        //         CancelButtonText = "Cancelar"
+        //     });
+
+        // if (!string.IsNullOrEmpty(result.Value))
+        // {
+        //     await EliminarServicio(idServicio);
+        // }
+    }
+
+    private async Task EliminarServicio(int idServicio)
+    {
+        // var response = await repositorio.Delete($"api/servicio/eliminar/{idServicio}");
+        // if (response != null && !response.Error)
+        // {
+        //     await sweetAlertService.FireAsync("Eliminado", "El servicio ha sido eliminado correctamente.", SweetAlertIcon.Success);
+        //     await Cargar(); // Recargar la lista de servicios después de eliminar
+        // }
+        // else
+        // {
+        //     await sweetAlertService.FireAsync("Error", "No se pudo eliminar el servicio.", SweetAlertIcon.Error);
+        // }
+    }
+
+
+
+
+}

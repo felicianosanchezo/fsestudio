@@ -1,0 +1,49 @@
+﻿@page "/usuario-insertar"
+@inject SweetAlertService sweetAlertService
+@inject IRepositorio repositorio
+@inject NavigationManager navigationManager
+
+
+
+<Usuario_Formulario @ref="usuarioForm" usuario="usuario" OnValidSubmit="Crear"
+                 Cancelar="Navegar"> </Usuario_Formulario>
+
+@code {
+
+    private UsuarioDTO usuario = new UsuarioDTO();
+    private Usuario_Formulario? usuarioForm;
+
+    private async Task Crear()
+    {
+        var httpResponse = await repositorio.Post("/api/usuario/insertar", usuario);
+        if (httpResponse.Error)
+        {
+            var message = await httpResponse.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message,
+            SweetAlertIcon.Error);
+
+            return;
+        }
+
+        var toast = sweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Toast = true,
+                Position = SweetAlertPosition.TopStart,
+                ShowConfirmButton = false,
+                Timer = 3000
+            });
+        await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Usuario Agregado.");
+
+        Navegar();
+    }
+
+    private void Navegar()
+    {
+
+
+        usuarioForm!.formularioPostOk = true;
+        navigationManager.NavigateTo("/");
+    }
+}
+
+

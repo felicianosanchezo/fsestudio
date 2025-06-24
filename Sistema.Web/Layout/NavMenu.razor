@@ -1,0 +1,422 @@
+﻿@using Sistema.Web.Layout
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager navigationManager
+@inject ILoginServicio loginServicio
+@inject AuthenticationProviderJWT AuthProvider
+@inject IRepositorio repositorio
+
+@inject HttpClient Http
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light custom-navbar">
+    <div class="container-fluid">
+        <!-- Logotipo o enlace HOME -->
+        <NavLink class="navbar-brand" href="/">
+            &nbsp&nbsp<i class="bi bi-house"></i>&nbsp&nbspHOME&nbsp;&nbsp;
+        </NavLink>
+
+        <!-- Botón para colapsar el menú en pantallas pequeñas -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Contenido del menú -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <!-- Menú "Nosotros" -->
+                <li class="nav-item">
+                    <NavLink class="navbar-brand"  href="/nosotros">Nosotros</NavLink>
+                </li>
+      
+ 
+                <!-- Menú "Servicios" -->
+   @*              <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Servicios de Arquitectura
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                        <AuthorizeView Roles="Administrador">
+                            <Authorized>
+                                <li><NavLink class="dropdown-item" href="/servicio-base-listar">Servicios Base</NavLink></li>
+                            </Authorized>
+
+                        </AuthorizeView>
+                        <li>
+                            <NavLink class="dropdown-item" href="/servicios">Todos los Servicios</NavLink>
+                        </li>
+                        @if (servicios != null)
+                        {
+                            @foreach (var servicio in servicios)
+                            {
+                                <li>
+                                    <NavLink class="dropdown-item" href="@($"/servicio/{servicio.IdServicio}")">
+                                        @servicio.Nombre
+                                    </NavLink>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="dropdown-item">
+                                <span>Cargando servicios...</span>
+                            </li>
+                        }
+                    </ul>
+                </li> *@
+
+
+                <!-- Menú "Portafolio" -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Portafolio Arquitectonico
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown3">
+                        <AuthorizeView Roles="Administrador">
+                            <Authorized>
+
+                                <li><NavLink class="dropdown-item" href="/portafolio-listar">Listar Portafolio</NavLink></li>
+
+
+
+                                <li><NavLink class="dropdown-item" href="/proyecto-insertar">Insertar Proyecto</NavLink></li>
+
+
+
+
+
+
+                            </Authorized>
+                        </AuthorizeView>
+
+
+                        <li><NavLink class="dropdown-item" href="/portafolio">Todos los Proyecto</NavLink></li>
+                        @if (Proyectos != null)
+                        {
+                            @foreach (var servicio in Proyectos)
+                            {
+                                <li>
+                                    <NavLink class="dropdown-item" href="@($"/portafolio/{servicio.IdPortafolio}")">
+                                        @servicio.Nombre
+                                    </NavLink>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="dropdown-item">
+                                <span>Cargando Proyectos...</span>
+                            </li>
+                        }
+
+
+                    </ul>
+                </li>
+
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                       Soluciones Web
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown3">
+                        <AuthorizeView Roles="Administrador">
+                            <Authorized>
+
+                                <li><NavLink class="dropdown-item" href="/portafolio/1">Proyecto Ver</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="/portafolio/1">Proyecto Ver</NavLink></li>
+
+
+                            </Authorized>
+                        </AuthorizeView>
+
+
+                        <li><NavLink class="dropdown-item" href="/soluciones-web">Planes Web</NavLink></li>
+                        <li><NavLink class="dropdown-item" href="/modulos-web">Modulos Web</NavLink></li>
+           
+
+
+                    </ul>
+                </li>
+
+
+
+
+
+                <!-- Menú "Cliente" -->
+@*                 <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Cliente
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown3">
+                        <AuthorizeView Roles="Administrador,Usuario Básico,Especialista en Marketing,Cliente Premium">
+                            <Authorized>
+                                <li><NavLink class="dropdown-item" href="/venta-servicio-cliente-listar">Mis Servicios</NavLink></li>
+                            </Authorized>
+                            <NotAuthorized>
+                                <li><NavLink class="dropdown-item" href="/cliente-insertar">Registrar</NavLink></li>
+                            </NotAuthorized>
+                        </AuthorizeView>
+                     
+                        
+                        <li><NavLink class="dropdown-item" href="/cliente-terminos">Términos y condiciones</NavLink></li>
+                    </ul>
+                </li>
+ *@
+
+
+
+                <!-- Menú "Freelancer" -->
+                <AuthorizeView Roles="Administrador">
+                    <Authorized>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownColaborador" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Freelancer
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownColaborador">
+                                <li>
+                                    <NavLink class="dropdown-item" href="/servicio-colaborador-simple">Ingresar Servicio</NavLink>
+                                </li>
+                                <li>
+                                    <NavLink class="dropdown-item" href="/colaborador-servicio-listar">Listar Servicios</NavLink>
+                                </li>
+                              
+
+                            </ul>
+                        </li>
+                    </Authorized>
+
+                </AuthorizeView>
+
+                <!-- Menú "Administrador" -->
+                <AuthorizeView Roles="Administrador">
+                    <Authorized>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Administrador
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
+                                <li><NavLink class="dropdown-item" href="/usuario-listar">Usuarios</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="/venta-servicio-listar">Ventas de Servicios</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="/servicio-insertar">Creación de Servicios</NavLink></li>
+
+                                <li><NavLink class="dropdown-item" href="/modelo3d">3D</NavLink></li>
+                          
+                            </ul>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
+
+                <!-- Mi Primer Millon-->
+                <AuthorizeView Roles="Administrador">
+                    <Authorized>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Mi Primer Millon
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
+                                <li><NavLink class="dropdown-item" href="/mi-primer-millon">¿Qué es?</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="/gasto-listar">Registro de Gastos</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="/ingreso-listar">Registro de Ingresos</NavLink></li>
+                                <li><NavLink class="dropdown-item" href="/panel-contabilidad">Panel</NavLink></li>
+                            </ul>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
+
+
+
+
+
+            </ul>
+
+
+            <!-- Usuario -->
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <span class="nav-link custom-user-text">
+                        @if (!string.IsNullOrEmpty(userName))
+                        {
+                            @($"Hola, {userName}")
+                        }
+                        else
+                        {
+                            @("Bienvenido")
+                        }
+                    </span>
+                </li>
+                <AuthorizeView>
+                    <Authorized>
+                        <li class="nav-item">
+                            <NavLink class="navbar-brand" href="/logout"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</NavLink>
+                        </li>
+                    </Authorized>
+                    <NotAuthorized>
+                        <li class="nav-item">
+                            <NavLink class="navbar-brand" href="/Login"><i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión</NavLink>
+                        </li>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+
+
+<style>
+    .custom-navbar .navbar-brand {
+        font-size: 17px !important;
+        font-weight: 400 !important;
+        color: #626e70 !important;
+    }
+
+
+        .custom-navbar .navbar-brand:hover {
+            color: #2980b9 !important; /* Color hover azul oscuro */
+        }
+
+</style>
+
+@code {
+
+
+    private string? userName;
+    private List<ServicioNombreDTO> servicios;
+    public List<PortafolioDTO> Proyectos { get; set; } = new();
+    protected override async Task OnInitializedAsync()
+    {
+
+
+        await Cargar();
+        await CargarPortafolio();
+
+    }
+
+
+
+
+    private const int MaxRetryAttempts = 3; // Número máximo de reintentos
+    private const int DelayBetweenRetries = 2000; // Tiempo de espera entre reintentos en milisegundos
+
+    private async Task Cargar()
+    {
+        int attempt = 0;
+        while (attempt < MaxRetryAttempts)
+        {
+            try
+            {
+                attempt++;
+                var authState = await AuthProvider.GetAuthenticationStateAsync();
+                var user = authState.User;
+                if (user.Identity?.IsAuthenticated == true)
+                {
+
+
+
+                    // Obtener el nombre del usuario autenticado desde los claims
+                    userName = AuthProvider.GetNombrePublico();
+                    Console.WriteLine($"{userName}");
+
+
+
+
+                }
+
+
+
+
+
+
+                var response = await repositorio.Get<List<ServicioNombreDTO>>("/api/servicio/listar-nombres");
+                if (response != null && response.Response != null)
+                {
+                    servicios = response.Response;
+                    break; // Salir del bucle si la solicitud tiene éxito
+                }
+
+
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                if (attempt == MaxRetryAttempts)
+                {
+                    // Si el último intento falla, manejar el error
+                    Console.WriteLine($"Error al cargar datos después de {MaxRetryAttempts} intentos: {ex.Message}");
+                }
+                else
+                {
+                    // Esperar antes del próximo reintento
+                    Console.WriteLine($"Error al cargar datos, reintentando en {DelayBetweenRetries / 1000} segundos... ({ex.Message})");
+                    await Task.Delay(DelayBetweenRetries);
+                }
+            }
+        }
+    }
+
+    private async Task CargarPortafolio()
+    {
+        int attempt = 0;
+        while (attempt < MaxRetryAttempts)
+        {
+            try
+            {
+                attempt++;
+                var authState = await AuthProvider.GetAuthenticationStateAsync();
+                var user = authState.User;
+                if (user.Identity?.IsAuthenticated == true)
+                {
+
+
+
+                    // Obtener el nombre del usuario autenticado desde los claims
+                    userName = AuthProvider.GetNombrePublico();
+                    Console.WriteLine($"{userName}");
+
+
+
+
+                }
+
+
+
+
+
+
+          
+                var response = await repositorio.Get<List<PortafolioDTO>>("/api/portafolio/listar");
+                if (response?.Response != null)
+                {
+                    Proyectos = response.Response;
+                    return;
+                }
+
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                if (attempt == MaxRetryAttempts)
+                {
+                    // Si el último intento falla, manejar el error
+                    Console.WriteLine($"Error al cargar datos después de {MaxRetryAttempts} intentos: {ex.Message}");
+                }
+                else
+                {
+                    // Esperar antes del próximo reintento
+                    Console.WriteLine($"Error al cargar datos, reintentando en {DelayBetweenRetries / 1000} segundos... ({ex.Message})");
+                    await Task.Delay(DelayBetweenRetries);
+                }
+            }
+        }
+    }
+}

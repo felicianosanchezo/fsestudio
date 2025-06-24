@@ -1,0 +1,77 @@
+﻿
+@inject IRepositorio repositorio
+@inject NavigationManager Navigation
+
+<div class="search-container-movil">
+    <div class="search-bar-movil">
+        <input type="text" @oninput="BuscarServicios" placeholder="Buscar servicios..." class="search-input-movil" />
+    </div>
+
+    @if (serviciosFiltrados != null && serviciosFiltrados.Any())
+    {
+        <div class="result-list">
+            <div>
+                @foreach (var servicio in serviciosFiltrados)
+                {
+                    <div class="search-result" @onclick="() => NavegarADetalle(servicio.IdServicio)">
+                        <h4 class="parrafo-principal">@servicio.Nombre</h4>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private string searchTerm = string.Empty;
+    private List<ServicioDTO> serviciosFiltrados = new List<ServicioDTO>();
+
+    private async Task BuscarServicios(ChangeEventArgs e)
+    {
+        searchTerm = e.Value?.ToString() ?? string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var response = await repositorio.Get<List<ServicioDTO>>($"/api/servicio/buscar?query={searchTerm}");
+            serviciosFiltrados = response?.Response ?? new List<ServicioDTO>();
+
+            // Agregar opciones manuales al final de la lista
+            serviciosFiltrados.Add(new ServicioDTO { IdServicio = -1, Nombre = "Home" });
+            serviciosFiltrados.Add(new ServicioDTO { IdServicio = -2, Nombre = "Todos los Servicios" });
+            serviciosFiltrados.Add(new ServicioDTO { IdServicio = -3, Nombre = "Comienza Ahora - Regístrate" });
+
+        }
+        else
+        {
+            serviciosFiltrados = new List<ServicioDTO>();
+        }
+    }
+
+    private void NavegarADetalle(int idServicio)
+    {
+        // Limpiar búsqueda antes de navegar
+        searchTerm = string.Empty;
+        serviciosFiltrados = null;
+
+        // Redirigir según el Id del servicio
+        if (idServicio == -1)
+        {
+            Navigation.NavigateTo("/"); // Ir a Home
+        }
+        else if (idServicio == -2)
+        {
+            Navigation.NavigateTo("/servicio-listado"); // Ir a Todos los Servicios
+        }
+        else if (idServicio == -3)
+        {
+            Navigation.NavigateTo("/cliente-insertar"); // Ir a Todos los Servicios
+        }
+
+        else
+        {
+            Navigation.NavigateTo($"/portafolio/{idServicio}");
+        }
+
+        StateHasChanged();
+    }
+}

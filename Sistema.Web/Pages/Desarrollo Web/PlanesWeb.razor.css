@@ -1,0 +1,558 @@
+﻿.planes-container {
+    width: 100%;
+    background-image: url('/Images/Texturas/Textura5.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding-bottom: 90px;
+
+    /*border-bottom: 1px solid var(--color-gris-linea);*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:0px;
+}
+/* Contenedor principal con altura fija y 100% de ancho */
+.contenedor-principal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    height: 900px;
+    background-image: url('/Images/Soluciones Web/FONDO HORIZONTAL2.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+
+
+/* Imagen 600x600 centrada */
+.slogan-img {
+    width: 700px;
+    height: 700px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones en fila horizontal */
+.contenedor-izquierda-botones {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Botón general */
+
+.plan-wb-btn-adquirir2 {
+    width: 275px;
+    height: 50px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background-color: var(--color-accion-principal);
+    color: white;
+    border: 3px solid var(--color-accion-principal);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+
+    .plan-wb-btn-adquirir2:hover {
+        background-color: #007c91;
+        transform: scale(1.05);
+    }
+
+
+
+
+
+
+@media (max-width: 1200px) {
+    .contenedor-plan {
+        flex-direction: column;
+        padding-top: 30px;
+        padding-bottom: 15px;
+    }
+
+    .plan-wb {
+        width: 90%;
+    }
+
+    .slogan-texto {
+        width: 90%;
+        padding: 30px 20px;
+    }
+}
+
+
+
+
+/* Ajustes generales para pantallas de 768px o menos */
+@media (max-width: 768px) {
+    .contenedor-slogan {
+        flex-direction: column;
+        padding: 20px 10px;
+    }
+
+    .slogan-texto {
+        width: 100%;
+        padding: 30px 20px;
+    }
+
+    .titulo-slogan-titulo {
+        font-size: 2rem;
+        padding: 0 10px;
+    }
+
+    .subtitulo-slogan-subtitulo {
+        font-size: 1rem;
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    .descripcion-slogan1 {
+        padding: 20px 15px;
+        gap: 1rem;
+    }
+
+    .slogan-bloque {
+    /*    flex-direction: column;*/
+        gap: 0.8rem;
+    }
+
+        .slogan-bloque .emoji {
+            font-size: 1.3rem;
+        }
+
+        .slogan-bloque p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+    .plan-wb,
+    .plan {
+        width: 95%;
+    }
+
+    .plan-wb-btn,
+    .plan-wb-btn-adquirir {
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    .plan-wb-especificaciones ul {
+        font-size: 1rem;
+        padding-left: 15px;
+    }
+
+    .plan-wb-header h3 {
+        font-size: 1.5rem;
+    }
+
+    .plan-wb-header p {
+        font-size: 1.1rem;
+    }
+
+    .planes-container {
+        padding-bottom: 60px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Estilo general del plan */
+.plan {
+    width: 60%;
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina), var(--color-gris-claro1));
+    border: 1px solid var(--color-gris-linea);
+    border-radius: 15px;
+    margin-bottom: 30px;
+    padding: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Encabezado del plan */
+.plan-header {
+    width: 100%;
+    background-color: var(--color-gris-claro1);
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid #ccd1d1;
+}
+
+    .plan-header h3 {
+        font-size: 1.8rem;
+        color: var(--color-dorado-original);
+        font-weight: 700;
+        text-transform: uppercase;
+        text-shadow: 1px 1px 1px var(--color-azul-oscuro1);
+        letter-spacing: 3px;
+    }
+
+    .plan-header p {
+        font-size: 1.3rem;
+        color: var(--color-azul-oscuro1);
+        font-weight: 300;
+        margin-top: 5px;
+    }
+
+/* Imagen de ejemplo */
+.plan-img {
+    width: auto;
+    height: auto;
+    background-color: transparent;
+    width: 100%;
+}
+
+
+
+
+.plan-img img {
+    margin-top: 9px;
+    padding: 0px;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    margin-bottom: 10px;
+    background-color: transparent;
+}
+
+
+
+
+.plan-especificaciones {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    width: 100%;
+    padding: 20px;
+}
+/* Lista de características */
+.plan ul {
+    padding: 20px;
+    font-family: var(--fuente-principal);
+    color: var(--color-azul-oscuro1);
+    font-size: 1.2rem;
+    font-weight: 300;
+    list-style-type: disc;
+    width:90%;
+}
+
+/* Entrega */
+.entrega {
+    font-weight: bold;
+    color: var(--color-azul-oscuro2);
+    margin: 0 0 20px 0;
+}
+
+/* Botón de acción */
+.btn-adquirir {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 275px;
+    height: 50px;
+    background-color: var(--color-accion-principal);
+    color: white;
+    font-size: 1.1rem;
+    border: 3px solid var(--color-accion-principal);
+    border-radius: 50px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+}
+
+    .btn-adquirir:hover {
+        background-color: #007c91;
+        transform: scale(1.05);
+    }
+
+/* Cierre final */
+.mensaje-final {
+    width: 60%;
+    background: var(--color-gris-claro1);
+    padding: 60px;
+    border: 1px solid #aab7b8;
+    border-radius: 15px;
+    margin-top: 60px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+    .mensaje-final blockquote {
+        font-weight: 400; /* Texto más grueso */
+        font-size: 1.4rem;
+        font-style: italic;
+        font-family: var(--fuente-principal);
+        color: var(--color-azul-oscuro1);
+    }
+
+    .mensaje-final footer {
+        font-family: var(--fuente-principal);
+        font-weight: 700; /* Texto más grueso */
+        text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(to right, #63BFD0, #007c91);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+.plan-wb-btn-adquirir {
+    width: 250px;
+    height: 40px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+
+    background-color: var(--color-accion-principal);
+    color: white;
+    border: 3px solid var(--color-accion-principal);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+    .plan-wb-btn-adquirir:hover {
+        background-color: #007c91;
+        transform: scale(1.05);
+    }
+
+
+
+
+
+
+
+
+
+
+
+.contenedor-botones {
+    display: flex;
+    gap: 60px; /* Espacio entre los botones */
+    justify-content: center;
+    background-color: var(--color-gris-claro1);
+    align-self: center;
+    margin-top: auto;
+    padding: 12px 24px;
+    width: 100%;
+    border-top: 1px solid #ccd1d1;
+}
+
+.boton-accion-portada {
+    background-color: transparent;
+    border: 0;
+    border-radius: 50%;
+    /* padding: 12px;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.6rem;
+    color: var(--color-azul-turquesa);
+    flex-direction: column;
+}
+
+    .boton-accion-portada:hover {
+        color: var(--color-verde-original);
+        transform: scale(1.1);
+    }
+
+    .boton-accion-portada i {
+        pointer-events: none;
+    }
+
+.boton-texto {
+    font-size: 1rem; /* 16px */
+
+    font-weight: 400;
+}
+
+
+
+.tabla-comparativa {
+    margin-top: 60px;
+    text-align: center;
+}
+
+
+
+
+
+
+.plan-especificaciones1 {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    width: 100%;
+    padding: 0px;
+}
+
+
+.tabla-responsive {
+    padding: 0px;
+    width: 100%;
+    border: 1px solid #ccd1d1;
+}
+
+
+
+.tabla-planes {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0px;
+    font-family: var(--fuente-principal);
+}
+
+    .tabla-planes th,
+    .tabla-planes td {
+        border: 1px solid #ccd1d1;
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .tabla-planes th {
+        background-color: var(--color-gris-claro1);
+        color: var(--color-azul-oscuro1);
+        text-transform: uppercase;
+    }
+
+    .tabla-planes td {
+        background-color: #fdfefe;
+    }
+
+
+@media (max-width: 1200px) {
+    .mensaje-final {
+        flex-direction: column;
+        padding-top: 30px;
+        padding-bottom: 0px;
+        width: 90%;
+    }
+
+    .plan-wb {
+        width: 90%;
+    }
+}
+
+/* Estilos para pantallas pequeñas */
+@media (max-width: 768px) {
+    /* Contenedor general */
+    .planes-container {
+        padding-bottom: 50px;
+    }
+
+    /* Intro principal */
+    .intro {
+        width: 94%;
+        padding: 40px 0 20px 0;
+    }
+
+        .intro h2 {
+            font-size: 1.5rem;
+        }
+
+        .intro p {
+            font-size: 1.2rem;
+        }
+
+    /* Cada plan */
+    .plan {
+        width: 94%;
+        margin-bottom: 40px;
+    }
+
+    .plan-header h3 {
+        font-size: 1.3rem;
+    }
+
+    .plan-header p {
+        font-size: 1.1rem;
+    }
+
+    /* Imagen dentro del plan */
+    .plan-img img {
+        border-radius: 8px;
+    }
+
+    /* Lista y especificaciones */
+    .plan ul {
+        font-size: 1.1rem;
+        padding: 10px;
+    }
+
+    .entrega {
+        font-size: 1.1rem;
+    }
+
+    /* Botón adquirir */
+    .btn-adquirir {
+        width: 90%;
+        height: 45px;
+        font-size: 1rem;
+    }
+
+    /* Contenedor de botones */
+    .contenedor-botones {
+        flex-direction: row;
+        gap: 30px;
+        padding: 12px 24px;
+        width: 100%;
+    }
+
+    .boton-accion-portada {
+        font-size: 1.4rem;
+    }
+
+    .boton-texto {
+        font-size: 0.95rem;
+    }
+
+    /* Mensaje final */
+    .mensaje-final {
+        width: 94%;
+        padding: 20px;
+    }
+
+        .mensaje-final blockquote {
+            font-size: 1.2rem;
+        }
+
+    /* Tabla de comparación */
+    .tabla-responsive {
+        overflow-x: auto;
+    }
+
+    .tabla-planes {
+        font-size: 0.95rem;
+        width: 800px; /* tabla ancha para hacer scroll horizontal */
+    }
+
+    .tabla-comparativa {
+        margin-top: 40px;
+    }
+}

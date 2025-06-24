@@ -1,0 +1,931 @@
+﻿
+.proyecto-contenedor {
+    display: flex; /* Flexbox */
+    flex-direction: column; /* Los elementos hijos se apilan en una columna */
+    gap: 0px; /* Espacio entre los elementos */
+    width: 100%; /* Ocupa el 100% del ancho disponible */
+    max-width: 100%; /* Asegura que no exceda el ancho del contenedor padre */
+    height: 100%; /* Ocupa toda la altura disponible */
+    background-color: transparent;
+    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total */
+    overflow: hidden; /* Evita cualquier tipo de scroll */
+    padding: 60px; /* Espacio interno */
+}
+
+
+
+
+/* FILA 0 */
+.proyecto-contenedor-fila0 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Esto hace que ocupe todo el ancho del contenedor padre */
+    /*background-color: var(--color-gris-claro1);*/
+    /*border-bottom: 1px solid #ccd1d1;*/
+    /*justify-content: space-between;*/ /* o center si prefieres */
+    /*padding: 60px 60px;*/
+    border-radius: 15px;
+    box-sizing: border-box; /* Asegura que el padding y el border se respeten */
+    overflow: hidden; /* Evita desbordamientos */
+    border: 1px solid #ccd1d1;
+    /*box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);*/
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina),var(--color-gris-claro1) );
+    margin-bottom: 60px;
+}
+
+.contenedor-carrusel-portafolio {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 10px 0;
+    align-items: center;
+    scroll-snap-type: x mandatory;
+}
+
+.contenedor-base-1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%; /* Esto hace que ocupe todo el ancho del contenedor padre */
+    background-color: var(--color-gris-claro1);
+    justify-content: center; /* o center si prefieres */
+    padding: 10px 10px;
+    border-radius: 15px;
+    box-sizing: border-box; /* Asegura que el padding y el border se respeten */
+    overflow: hidden; /* Evita desbordamientos */
+    /*border: 1px solid #ccd1d1;*/
+    /*box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);*/
+    background-color: transparent;
+}
+
+.contenedor-base-2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%; /* Esto hace que ocupe todo el ancho del contenedor padre */
+    background-color: var(--color-gris-claro1);
+    border-bottom: 1px solid #ccd1d1;
+    justify-content: center; /* o center si prefieres */
+    padding: 10px 10px;
+    /*border-radius: 15px;*/
+    box-sizing: border-box; /* Asegura que el padding y el border se respeten */
+    overflow: hidden; /* Evita desbordamientos */
+    /*border: 1px solid #ccd1d1;*/
+    /*box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);*/
+}
+
+.item-carrusel {
+    width: 100px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+    transition: border 0.3s;
+}
+
+    .item-carrusel img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+    }
+
+    .item-carrusel.activo {
+        border-color: var(--color-azul-turquesa);
+    }
+
+.boton-carrusel {
+    background: none;
+    border: none;
+    font-size: 45px;
+    cursor: pointer;
+    color: var(--color-azul-turquesa);
+}
+
+.nota-carrusel {
+    display: flex;
+    text-align: center;
+    margin-top: 0px;
+    font-size: 20px;
+}
+
+.link-ver-todos {
+    color: var(--color-azul-turquesa);
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s;
+    font-weight: 600;
+}
+
+    .link-ver-todos:hover {
+        color: var(--color-verde-original);
+    }
+
+.miniatura-carrusel {
+    flex: 0 0 auto;
+    width: 120px;
+    height: 80px;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    scroll-snap-align: center;
+    transition: transform 0.3s;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+    .miniatura-carrusel img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    /* Overlay blanco semi-transparente para NO activos */
+    .miniatura-carrusel::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.6);
+        z-index: 2;
+        transition: background-color 0.3s;
+    }
+    /* Si está activo, no tiene overlay */
+    .miniatura-carrusel.activo::before {
+        background-color: transparent;
+    }
+    /* Opcional: escala un poco al hacer hover */
+    .miniatura-carrusel:hover {
+        transform: scale(1.05);
+    }
+
+
+
+
+/* FILA 2 */
+.proyecto-contenedor-fila1 {
+    display: flex;
+    gap: 60px; /* Espacio entre las columnas */
+    height: 660px; /* Asegura una altura fija para evitar que crezca demasiado */
+    padding: 90px 60px;
+    border-radius: 15px;
+    box-sizing: border-box; /* Asegura que el padding y el border se respeten */
+    overflow: hidden; /* Evita desbordamientos */
+    border: 1px solid #ccd1d1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina),var(--color-gris-claro1) );
+    margin-bottom: 60px;
+}
+
+/* Columna izquierda (Imagen de portada) */
+.columna-imagen-proyecto {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%; /* Ocupa el 50% del ancho del contenedor */
+    height: 100%; /* Asegura que la columna ocupe toda la altura disponible */
+    background-color: transparent; /* Color temporal para visualización */
+     overflow: hidden;
+    border-radius: 10px;
+    /*  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+    border: 3px solid #f8f9f9;*/
+    transition: border 0.3s ease-in-out;
+}
+
+.contenedor-imagen-portada {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Ahora ocupa el 100% del ancho disponible */
+    height: 100%; /* Hace que el contenedor ocupe toda la altura de la columna */
+    position: relative;
+    /*overflow: hidden;*/
+    cursor: pointer;
+
+
+}
+
+    .contenedor-imagen-portada img {
+        width: auto;
+        height: 100%;
+        object-fit: cover; /* Recorta la imagen si es necesario para llenar */
+        object-position: center center; /* Centra la imagen */
+        border-radius: 10px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+    }
+
+/* Columna derecha (Información del servicio) */
+.columna-detalles-servicio {
+    display: flex;
+    flex-direction: column; /* Organiza los elementos en una columna vertical */
+    text-align: center; /* Centra el contenido de texto */
+    width: 50%; /* Ocupa el 50% del ancho del contenedor */
+    padding: 0px;
+    gap: 0px; /* Espacio entre los elementos internos */
+    box-sizing: border-box;
+    background-color: transparent; /* Color temporal para visualización */
+
+    border: 1px solid #ccd1d1;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.Titulo-Principal-portafolio {
+    display: flex;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+
+    font-family: var(--fuente-secundaria);
+    color: var(--color-azul-oscuro1);
+    font-size: 2rem; /* 40px */
+    font-weight: 900 !important;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+.Parrafo-Principal-Grande {
+    font-size: 1.1rem; /* 16px */
+    font-family: var(--fuente-principal);
+    color: #424242;
+    /*font-style: italic;*/
+    font-weight: 300;
+}
+
+.subtitulo-servicio {
+    display: flex;
+    text-align: center; /* Centra el contenido de texto */
+    justify-content: center; /* Centrar el contenido horizontalmente */
+    height: auto; /* Ajusta la altura de la barra */
+    border-bottom: 1px solid #ccd1d1;
+    /*overflow: hidden;*/
+    background-color: var(--color-gris-claro1);
+      padding-top: 0px;
+}
+
+.Subtitulo-Principal-portafolio {
+    display: flex;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center;
+    font-family: var(--fuente-principal);
+    color: var(--color-dorado-oscuro);
+    letter-spacing: 3px;
+    text-align: center;
+    height: 100%;
+    font-weight: 400;
+    font-size:1.5rem;
+    padding:3px;
+}
+.titulo-servicio {
+    display: flex; /* Activa el modo Flexbox */
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    border-bottom: 1px solid #ccd1d1;
+    padding: 6px;
+    height: auto;
+    overflow: hidden;
+    background-color: var(--color-gris-claro1);
+}
+
+.descripcion-servicio {
+    background-color: transparent; /* Color temporal para visualización */
+    flex-grow: 1; /* Permite que crezca para llenar el espacio */
+    display: flex; /* Flexbox para centrar el contenido */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    text-align: center; /* Centrar el texto dentro del párrafo */
+    padding: 15px;
+    overflow:hidden;
+}
+
+.text-center {
+    border-bottom: 1px solid #ccd1d1;
+    height: 45px;
+    padding-bottom: 5px;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.contenedor-botones {
+    display: flex;
+    gap: 60px; /* Espacio entre los botones */
+    justify-content: center;
+    background-color: var(--color-gris-claro1);
+    align-self: center;
+    margin-top: auto;
+    padding: 12px 24px;
+    width: 100%;
+}
+
+.boton-accion-portada {
+    background-color: transparent;
+    border: 0;
+    border-radius: 50%;
+    /* padding: 12px;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.6rem;
+    color: var(--color-azul-turquesa);
+    flex-direction: column;
+}
+
+    .boton-accion-portada:hover {
+        color: var(--color-verde-original);
+        transform: scale(1.1);
+    }
+
+    .boton-accion-portada i {
+        pointer-events: none;
+    }
+
+.boton-texto {
+    font-size: 1rem; /* 16px */
+    
+    font-weight: 400;
+}
+
+
+
+
+
+
+/* FILA 3 */
+
+.proyecto-contenedor-fila2 {
+    display: flex;
+    gap: 60px; /* Espacio entre las columnas */
+    height: 660px; /* Asegura una altura fija para evitar que crezca demasiado */
+    padding: 90px 60px;
+    border-radius: 15px;
+    box-sizing: border-box; /* Asegura que el padding y el border se respeten */
+    overflow: hidden; /* Evita desbordamientos */
+    border: 1px solid #ccd1d1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina),var(--color-gris-claro1) );
+    margin-bottom: 60px;
+}
+
+.columna-seleccion-colaboradores {
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    overflow: hidden;
+    padding: 0px;
+    box-sizing: border-box;
+    flex-grow: 1;
+    width: 1018px;
+    max-width: 100%;
+    flex-shrink: 1;
+    border: 1px solid #ccd1d1;
+    border-radius: 15px;
+    /*justify-content: space-evenly;*/ /* Centra el texto horizontalmente */
+    height: 100%;
+}
+
+.titulo-fila {
+    display: flex; /* Activa el modo Flexbox */
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    border-bottom: 1px solid #ccd1d1;
+    padding: 0px;
+    height: 60px;
+    /*overflow: hidden;*/
+    background-color: var(--color-gris-claro1);
+}
+
+.subtitulo-fila {
+    display: flex;
+    text-align: center; /* Centra el contenido de texto */
+    justify-content: center; /* Centrar el contenido horizontalmente */
+    height: 45px; /* Ajusta la altura de la barra */
+    /*border-bottom: 1px solid #ccd1d1;*/
+    /*overflow: hidden;*/
+    background-color: var(--color-gris-claro1);
+}
+
+/* Descripción */
+.portafolio-areas {
+    color: #707b7c;
+    flex-grow: 1; /* Permite que crezca para llenar el espacio */
+    display: flex; /* Flexbox para centrar el contenido */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    text-align: center; /* Centrar el texto dentro del párrafo */
+    padding: 12px;
+}
+
+/* Contenedores de PDF, Video, Unidad y Precio */
+.portafolio-especificaciones {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 100px;
+    padding: 0px 0px;
+    border-bottom: 1px solid #ccd1d1;
+    flex-grow: 1; /* Permite que crezca para llenar el espacio */
+    border-top: 1px solid #ccd1d1;
+}
+
+.portafolio-botones {
+    display: flex;
+    gap: 120px; /* Espacio entre los botones */
+    justify-content: center;
+    background-color: var(--color-gris-claro1);
+    align-self: center;
+    margin-top: auto;
+    padding: 12px 0px;
+    width: 100%;
+}
+
+.contenedor-especificaciones {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: transparent;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.contenedor-especificaciones-bloques {
+    margin-bottom: 0px;
+    text-align: center;
+    padding-top: 0px;
+}
+
+
+.precio-resaltado-portafolio {
+    color: var(--color-verde-original);
+    font-weight: bold;
+    font-size:18px;
+    text-align: center;
+}
+
+
+.especificaciones-etiqueta {
+    font-size: 18px;
+    font-family: var(--fuente-principal);
+    color: #424242;
+    /*font-style: italic;*/
+    font-weight: 300;
+}
+
+
+/* Columna principal que contiene la imagen */
+.columna-imagen-principal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    overflow: hidden; /* Evita que el contenido se desborde */
+    border-radius: 15px;
+    border: 1px solid #ccd1d1;
+    /*border: 3px solid #f8f9f9;*/
+    width: 100%; /* Ancho al 100% del contenedor padre */
+    max-width: 500px; /* Limita el ancho máximo del contenedor principal */
+    height: 100%;
+    background-color: var(--color-gris-claro1);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Nuevo contenedor exclusivo para la imagen */
+.contenedor-imagen {
+    position: relative;
+    width: 100%; /* Ocupará todo el ancho disponible */
+
+    padding-bottom: 100%; /* Mantiene la proporción cuadrada (1:1) */
+    border-radius: 15px;
+    overflow: hidden; /* Evita que la imagen se desborde */
+
+    user-select: none; /* Evita seleccionar el contenido */
+    background-color: transparent;
+}
+
+/* Imagen principal */
+.imagen-principal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Asegura que la imagen cubra todo el contenedor sin distorsionarse */
+    border-radius: 15px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+
+
+.popup-imagen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    cursor: pointer;
+}
+
+.popup-imagen-grande {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    animation: zoomIn 0.3s ease;
+}
+
+.overlay-texto {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+    pointer-events: none; /* Para que el overlay no bloquee el click */
+}
+
+
+/* Animación suave */
+@keyframes zoomIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+/* Miniaturas */
+.columna-miniaturas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0px;
+    padding: 0px;
+    width: 70px;
+    background-color: transparent;
+}
+
+.miniatura {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    overflow: hidden;
+    background-color: transparent;
+    border-radius: 9px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+}
+
+    .miniatura img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 9px;
+        transition: border 0.3s ease-in-out;
+        user-select: none; /* Evita seleccionar el contenido */
+        pointer-events: none; /* Deshabilita la interacción directa con la imagen */
+    }
+
+.miniatura-seleccionada {
+    border: 3px solid #0097a7 !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+
+
+@media (max-width: 1328px) {
+
+
+    .Titulo-Principal-portafolio {
+        font-size: 1.5rem; /* 40px */
+        height: auto;
+    }
+
+    .Parrafo-Principal-Grande {
+        font-size: 1rem; /* 16px */
+    }
+
+    .Subtitulo-Principal-portafolio {
+        font-size: 1.5rem;
+    }
+
+    .proyecto-contenedor-fila1 {
+        /*flex-direction: column;*/
+        flex-direction: column-reverse; /* Aquí está el cambio */
+        padding: 0px 0px;
+        box-sizing: border-box;
+        gap: 12px;
+        height: auto;
+        margin-bottom: 15px;
+        border: 0px solid #ccd1d1;
+        box-shadow: none;
+        background-color: transparent;
+        background: none;
+    }
+
+    .proyecto-contenedor {
+        display: flex;
+        justify-content: center;
+        padding: 12px;
+        gap: 0px;
+        border-radius: 0px;
+        
+    }
+
+    .columna-imagen-proyecto {
+        width: 100%; /* Ocupa el 50% del ancho del contenedor */
+    }
+
+    .contenedor-imagen-portada {
+        width: 100%; /* Ahora ocupa el 100% del ancho disponible */
+        height: 100%; /* Hace que el contenedor ocupe toda la altura de la columna */
+    }
+
+        .contenedor-imagen-portada img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill; /* Recorta la imagen si es necesario para llenar */
+        }
+
+    .columna-detalles-servicio {
+        width: 100%; /* Ocupa el 50% del ancho del contenedor */
+        padding: 0px;
+    }
+
+    .proyecto-contenedor-fila0 {
+        
+        margin-bottom: 12px;
+        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .miniatura-carrusel {
+        flex: 0 0 auto;
+        width: 60px;
+        height: 60px;
+
+    }
+
+    .boton-carrusel {
+        background: none;
+        border: none;
+        font-size: 30px;
+        cursor: pointer;
+        color: var(--color-azul-turquesa);
+       width:25px;
+    }
+
+    .contenedor-botones {
+        display: flex;
+        gap:20px; /* Espacio entre los botones */
+    
+    }
+
+    .boton-accion-portada {
+   
+        font-size: 1.4rem;
+ 
+    }
+
+    .boton-texto {
+        font-size: .9rem; /* 16px */
+
+    }
+
+
+    /* FILA2 */
+
+
+    .proyecto-contenedor-fila2 {
+        flex-direction: column;
+        padding: 0px 0px;
+        box-sizing: border-box;
+        gap: 12px;
+        height: auto;
+        margin-bottom: 15px;
+        border: 0px solid #ccd1d1;
+        box-shadow: none;
+        background-color: transparent;
+        background: none;
+        margin-bottom: 15px;
+    }
+    .columna-seleccion-colaboradores {
+        width: 100%; 
+    
+    }
+
+
+
+    .columna-imagen-principal {
+        width: 100%; /* Ancho al 100% del contenedor padre */
+        max-width: 100%;
+        max-height: 500px; /* Limita el ancho máximo del contenedor principal */
+    }
+
+
+    .contenedor-imagen {
+       height: 100%; /* Ancho al 100% del contenedor padre */
+    }
+
+
+    .columna-miniaturas {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: center;
+        gap: 12px;
+        padding: 10px 0;
+        align-items: center;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        padding: 10px 0;
+        align-items: center;
+        scroll-snap-type: x mandatory;
+    }
+
+    .miniatura {
+        flex: 0 0 auto;
+        width: 60px;
+        height: 60px;
+    }
+
+
+    .precio-resaltado-portafolio {
+   
+        font-size: 16px;
+ 
+    }
+
+
+    .especificaciones-etiqueta {
+        font-size: 16px;
+ 
+    }
+
+
+}
+
+
+@media (max-width: 600px) {
+
+
+
+
+    /* FILA2 */
+
+
+
+    .columna-imagen-principal {
+        height: 300px;  
+    
+    }
+
+    .columna-miniaturas {
+
+           justify-content: initial;
+           gap:9px;
+
+    }
+    .miniatura {
+        flex: 0 0 auto;
+        width: 50px;
+        height: 50px;
+    }
+
+
+    .subtitulo-fila {
+        display: flex;
+        text-align: center; /* Centra el contenido de texto */
+        justify-content: center; /* Centrar el contenido horizontalmente */
+        height: 45px; /* Ajusta la altura de la barra */
+        /*border-bottom: 1px solid #ccd1d1;*/
+        /*overflow: hidden;*/
+        background-color: var(--color-gris-claro1);
+    }
+
+    /* Descripción */
+    .portafolio-areas {
+        color: #707b7c;
+        flex-grow: 1; /* Permite que crezca para llenar el espacio */
+        display: flex; /* Flexbox para centrar el contenido */
+        justify-content: center; /* Centrar horizontalmente */
+        align-items: center; /* Centrar verticalmente */
+        text-align: center; /* Centrar el texto dentro del párrafo */
+        padding: 12px;
+    }
+
+    /* Contenedores de PDF, Video, Unidad y Precio */
+    .portafolio-especificaciones {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        height: 100px;
+        padding: 0px 0px;
+        border-bottom: 1px solid #ccd1d1;
+        flex-grow: 1; /* Permite que crezca para llenar el espacio */
+        border-top: 1px solid #ccd1d1;
+    }
+
+    .portafolio-botones {
+        display: flex;
+        gap: 20px; /* Espacio entre los botones */
+    
+    }
+
+
+
+
+
+    .portafolio-especificaciones {
+        display: flex;
+        flex-wrap: wrap; /* permite que los hijos se bajen a la siguiente línea */
+        justify-content: space-between;
+        width: 100%;
+        padding: 0;
+        gap: 0px; /* espacio entre bloques, opcional */
+        height: auto;
+    }
+
+    .contenedor-especificaciones {
+        flex: 1 1 48%; /* ocupa el 48% del ancho y permite ajuste */
+        min-width: 160px; /* evita que se colapsen en pantallas muy pequeñas */
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: auto;
+        padding: 15px 9px;
+    }
+
+    .contenedor-especificaciones-bloques {
+        margin-bottom: 0px;
+        text-align: center;
+        padding-top: 0px;
+    }
+
+
+    .precio-resaltado-portafolio {
+
+        font-size: 14px;
+ 
+    }
+
+
+    .especificaciones-etiqueta {
+        font-size: 14px; /* 16px */
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

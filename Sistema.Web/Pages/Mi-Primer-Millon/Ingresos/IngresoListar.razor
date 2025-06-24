@@ -1,0 +1,119 @@
+﻿@page "/ingreso-listar"
+@inject NavigationManager navigationManager
+@inject IRepositorio repositorio
+@inject SweetAlertService sweetAlertService
+@inject AuthenticationProviderJWT AuthProvider
+
+<div class="dashboard-imagen">
+    <img src="/Images/Portada_Gastos.png" class="img-fluid" />
+    <div class="menu-text">LISTA DE INGRESOS</div>
+</div>
+
+<div class="dashboard-main">
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <button class="primary-button" @onclick="NuevoIngreso">Nuevo Ingreso</button>
+        </div>
+    </div>
+
+    <ListaGenerica MiLista="Ingresos">
+        <Cargando>
+            <p>Estoy en ello....</p>
+        </Cargando>
+        <Cuerpo>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>Concepto</th>
+                            <th>Cartera</th>
+                            <th>Categoria</th>
+                            <th>Modificar</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (IngresoDTO c in Ingresos)
+                        {
+                            <tr>
+                                <td>@c.Fecha.ToShortDateString()</td>
+                                <td>@c.Total.ToString("N2")</td>
+                                <td>@c.Concepto</td>
+                                <td>@c.Cartera</td>
+                                <td>@c.Categoria</td>
+                                <td class="button-cell">
+                                    <button type="button" class="actualizar-button" @onclick="@(() => Actualizar(c.IdIngreso))">Actualizar</button>
+                                </td>
+                                <td class="button-cell">
+                                    <button type="button" class="eliminar-button" @onclick="@(() => Eliminar(c.IdIngreso))">Eliminar</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </Cuerpo>
+    </ListaGenerica>
+    <br />
+    <br />
+</div>
+
+@code {
+    public List<IngresoDTO>? Ingresos { get; set; }
+    public int IdUsuario { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            navigationManager.NavigateTo("/");
+            return;
+        }
+
+        IdUsuario = AuthProvider.GetIdUsuario();
+        await Cargar();
+    }
+
+    private async Task Cargar()
+    {
+        var response = await repositorio.Get<List<IngresoDTO>>($"/api/ingreso/listar/{IdUsuario}");
+        Ingresos = response.Response;
+    }
+
+    private async Task Eliminar(int id)
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Estás seguro de eliminar el ingreso?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                CancelButtonText = "No",
+                ConfirmButtonText = "Sí"
+            });
+
+        if (result.IsConfirmed)
+        {
+            var response = await repositorio.Delete($"api/ingreso/eliminar/{id}");
+            if (!response.Error)
+            {
+                await Cargar();
+            }
+        }
+    }
+
+    private void NuevoIngreso()
+    {
+        navigationManager.NavigateTo("/ingreso-insertar");
+    }
+
+    private void Actualizar(int idIngreso)
+    {
+        navigationManager.NavigateTo($"/ingreso-actualizar/{idIngreso}");
+    }
+}

@@ -1,0 +1,138 @@
+﻿/* Fondo completo de la página con overlay */
+.usuario-container-fondo {
+    width: 100%;
+    height: 68vh; /* Ocupa toda la pantalla */
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    position: relative;
+    background-color: #fdfefe;
+}
+
+.my-custom-class {
+    z-index: 9999; /* Ajusta el valor según sea necesario */
+}
+
+
+
+
+/* Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    background-color: #1b2631;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient( 135deg, /* Ángulo del degradado */
+    rgba(28, 40, 51, .8), /* Color 1 - Azul oscuro */
+    rgba(23, 32, 42, 0.8), /* Color 3 - Púrpura */
+    rgba(23, 32, 42, .8) /* Color 2 - Azul medio */
+    );
+    z-index: 1009; /* Asegura que el overlay esté por encima de todo */
+}
+
+
+/* Estilo del contenedor de login */
+.login-container {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1010; /* Asegura que esté encima del overlay */
+    background-color: #f2f4f4; /* Mantiene el fondo gris oscuro semi-transparente */
+    padding: 25px;
+    border-radius: 20px;
+    border-left: 3px solid rgba(255, 255, 255, 0.1); /* Bordes suaves */
+    width: 400px; /* Ancho fijo */
+    margin: 0 auto; /* Centrado */
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    margin-bottom: 20px; /* Espacio opcional debajo del logo */
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+    transition: filter 0.3s ease;
+    margin-top:30px;
+    margin-bottom:30px;
+}
+
+
+
+
+
+/* Estilo para los labels */
+.form-label {
+    color: #1b4f72;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+/* Estilo para los campos de texto */
+.form-control {
+    background-color: rgba(60, 60, 60, 0.8); /* Fondo gris bajito semi-transparente */
+    color: #EEEEEA; /* Color del texto claro */
+    border-color: rgba(200, 200, 200, 0.3); /* Borde gris claro semi-transparente */
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: none; /* Elimina la sombra */
+}
+
+    .form-control:focus {
+        border-color: #2471a3; /* Azul oscuro */
+        box-shadow: 0 0 5px rgba(36, 113, 163, 0.5); /* Sombra azul suave */
+    }
+
+/* Estilo del botón de login */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    background-color: #2874a6; /* Azul */
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .login-btn:hover {
+        background-color: #16a085; /* Verde oscuro */
+        color: white;
+    }
+
+/* Estilo para los mensajes de validación */
+.validation-message {
+    color: #e74c3c; /* Rojo */
+    font-size: 14px;
+}
+
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+    .login-container {
+        width: 100%; /* Ocupa todo el ancho en pantallas pequeñas */
+        padding: 20px;
+    }
+
+    .login-btn {
+        width: 100%;
+    }
+
+    .form-control {
+        font-size: 14px;
+    }
+
+    .form-label {
+        font-size: 14px;
+    }
+
+
+
+
+}

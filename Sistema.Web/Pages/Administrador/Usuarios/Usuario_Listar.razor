@@ -1,0 +1,262 @@
+﻿@page "/usuario-listar"
+@inject NavigationManager navigationManager
+@inject IRepositorio repositorio
+@inject SweetAlertService sweetAlertService
+@inject AuthenticationProviderJWT AuthProvider
+@using System.Net
+
+
+<div class="dashboard-main">
+
+    <ListaGenerica MiLista="Usuario">
+        <Cargando>
+            <p>Estoy en ello....</p>
+        </Cargando>
+        <Cuerpo>
+            <div class="table-container">
+
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button class="custom-btn" @onclick="NavegarAUsuarioInsertar">
+                            <i class="bi bi-person-plus"></i> Nuevo Usuario
+                        </button>
+                    </div>
+                </div>
+                
+                <table class="table">
+                <thead>
+                    <tr>
+
+
+                            <AuthorizeView Roles="Administrador">
+                                <Authorized>
+                            <th>IdUsuario</th>
+
+
+                            <th>Telefono</th>
+                            <th>Email</th>
+                            <th>Usuario</th>
+                             
+                                </Authorized>
+                            </AuthorizeView>
+                            
+                            
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Rol</th>
+                            
+                            <th>Estado</th>
+                            <th>Foto Perfil</th>
+                            <th>Ciudad</th>
+                            <th>Estado/Región</th>
+                            <th>Dirección</th>
+                            <th>Nombre Público</th>
+                            <th>Fecha Creación</th>
+                            <th>Términos Generales</th>
+                            <th>Versión Términos Aceptados</th>
+                            <th>Fecha de Terminos</th>
+                            <th>Número Usuario</th>
+                            @* <th>Modificar</th> *@
+                            <th>Más</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (UsuarioDTO c in Usuario)
+                    {
+                        <tr>
+                                <AuthorizeView Roles="Administrador">
+                                    <Authorized>
+                                        <td>@c.IdUsuario</td>
+
+
+                                        <td>@c.Telefono</td>
+                                        <td>@c.Email</td>
+                                        <td>@c.Usuario</td>
+
+                                    </Authorized>
+                                </AuthorizeView>
+                                <td>@c.Nombre</td>
+                                <td>@c.Apellidos</td>
+                                <td>@c.tipoUsuario</td>
+                   
+                                <td>@c.Estado</td>
+                                <td>@c.Foto_Perfil</td>
+                                <td>@c.Ciudad</td>
+                                <td>@c.Estado_Region</td>
+                                <td>@c.Direccion</td>
+                                <td>@c.Nombre_Publico</td>
+                                <td>@c.Fecha_Creacion</td>
+                                <td>@c.Terminos_Generales</td>
+                                <td>@c.Version_Terminos_Aceptados</td>
+                                <td>@c.Fecha_Terminos</td>
+
+                                <td>@c.NumeroUsuario</td>
+                     @*            <td>
+                                    <button class="custom-btn" @onclick="() => NavegarModificar(c.IdUsuario)">
+                                        <i class="bi bi-pencil"></i> Modificar
+                                    </button>
+                                </td>
+ *@
+                                <td>
+                                    <div class="dropdown eliminar-button">
+                                        <button class="custom-btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                           
+                                            
+                                            <AuthorizeView Roles="Administrador">
+                                                <Authorized>
+                                                    <li>
+                                                        <a class="dropdown-item" @onclick="() => NavegarModificar(c.IdUsuario)">Editar</a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" @onclick="() => Eliminar(c.IdUsuario)">Eliminar</a>
+                                                    </li>
+                                                </Authorized>
+                                            </AuthorizeView>
+                                            
+                                     
+                                            
+                                            
+                                            
+                                            
+                                            <li><a class="dropdown-item" href="#">Opción 2</a></li>
+                                            <li><a class="dropdown-item" href="#">Opción 3</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+
+
+                        </tr>
+
+                    }
+
+                </tbody>
+            </table>
+            </div>
+        </Cuerpo>
+    </ListaGenerica>
+
+    <br />
+    <br />
+    <br />
+    <br />
+</div>
+
+
+
+
+
+
+@code {
+
+    public List<UsuarioDTO>? Usuario { get; set; }
+    private AuthenticationState? authState;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+         await Cargar();
+
+    }
+
+    private async Task Cargar()
+    {
+
+
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+
+            
+      
+                var response = await repositorio.Get<List<UsuarioDTO>>("/api/usuario/listar-administrador");
+                Usuario = response.Response;
+       
+
+        }
+        else
+        {
+            await sweetAlertService.FireAsync(new SweetAlertOptions
+                {
+                    Title = "¡Ups!",
+                    Text = "Parece que no has iniciado sesión. ¿Te gustaría iniciar sesión o volver a la página principal?",
+                    Icon = SweetAlertIcon.Info,
+                    ShowCancelButton = true,
+                    ConfirmButtonText = "Iniciar Sesión",
+                    CancelButtonText = "Ir a Inicio"
+                }).ContinueWith(async result =>
+            {
+                if (result.Result.IsConfirmed)
+                {
+                    navigationManager.NavigateTo("/login"); // Redirigir a la página de inicio de sesión
+                }
+                else if (result.Result.IsDismissed)
+                {
+                    navigationManager.NavigateTo("/"); // Redirigir a la página principal
+                }
+            });
+
+        }
+
+
+
+
+
+
+
+    }
+
+    private async Task Eliminar(int id)
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Estás seguro de eliminar el usuario?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                CancelButtonText = "No",
+                ConfirmButtonText = "Sí"
+            });
+
+        // Verificar si el usuario ha confirmado la acción
+        if (!result.IsConfirmed)
+        {
+            // El usuario canceló la acción, no hacer nada
+            return;
+        }
+
+        // Proceder con la eliminación del usuario si la confirmación fue exitosa
+        var respuestaHttp = await repositorio.Delete($"/api/usuario/eliminar/{id}");
+        if (respuestaHttp.Error)
+        {
+            // Si hay un error al eliminar, manejar el error
+            if (respuestaHttp.HttpResponseMessage.StatusCode != HttpStatusCode.NotFound)
+            {
+                var message = await respuestaHttp.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+        }
+
+        // Recargar la lista de usuarios después de eliminar el registro
+        await Cargar();
+        navigationManager.NavigateTo("/usuario-listar");
+    }
+
+    private void NavegarAUsuarioInsertar()
+    {
+        navigationManager.NavigateTo("/usuario-insertar", forceLoad: false);
+    }
+    private void NavegarModificar(int idUsuario)
+    {
+        navigationManager.NavigateTo($"/usuario/modificar/{idUsuario}");
+    }
+
+}

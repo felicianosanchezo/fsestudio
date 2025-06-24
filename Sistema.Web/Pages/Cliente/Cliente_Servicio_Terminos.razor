@@ -1,0 +1,91 @@
+﻿@page "/cliente-terminos"
+
+
+
+
+
+<div class="contenedor-terminos">
+    <div class="modal-terminos">
+        <div class="terminos-container1">
+
+            <div class="terminos-content1">
+                <h4 class="titulo-terminos">Términos y Condiciones Generales</h4>
+                <br />
+                <ul class="lista-terminos">
+                    @foreach (var frase in frasesFormateadas)
+                    {
+                        <li>@((MarkupString)frase)</li>
+                    }
+                </ul>
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+
+    private List<string> frasesFormateadas = new();
+    private List<TerminosDto> terminos = TerminosService.ObtenerTerminos();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        // Luego, proceder con el formateo de los términos en el componente hijo
+        if (terminos.Count > 0)
+        {
+            frasesFormateadas = FormatearEspecificaciones(terminos[0].Especificaciones);
+        }
+    }
+
+    private List<string> FormatearEspecificaciones(string? especificaciones)
+    {
+        var frasesFormateadas = new List<string>();
+
+        if (!string.IsNullOrEmpty(especificaciones))
+        {
+            var frases = especificaciones.Split('|');
+            foreach (var frase in frases)
+            {
+                if (!string.IsNullOrWhiteSpace(frase))
+                {
+                    var partes = frase.Split(':', 2);
+                    if (partes.Length == 2)
+                    {
+                        var parteEnNegrita = $"<strong>{partes[0].Trim()}:</strong>";
+                        var parteNormal = partes[1].Trim().TrimEnd('.');
+                        frasesFormateadas.Add($"{parteEnNegrita} {parteNormal}");
+                    }
+                    else
+                    {
+                        frasesFormateadas.Add(frase.Trim());
+                    }
+                }
+            }
+        }
+
+        return frasesFormateadas;
+    }
+}
+
+
+
+
+
+
+
+
+<style>
+
+
+
+ 
+
+
+</style>

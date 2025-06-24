@@ -1,0 +1,51 @@
+﻿.modulos-container {
+    width: 100%;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background-color: var(--color-fondo-pagina);
+}
+
+.titulo-modulo {
+    font-size: 1.8rem;
+    color: var(--color-azul-oscuro1);
+    border-bottom: 2px solid #d0d3d4;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.modulo-card {
+    border: 1px solid var(--color-gris-linea);
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modulo-nombre {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--color-azul-turquesa);
+}
+
+.modulo-descripcion {
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--color-gris-descripcion);
+}
+
+.modulo-precio {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--color-verde-oscuro);
+}
+
+.modulo-publico {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--color-dorado-original);
+}

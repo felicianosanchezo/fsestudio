@@ -1,0 +1,58 @@
+﻿.contenedor-seccion-dolores {
+    padding: 60px 30px;
+    background-color: #fdfefe;
+    text-align: center;
+}
+
+.contenedor-dolores-titulo {
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+}
+
+.titulo-seccion-dolores {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-azul-oscuro1);
+    margin-bottom: 10px;
+    font-family: var(--fuente-principal);
+}
+
+.subtitulo-seccion-dolores {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+    font-weight: 400;
+    font-family: var(--fuente-principal);
+}
+
+.contenedor-dolores {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.contenedor-dolor {
+    background-color: #ffffff;
+    border: 1px solid #d0d3d4;
+    border-radius: 10px;
+    padding: 20px;
+    width: 370px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    text-align: left;
+}
+
+.titulo-dolor {
+    font-size: 1.2rem;
+    color: var(--color-accion-principal);
+    font-weight: 400;
+    margin-bottom: 10px;
+    font-family: var(--fuente-principal);
+}
+
+.descripcion-dolor {
+    color: #39546F;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    font-family: var(--fuente-principal);
+    font-weight: 300;
+}

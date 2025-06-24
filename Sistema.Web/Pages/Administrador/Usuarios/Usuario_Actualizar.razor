@@ -1,0 +1,70 @@
+﻿@page "/usuario/modificar/{Id:int}"
+@inject IRepositorio repositorio
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+@* @attribute [Authorize(Roles = "Administrador")] *@
+
+@if (usuario == null)
+{
+    <div class="spinner"></div>
+}
+else
+{
+@*     <div class="card col-sm-6 mx-auto">
+        <div class="card-header">
+            <h4> Modificar usuario: @usuario.Nombre</h4>
+        </div>
+    </div> *@
+    <Usuario_Formulario @ref="usuarioForm" usuario="usuario" OnValidSubmit="Actualizar"
+                     Cancelar="Navegar">
+    </Usuario_Formulario>
+}
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Usuario_Formulario? usuarioForm;
+
+    private UsuarioDTO? usuario;
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await repositorio.Get<UsuarioDTO>($"/api/usuario/listar/{Id}");
+        usuario = response.Response;
+
+
+    }
+
+    private async Task Actualizar()
+    {
+        var respuestaHttp = await repositorio.Put("/api/usuario/actualizar/",usuario);
+        if (respuestaHttp.Error)
+        {
+            var message = await respuestaHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message,
+            SweetAlertIcon.Error);
+
+            return;
+        }
+
+
+        var toast = sweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Toast = true,
+                Position = SweetAlertPosition.TopStart,
+                ShowConfirmButton = false,
+                Timer = 3000
+            });
+        await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Usuario Actualizado.");
+
+        Navegar();
+
+    }
+
+    private void Navegar()
+    {
+        usuarioForm!.formularioPostOk = true;
+        navigationManager.NavigateTo("/usuario-listar");
+    }
+}

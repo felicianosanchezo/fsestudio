@@ -1,0 +1,108 @@
+﻿@page "/"
+
+@inject AuthenticationProviderJWT AuthProvider
+@inject IJSRuntime JS
+@inject IRepositorio repositorio
+
+
+
+<Eslogan />
+
+            <Carrucel_Portafolio />
+            @* <Carrucel_Servicio /> *@
+
+
+
+
+@code{
+ 
+   
+    
+    private bool IsLoading = true; 
+    private string? DatosServicio;
+    private const int MaxRetryAttempts = 3; 
+    private const int DelayBetweenRetries = 2000;
+
+
+
+    // private async Task Registra_Visita()
+    // {
+    //     const int MaxRetryAttempts = 3;
+    //     const int DelayBetweenRetries = 2000;
+
+    //     for (int attempt = 0; attempt < MaxRetryAttempts; attempt++)
+    //     {
+    //         try
+    //         {
+    //             var authState = await AuthProvider.GetAuthenticationStateAsync();
+    //             var user = authState.User;
+
+    //             // Verificar si el usuario está autenticado y asignar valores personalizados
+    //             var userName = user.Identity?.IsAuthenticated == true
+    //                 ? AuthProvider.GetNombreUsuario()
+    //                 : "UsuarioAnónimo";
+    //             var idUserName = user.Identity?.IsAuthenticated == true
+    //                 ? AuthProvider.GetIdUsuario()
+    //                 : 0;
+
+    //             // Crear el objeto visita con datos comunes
+    //             var visita = new VisitaDTO
+    //                 {
+    //                     Pagina = "Home",
+    //                     IdServicio = "0",
+    //                     Usuario = userName,
+    //                     IdUsuario = Convert.ToString(idUserName),
+    //                     DeviceType = await JS.InvokeAsync<string>("isMobileDevice"),
+    //                     BrowserInfo = await JS.InvokeAsync<string>("getBrowserInfo"),
+    //                     Referrer = await JS.InvokeAsync<string>("getReferrer"),
+    //                     Action = "Visita Inicial",
+    //                     SessionStatus = user.Identity?.IsAuthenticated == true ? "Iniciada" : "Terminada",
+    //                     IpAddress = await JS.InvokeAsync<string>("getClientIp")
+                 
+                    
+    //                 };
+    //             visita.Location = await JS.InvokeAsync<string>("getLocationFromIp", visita.IpAddress);
+
+    //             var utmParams = await JS.InvokeAsync<Dictionary<string, string>>("getUTMParameters");
+    //             if (utmParams != null)
+    //             {
+    //                 utmParams.TryGetValue("utm_source", out var source);
+    //                 utmParams.TryGetValue("utm_medium", out var medium);
+    //                 utmParams.TryGetValue("utm_campaign", out var campaign);
+    //                 utmParams.TryGetValue("utm_term", out var term);
+    //                 utmParams.TryGetValue("utm_content", out var content);
+    //                 visita.TrafficSource = source;
+    //                 visita.Medium = medium;
+    //                 visita.Campaign = campaign;
+    //                 visita.Term = term;
+    //                 visita.Content = content;
+    //             }
+
+    //             var httpResponse = await repositorio.Post("/api/registro/registrar-visita", visita);
+
+    //             if (httpResponse.Error)
+    //             {
+    //                 Console.WriteLine("Error al registrar la visita.");
+    //             }
+    //             else
+    //             {
+    //                 break; // Salir del bucle si la solicitud tiene éxito
+    //             }
+    //         }
+    //         catch (Exception ex)
+    //         {
+    //             if (attempt == MaxRetryAttempts - 1)
+    //             {
+    //                 Console.WriteLine($"Error al registrar la visita después de {MaxRetryAttempts} intentos: {ex.Message}");
+    //             }
+    //             else
+    //             {
+    //                 Console.WriteLine($"Error al registrar la visita, reintentando en {DelayBetweenRetries / 1000} segundos... ({ex.Message})");
+    //                 await Task.Delay(DelayBetweenRetries);
+    //             }
+    //         }
+    //     }
+    // }
+
+
+}

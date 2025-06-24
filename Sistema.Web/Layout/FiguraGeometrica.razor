@@ -1,0 +1,68 @@
+﻿@page "/figura-geometrica"
+<div class="dashboard-main">
+    <div class="contenedor">
+        <button class="boton" id="boton1">botón 1</button>
+        <button class="boton" id="boton2">botón 2</button>
+        <button class="boton" id="boton3">botón 3</button>
+        <button class="boton" id="boton4">botón 4</button>
+        <div class="centro"></div>
+    </div>
+
+</div>
+
+
+<style>
+
+
+    .dashboard-main {
+        padding: 30px;
+        background: #fdfefe;
+ 
+    }
+
+    .contenedor {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        height: 400px;
+        width: 400px;
+        position: relative;
+    }
+
+    .boton {
+        position: absolute;
+        background-color: white;
+        border: none;
+        font-size: 14px;
+    }
+
+    #boton1 {
+        top: calc(100% - 50px); /* Parte inferior */
+        left: calc(50% - 25px); /* Centrado horizontalmente */
+    }
+
+    #boton2 {
+        top: calc(50% - 25px); /* Centrado verticalmente */
+        left: 0; /* Parte izquierda */
+    }
+
+    #boton3 {
+        top: 0; /* Parte superior */
+        left: calc(50% - 25px); /* Centrado horizontalmente */
+    }
+
+    #boton4 {
+        top: calc(50% - 25px); /* Centrado verticalmente */
+        right: 0; /* Parte derecha */
+    }
+
+    .centro {
+        grid-column: 2;
+        grid-row: 2;
+        background-color: purple;
+        width: 100px;
+        height: 100px;
+        justify-self: center;
+        align-self: center;
+    }
+</style>

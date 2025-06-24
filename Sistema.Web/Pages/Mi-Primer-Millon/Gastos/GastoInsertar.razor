@@ -1,0 +1,66 @@
+﻿@page "/gasto-insertar"
+@inject SweetAlertService sweetAlertService
+@inject IRepositorio repositorio
+@inject NavigationManager navigationManager
+@inject AuthenticationProviderJWT AuthProvider
+
+<GastoFormulario @ref="gastoForm" gasto="gasto" OnValidSubmit="Crear" Cancelar="Navegar"> </GastoFormulario>
+
+@code {
+    private GastoDTO gasto = new GastoDTO();
+    private GastoFormulario? gastoForm;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            gasto.IdUsuario = AuthProvider.GetIdUsuario(); // Asignar el idUsuario directamente desde los claims
+        }
+        else
+        {
+            // Manejo de caso cuando el usuario no está autenticado, por ejemplo, redirigir a la página de inicio de sesión
+            navigationManager.NavigateTo("/login");
+        }
+        gasto.Total = 0;
+    }
+
+    private async Task Crear()
+    {
+        if (gasto.IdCuenta == 0 || gasto.IdCategoria == 0 || gasto.IdCartera == 0)
+        {
+            await sweetAlertService.FireAsync("Error", "Debe seleccionar una Cuenta, Categoría y Cartera válidas.", SweetAlertIcon.Error);
+            return;
+        }
+
+        var httpResponse = await repositorio.Post("/api/gasto/insertar", gasto);
+
+        if (httpResponse.Error)
+        {
+            var message = await httpResponse.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        var toast = sweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Toast = true,
+                Position = SweetAlertPosition.TopStart,
+                ShowConfirmButton = false,
+                Timer = 1000
+            });
+
+        await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Gasto Agregado.");
+
+        Navegar();
+    }
+
+    private void Navegar()
+    {
+        gastoForm!.formularioPostOk = true;
+        navigationManager.NavigateTo("/gasto-listar");
+    }
+}

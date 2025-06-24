@@ -1,0 +1,157 @@
+﻿/* Estilos generales para la página */
+.servicio-container-fondo {
+    width: 100%;
+    background-color:;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 0;
+    min-height: 850px;
+    background-color: var(--color-fondo-pagina);
+}
+
+.dashboard-main {
+    width: 60%;
+    background-color: #fdfefe;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 50px;
+    margin: 50px 0;
+    border: 1px solid #d0d3d4;
+}
+
+/* Estilo para los labels */
+.form-label {
+    color: #1b4f72;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+/* Campos de texto (inputs y textareas) */
+.form-control {
+    border: 1px solid #aab7b8;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+    .form-control:focus {
+        border-color: #2471a3;
+        box-shadow: 0 0 5px rgba(36, 113, 163, 0.5);
+    }
+
+/* Botones */
+.button-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.custom-save-btn, .custom-cancel-btn {
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.custom-save-btn {
+    background-color: #2874a6;
+    color: white;
+}
+
+    .custom-save-btn:hover {
+        background-color: #16a085;
+        color: white;
+    }
+
+.custom-cancel-btn {
+    background-color: #ef5350;
+    color: white;
+}
+
+    .custom-cancel-btn:hover {
+        background-color: #c0392b;
+    }
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .dashboard-main {
+        padding: 20px;
+    }
+
+    .form-control {
+        font-size: 14px;
+    }
+
+    .form-label {
+        font-size: 14px;
+        margin-top: 30px;
+    }
+}
+
+/* Estilo para las imágenes */
+.contenedor-imagenes {
+    background-color: transparent;
+    margin-top: 10px;
+}
+
+.image-square {
+    width: 100%;
+    padding-top: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: #f0f0f0;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+    .image-square img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+/* Estilo para listas de especificaciones */
+.especificaciones-list {
+    padding-left: 20px;
+    list-style-type: disc;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+    .especificaciones-list li {
+        margin-bottom: 10px;
+    }
+
+/* Unificación de los estilos comunes de texto que no se pueden seleccionar */
+.form-control-descripcion, .form-control-especificaciones {
+    background-color: #e9ecef;
+    color: #495057;
+    user-select: none;
+    pointer-events: none; /* Deshabilita la interacción */
+    border: 1px solid #ced4da;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: 2;
+    width: 100%;
+    overflow: hidden;
+    white-space: pre-wrap;
+    height: auto;
+    min-height: 50px;
+}
+
+    /* Evitar márgenes no deseados en párrafos */
+    .form-control-especificaciones p, .form-control-descripcion p {
+        margin: 0;
+    }

@@ -1,0 +1,308 @@
+﻿@inject IJSRuntime JS
+@inject IRepositorio repositorio
+@inject SweetAlertService sweetAlertService
+@inject AuthenticationProviderJWT AuthProvider
+
+<div class="modal-overlay" style="display: block;">
+    <div class="modal-wrapper">
+        <div class="modal-content">
+
+            <!-- Encabezado del modal -->
+            <div class="modal-header">
+                <h5>Subir Imágenes</h5>
+                <button type="button" @onclick="CerrarModal" aria-label="Cerrar">
+                    &times; <!-- Icono de cierre -->
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Vista previa de las imágenes ya cargadas -->
+                <div id="imageList" class="image-preview-container">
+                    @foreach (var (imagen, index) in imagenesCargadas.Select((value, i) => (value, i)))
+                    {
+                        <div class="image-preview">
+                            <img src="@imagen.Url" alt="Imagen Cargada" />
+                            <button type="button" class="remove-image" @onclick="() => MarcarImagenParaEliminar(imagen.Id)">X</button>
+                            <div class="input-orden-container">
+                                <label for="orden">Orden:</label>
+                                <!-- Detectar el cambio en el orden -->
+                                <input type="number" class="input-orden" id="orden" min="1" @bind="imagen.OrdenVisualizacion" @bind:event="oninput" @onchange="OnOrderChanged" />
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Mostrar las nuevas imágenes seleccionadas -->
+                <div id="imageList" class="image-preview-container">
+                    @foreach (var (base64Image, index) in imagenesBase64.Select((value, i) => (value, i)))
+                    {
+                        <div class="image-preview">
+                            <img src="@base64Image" alt="Vista Previa" />
+                            <button type="button" class="remove-image" @onclick="() => EliminarImagen(index)">X</button>
+                            <div class="input-orden-container">
+                                <label for="orden">Orden:</label>
+                                <input type="number" class="input-orden" id="orden" min="1" @bind="ordenImagenes[index]" @bind:event="oninput" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Pie del modal -->
+            <div class="modal-footer">
+                <label for="file-upload" class="file-label boton">Seleccionar Imágenes</label>
+                <InputFile id="file-upload" OnChange="OnFilesSelected" multiple key="@Guid.NewGuid()" style="display: none;" />
+
+                <button type="button" @onclick="CerrarModal">Cancelar</button>
+                <button type="button" @onclick="EliminarYSubirImagenes">Subir Imágenes</button>
+
+                @if (ordenModificado)
+                {
+                    <button class="btn btn-primary" @onclick="GuardarOrden">Guardar Orden</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter] public EventCallback OnCloseModal { get; set; }
+    [Parameter] public int IdServicio { get; set; }
+    [Parameter] public string nombreServicio { get; set; }
+
+    private List<IBrowserFile> imagenesSeleccionadas = new();
+    private List<string> imagenesBase64 = new List<string>();
+    private List<byte[]> imagenesBytes = new List<byte[]>();
+    private List<int> ordenImagenes = new List<int>();
+    private List<int> imagenesParaEliminar = new List<int>(); // Lista de imágenes a eliminar
+    private int IdUsuario { get; set; }
+    private bool ordenModificado = false; // Bandera para saber si el orden fue modificado
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            IdUsuario = AuthProvider.GetIdUsuario();
+            await CargarImagenesExistentes(IdServicio);
+        }
+        else
+        {
+            await sweetAlertService.FireAsync("Error", "Usuario no autenticado. Por favor, inicia sesión.", SweetAlertIcon.Error);
+        }
+    }
+
+    private List<Servicio_ImagenesDTO> imagenesCargadas = new List<Servicio_ImagenesDTO>();
+
+    private async Task CargarImagenesExistentes(int idServicio)
+    {
+        try
+        {
+            var response = await repositorio.Get<List<Servicio_ImagenesDTO>>($"/api/servicio/listar-imagenes/{idServicio}");
+            if (response.Response != null)
+            {
+                imagenesCargadas = response.Response;
+            }
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error", $"Error al cargar las imágenes del servicio: {ex.Message}", SweetAlertIcon.Error);
+        }
+    }
+
+
+
+
+
+
+
+
+    private async Task OnFilesSelected(InputFileChangeEventArgs e)
+    {
+        foreach (var imagen in e.GetMultipleFiles())
+        {
+            if (imagen.Size > 0)
+            {
+                try
+                {
+                    using var stream = imagen.OpenReadStream();
+                    using var memoryStream = new MemoryStream();
+                    await stream.CopyToAsync(memoryStream);
+                    var imageBytes = memoryStream.ToArray();
+
+                    imagenesBytes.Add(imageBytes);
+                    var base64Image = $"data:{imagen.ContentType};base64,{Convert.ToBase64String(imageBytes)}";
+                    imagenesBase64.Add(base64Image);
+
+                    ordenImagenes.Add(imagenesSeleccionadas.Count + 1);
+                    imagenesSeleccionadas.Add(imagen);
+                }
+                catch (Exception ex)
+                {
+                    await sweetAlertService.FireAsync("Error", $"Error al procesar la imagen {imagen.Name}: {ex.Message}", SweetAlertIcon.Error);
+                }
+            }
+            else
+            {
+                await sweetAlertService.FireAsync("Error", "El archivo seleccionado no es válido.", SweetAlertIcon.Error);
+            }
+        }
+    }
+
+    // Método para marcar una imagen para eliminar y removerla de la vista
+    private void MarcarImagenParaEliminar(int idImagen)
+    {
+        if (!imagenesParaEliminar.Contains(idImagen))
+        {
+            imagenesParaEliminar.Add(idImagen);
+
+            // Encontrar la imagen en la lista y eliminarla de la vista
+            var imagenAEliminar = imagenesCargadas.FirstOrDefault(img => img.Id == idImagen);
+            if (imagenAEliminar != null)
+            {
+                imagenesCargadas.Remove(imagenAEliminar);
+            }
+        }
+    }
+
+    // Método que detecta cambios en el orden de las imágenes
+    private void OnOrderChanged(ChangeEventArgs e)
+    {
+        ordenModificado = true; // Se ha cambiado el orden
+    }
+
+    private async Task EliminarYSubirImagenes()
+    {
+        // Eliminar las imágenes marcadas una por una
+        foreach (var idImagen in imagenesParaEliminar)
+        {
+            var eliminarResponse = await repositorio.Delete($"/api/servicio/eliminar-imagen/{idImagen}");
+            if (eliminarResponse.Error)
+            {
+                await sweetAlertService.FireAsync("Error", $"Error al eliminar la imagen con ID {idImagen}.", SweetAlertIcon.Error);
+                return;
+            }
+        }
+
+        // Subir las nuevas imágenes
+        await SubirImagenes();
+    }
+
+    private async Task SubirImagenes()
+    {
+        const long MaxFileSize = 10 * 1024 * 1024;
+        bool uploadSuccessful = true;
+
+        for (int i = 0; i < imagenesSeleccionadas.Count; i++)
+        {
+            var orden = ordenImagenes[i];
+
+            if (imagenesBytes[i].Length > MaxFileSize)
+            {
+                await sweetAlertService.FireAsync("Error", $"La imagen excede el tamaño máximo permitido de 10MB.", SweetAlertIcon.Error);
+                return;
+            }
+
+            try
+            {
+                var content = new MultipartFormDataContent();
+                var byteContent = new ByteArrayContent(imagenesBytes[i]);
+                byteContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(imagenesSeleccionadas[i].ContentType);
+
+                content.Add(byteContent, "imagen", imagenesSeleccionadas[i].Name);
+                content.Add(new StringContent(IdServicio.ToString()), "IdServicio");
+                content.Add(new StringContent(nombreServicio), "nombreServicio");
+                content.Add(new StringContent(orden.ToString()), "Orden");
+                content.Add(new StringContent(IdUsuario.ToString()), "IdUsuario");
+
+                var response = await repositorio.PostMultipartContent("/api/servicio/insertar-imagenes", content);
+
+                if (response.Error)
+                {
+                    var errorMessage = await response.GetErrorMessageAsync();
+                    await sweetAlertService.FireAsync("Error", $"Error al subir la imagen {imagenesSeleccionadas[i].Name}: {errorMessage}", SweetAlertIcon.Error);
+                    uploadSuccessful = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                await sweetAlertService.FireAsync("Error", $"Error al subir la imagen {imagenesSeleccionadas[i].Name}: {ex.Message}", SweetAlertIcon.Error);
+                uploadSuccessful = false;
+            }
+        }
+
+        if (uploadSuccessful)
+        {
+            await sweetAlertService.FireAsync("Éxito", "Todas las imágenes fueron subidas correctamente.", SweetAlertIcon.Success);
+        }
+
+        await CerrarModal();
+    }
+
+    private void EliminarImagen(int index)
+    {
+        imagenesBase64.RemoveAt(index);
+        imagenesBytes.RemoveAt(index);
+        imagenesSeleccionadas.RemoveAt(index);
+        ordenImagenes.RemoveAt(index);
+    }
+
+    private async Task GuardarOrden()
+    {
+        try
+        {
+            // Verificar si la lista de imágenes está vacía
+            if (imagenesCargadas == null || !imagenesCargadas.Any())
+            {
+                await sweetAlertService.FireAsync("Error", "No hay imágenes para actualizar.", SweetAlertIcon.Error);
+                return;
+            }
+
+            foreach (var imagen in imagenesCargadas)
+            {
+                // Asegúrate de que el IdServicio está asignado correctamente
+                imagen.IdServicio = IdServicio; // Asegúrate de que este valor esté presente
+            }
+            // Enviar los nuevos valores de orden al backend
+            var response = await repositorio.Put("/api/servicio/actualizar-orden", imagenesCargadas);
+
+            if (response.Error)
+            {
+                var message = await response.GetErrorMessageAsync(); // Obtener el mensaje de error
+                await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+
+            var toast = sweetAlertService.Mixin(new SweetAlertOptions
+                {
+                    Toast = true,
+                    Position = SweetAlertPosition.TopStart,
+                    ShowConfirmButton = false,
+                    Timer = 1000
+                });
+
+            await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Orden guardado correctamente.");
+            ordenModificado = false; // Reiniciar la bandera de cambios
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error", $"Error al guardar el orden: {ex.Message}", SweetAlertIcon.Error);
+        }
+    }
+
+
+    private async Task CerrarModal()
+    {
+        imagenesSeleccionadas.Clear();
+        imagenesBase64.Clear();
+        imagenesBytes.Clear();
+        ordenImagenes.Clear();
+        imagenesParaEliminar.Clear();
+        ordenModificado = false;
+        await OnCloseModal.InvokeAsync();
+    }
+}

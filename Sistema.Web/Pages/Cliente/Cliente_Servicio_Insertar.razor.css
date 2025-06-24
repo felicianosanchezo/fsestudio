@@ -1,0 +1,376 @@
+﻿/* Contenedor de fondo general */
+.usuario-container-fondo {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra horizontalmente el contenido */
+    justify-content: center; /* Centra verticalmente el contenido */
+    gap: 0px;
+    width: 100%;
+    max-width: 100%;
+    /*height: 100vh;*/ /* Ocupa toda la altura de la ventana */
+    background-color: var(--color-fondo-pagina);
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 60px;
+
+}
+
+.logo-imagen {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: transparent;
+    padding-bottom: 30px;
+    display: flex;
+    position: center;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    height: 90px;
+    overflow:hidden;
+}
+
+.imagen-logo {
+    height: 100%;
+    object-fit: cover; /* Asegura que la imagen cubra todo el espacio del contenedor sin distorsión */
+}
+
+
+/* Estilos para el modal */
+.modal-overlay1 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10050; /* Asegura que el modal esté al frente */
+}
+
+.modal-content1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60%; /* Ancho fijo del contenedor */
+    background-color: var(--color-gris-claro1);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    height: 90%;
+    overflow: hidden;
+    padding: 30px;
+    /*max-width: 90%;
+    position: relative;*/ /* Posiciona el modal contenido */
+}
+
+
+
+
+
+
+/* Estilo del contenedor principal */
+.dashboard-main {
+    width: 60%; /* Ancho en pantallas grandes */
+    background: #fdfefe;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 50px;
+    margin: 50px 0; /* Espaciado superior e inferior */
+    border: 1px solid #d0d3d4; /* Borde gris */
+    overflow: hidden;
+}
+
+/* Estilos para labels */
+.form-label {
+    color: #1b4f72;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+/* Estilos para los campos de texto */
+.form-control {
+    border: 1px solid #abb2b9; /* Gris claro */
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+}
+
+    .form-control:focus {
+        border-color: #2471a3; /* Azul oscuro */
+        box-shadow: 0 0 5px rgba(36, 113, 163, 0.5); /* Sombra azul suave */
+    }
+
+
+
+.form-check {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    gap: 30px;
+}
+/* Estilos para el checkbox */
+.form-check-input {
+    margin-right: 10px;
+    accent-color: #229954; /* Verde */
+}
+
+.form-check-label {
+    color: #1b4f72;
+    font-size: 16px;
+}
+
+/* Contenedor de botones */
+.button-container {
+    display: flex;
+    justify-content: flex-start; /* Botones alineados a la izquierda */
+    gap: 15px; /* Espacio entre botones */
+    margin-top: 20px;
+}
+
+/* Estilos generales para botones personalizados */
+.custom-save-btn, .custom-cancel-btn {
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+}
+
+/* Botón Guardar */
+.custom-save-btn {
+    background-color: #2874a6; /* Azul */
+    color: white;
+}
+
+    .custom-save-btn i {
+        margin-right: 8px;
+        color: white;
+    }
+
+    .custom-save-btn:hover {
+        background-color: #1a5276; /* Azul oscuro al hover */
+        color: white;
+    }
+
+/* Botón Cancelar */
+.custom-cancel-btn {
+    background-color: #ef5350; /* Rojo claro */
+    color: white;
+}
+
+    .custom-cancel-btn i {
+        margin-right: 8px;
+        color: white;
+    }
+
+    .custom-cancel-btn:hover {
+        background-color: #c0392b; /* Rojo oscuro al hover */
+        color: white;
+    }
+
+
+/* Estilos generales para el contenedor del título y el contenido */
+.title-container {
+    background-color: transparent; /* Fondo gris claro */
+    padding: 40px; /* Ajusta el padding */
+    text-align: center; /* Alineación centrada */
+    margin: 0 auto; /* Centramos el contenido horizontalmente */
+    padding: 50px 0px 60px 0px;
+    /*border: 1px solid #aab7b8;*/ /* Borde en la parte superior */
+    /*background-color: var(--color-gris-claro1);*/
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.contenedor-botones {
+    display: flex;
+    gap: 60px;
+    padding: 20px;
+}
+
+.boton-aceptar-terminos {
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    background-color: var(--color-azul-turquesa);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1em;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 230px;
+    height: 40px;
+    text-align: center;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+    /* Efecto hover para los botones */
+    .boton-aceptar-terminos:hover {
+        background-color: #138d75;
+        transform: scale(1.06); /* Aumento ligero */
+        color: white;
+    }
+
+
+.boton-no-aceptar {
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    background-color: transparent;
+    color: #0097a7;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1em;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 230px;
+    height: 40px;
+    text-align: center;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    border: 3px solid #0097a7;
+}
+
+    /* Efecto hover para los botones */
+    .boton-no-aceptar:hover {
+        background-color: #138d75;
+        transform: scale(1.06); /* Aumento ligero */
+        color: white;
+    }
+
+
+
+
+.Ver-Terminos {
+    color: var(--color-azul-turquesa); /* Color azul de enlace */
+    text-decoration: none; /* Quitar subrayado */
+    cursor: pointer; /* Cambia el cursor a puntero de mano */
+    font-weight: bold; /* Hace el texto un poco más prominente */
+}
+
+    .Ver-Terminos:hover {
+        color: var(--color-dorado-original); /* Color ligeramente más oscuro en hover */
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+    .dashboard-main {
+        width:90%; /* Ancho del contenedor ajustado */
+        padding: 15px;
+        margin: 20px 0;
+    }
+    .imagen-logo {
+        height: 45px;
+
+        object-fit: cover; /* Asegura que la imagen cubra todo el espacio del contenedor sin distorsión */
+    }
+
+    .custom-save-btn, .custom-cancel-btn {
+        width: 100%; /* Ancho completo en pantallas pequeñas */
+        margin-bottom: 10px;
+    }
+
+    .form-control {
+        font-size: 14px;
+    }
+
+    .form-label {
+        font-size: 14px;
+    }
+
+    .usuario-container-fondo {
+    
+        padding: 0px;
+        margin:0px;
+        width:auto;
+    }
+    .modal-content1 {
+        display: flex;
+        z-index:1090;
+        width:100%;
+        padding:9px;
+
+    }
+
+
+
+
+
+
+
+    .boton-aceptar-terminos {
+   
+        width: 120px;
+        height: 40px;
+        
+    }
+
+        /* Efecto hover para los botones */
+        .boton-aceptar-terminos:hover {
+            background-color: #138d75;
+            transform: scale(1.06); /* Aumento ligero */
+            color: white;
+        }
+
+
+    .boton-no-aceptar {
+    
+
+        width: 120px;
+        height: 40px;
+
+    }
+
+        /* Efecto hover para los botones */
+        .boton-no-aceptar:hover {
+            background-color: #138d75;
+            transform: scale(1.06); /* Aumento ligero */
+            color: white;
+        }
+
+
+
+    .contenedor-botones {
+    
+        gap: 30px;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+

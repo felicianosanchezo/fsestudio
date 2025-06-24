@@ -1,0 +1,86 @@
+﻿/* Asegurar la alineación vertical de todos los elementos de la barra de navegación */
+
+
+.nav-notificacion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+ /*   background-color: aqua;*/  
+    margin-right: .5rem;
+}
+.notificacion-icono {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 17px; /* Tamaño del ícono de la campana */
+    color: #01579b; /* Color del icono, igual que el texto */
+    transition: color 0.3s ease;
+    vertical-align: middle; /* Asegura la alineación del ícono */
+}
+
+.notificacion-conteo {
+    position: absolute;
+    top: -8px; /* Ajustar la posición vertical del contador de notificaciones */
+    right: -8px; /* Ajustar la posición horizontal del contador */
+    background-color: var(--color-verde-original); /* Color rojo para el contador */
+    color: white;
+    border-radius: 50%;
+    width: 15px; /* Reducir el tamaño del círculo */
+    height: 15px; /* Reducir el tamaño del círculo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.5em; /* Ajustar el tamaño de la fuente del contador */
+    line-height: 1; /* Evitar que el número se desplace fuera del círculo */
+}
+
+/* Estilos para la lista de notificaciones */
+.notificacion-lista {
+    position: absolute;
+    /* right: 1px;  */
+    top: 50px; /* Justo debajo del icono */
+    background-color: #eaecee;
+    border: 1px solid #d0d3d4;
+    width: 300px;
+    max-height: 450px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    padding: 8px;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+.notificacion-item {
+    padding: 10px 8px;
+    border-bottom: 1px solid #ecf0f1;
+    background-color: #f7f9f9;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d0d3d4;
+}
+
+    .notificacion-item:hover {
+        background-color: #f9f9f9;
+        transform: scale(1.02);
+    }
+
+.icon-button {
+    background: none;
+    border: none;
+    color: #3498db;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+    .icon-button:hover {
+        color: #2980b9;
+        background-color: #f2f4f7;
+    }

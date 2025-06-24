@@ -1,0 +1,200 @@
+﻿@page "/servicio-base-listar"
+@inject NavigationManager navigationManager
+@inject IRepositorio repositorio
+@inject SweetAlertService sweetAlertService
+@inject AuthenticationProviderJWT AuthProvider
+
+<div class="dashboard-main2">
+                <div class="form-group row mb-3">
+                    <div class="col-sm-10">
+                        <button class="custom-btn" @onclick="NavegarAInsertar">
+                            <i class="bi bi-file-earmark-plus"></i> Nuevo Servicio Base
+                        </button>
+                    </div>
+                </div>
+    <ListaGenerica MiLista="ServiciosBase">
+        <Cargando>
+            <p>Cargando servicios base...</p>
+        </Cargando>
+        <Cuerpo>
+            <div class="table-container2">
+
+
+                <table class="table2">
+                    <thead>
+                        <tr>
+                            <th>IdServicio</th>
+                            <th>Código</th>
+                            <th>Nivel</th>
+                            <th>Nombre</th>
+                            <th>Unidad</th>
+                            <th>Capítulo</th>
+                            <th>Tipo</th>
+                            <th>Categoría</th>
+                            <th>Aplica por m²</th>
+                            <th>Activo</th>
+                            <th>Portada</th>
+                            <th>Acciones</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ServiciosBase != null && ServiciosBase.Any())
+                        {
+                            @foreach (var servicio in ServiciosBase)
+                            {
+                                <tr>
+                                    <td>@servicio.IdServicio</td>
+                                    <td>@servicio.Codigo</td>
+                                    <td>@servicio.Nivel</td>
+                                    <td>@servicio.Nombre</td>
+                                    <td>@servicio.Unidad</td>
+                                    <td>@servicio.Capitulo</td>
+                                    <td>@servicio.Tipo</td>
+                                    <td>@servicio.Categoria</td>
+                                    <td>@(servicio.AplicaPorM2 ? "Sí" : "No")</td>
+                                    <td>@(servicio.Activo ? "Activo" : "Inactivo")</td>
+                                    <td>@servicio.PortadaUrl</td>
+
+
+
+                                    <td>
+                                        <div class="dropdown eliminar-button">
+                                            <button class="custom-btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+
+                                                <li>
+                                                    <a class="dropdown-item" @onclick="() => NavegarNivelDetalle(servicio.IdServicio)">Nivel de Detalle</a>
+                                                </li>
+                                                
+                                                <li>
+                                                    <a class="dropdown-item">Editar</a>
+                                                </li>
+                                               
+                                                
+                                                <li>
+                                                    <a class="dropdown-item" @onclick="() => ConfirmarEliminar(servicio.IdServicio)">Eliminar</a>
+                                                </li>
+
+                                                <li><a class="dropdown-item" href="#">Opción 2</a></li>
+                                                <li><a class="dropdown-item" href="#">Opción 3</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+
+
+
+
+                    
+                            
+                            
+                            <tr>
+                                <td colspan="9">No hay servicios base registrados.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </Cuerpo>
+    </ListaGenerica>
+</div>
+
+@code {
+    private List<ServicioBaseDTO>? ServiciosBase { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+
+
+
+        await CargarServiciosBase();
+    }
+
+    private async Task CargarServiciosBase()
+    {
+        var response = await repositorio.Get<List<ServicioBaseDTO>>("/api/serviciobase/listar");
+        if (response != null && response.Response != null)
+        {
+            ServiciosBase = response.Response;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void NavegarAInsertar()
+    {
+        navigationManager.NavigateTo("/servicio-base-insertar");
+    }
+
+
+    private void NavegarNivelDetalle(int idServicio)
+    {
+        navigationManager.NavigateTo($"/servicio-nivel-detalle-insertar/{idServicio}");
+    }
+
+
+
+
+
+
+
+    private async Task ConfirmarEliminar(int idServicio)
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "¿Eliminar?",
+                Text = "¿Estás seguro de eliminar este servicio base?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                ConfirmButtonText = "Sí, eliminar",
+                CancelButtonText = "Cancelar"
+            });
+
+        if (!string.IsNullOrEmpty(result.Value))
+        {
+            await Eliminar(idServicio);
+        }
+    }
+
+    private async Task Eliminar(int idServicio)
+    {
+        var response = await repositorio.Delete($"/api/servicioBase/eliminar/{idServicio}");
+        if (response != null && !response.Error)
+        {
+            await sweetAlertService.FireAsync("Éxito", "Servicio base eliminado correctamente", SweetAlertIcon.Success);
+            await CargarServiciosBase();
+        }
+        else
+        {
+            await sweetAlertService.FireAsync("Error", "No se pudo eliminar el servicio base", SweetAlertIcon.Error);
+        }
+    }
+
+
+}

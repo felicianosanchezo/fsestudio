@@ -1,0 +1,50 @@
+﻿@inherits LayoutComponentBase
+
+
+    <div class="page">
+
+        <div>
+            <BarraHorizontal1 />
+        </div>
+
+        <div>
+            <Logotipo />
+        </div>
+
+    <div >
+        <Buscador_Pantalla_Pequeña/>
+    </div>
+
+    <div>
+        <NavMenu />
+    </div>
+
+    <main>
+        @Body
+    </main>
+
+    <footer>
+        <Footer />
+    </footer>
+
+    <button class="boton-volver-arriba" @onclick="VolverArriba">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+
+</div>
+
+
+@code {
+    private void VolverArriba()
+    {
+        JS.InvokeVoidAsync("scrollToTop");
+    }
+}
+
+@inject IJSRuntime JS
+<style>
+
+
+</style>
+

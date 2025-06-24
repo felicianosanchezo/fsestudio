@@ -1,0 +1,130 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div class="custom-barra-horizontal">
+    <div class="scrolling-wrapper">
+        <div class="scrolling-block">
+            <span class="regular-text" style="margin-right: 10px;">
+                Obtén 15% de descuento en tu primer servicio con el cupón:
+            </span>
+            <span class="highlight-coupon">@empresa.Cupon1</span>
+            <button @onclick="CopyToClipboard" style="margin-left: 10px; border: none; background: none; cursor: pointer;">
+                <i class="bi bi-clipboard" style="font-size: 18px; color: var(--color-fondo-pagina);"></i>
+            </button>
+        </div>
+
+        <div class="scrolling-block">
+            <span class="regular-text" style="margin-right: 10px;">Atención a clientes: </span>
+            <span class="highlight-phone">@empresa.Telefono WhatsApp </span>
+        </div>
+
+        <div class="scrolling-block">
+            <span class="regular-text" style="margin-right: 10px;">Horario de atención: </span>
+            <span class="highlight-hours">@empresa.Horario</span>
+        </div>
+
+
+
+
+        <div class="scrolling-block">
+            <span class="regular-text" style="margin-right: 10px;">
+                Obtén 15% de descuento en tu primer servicio con el cupón:
+            </span>
+            <span class="highlight-coupon">@empresa.Cupon1</span>
+            <button @onclick="CopyToClipboard" style="margin-left: 10px; border: none; background: none; cursor: pointer;">
+                <i class="bi bi-clipboard" style="font-size: 18px; color: var(--color-fondo-pagina);"></i>
+            </button>
+        </div>
+
+        <div class="scrolling-block">
+            <span class="regular-text" style="margin-right: 10px;">Atención a clientes: </span>
+            <span class="highlight-phone">@empresa.Telefono WhatsApp </span>
+        </div>
+
+        <div class="scrolling-block">
+            <span class="regular-text" style="margin-right: 10px;">Horario de atención: </span>
+            <span class="highlight-hours">@empresa.Horario</span>
+        </div>
+
+        <div class="scrolling-block">
+            <span class="regular-text" style="margin-right: 10px;">
+                Obtén 15% de descuento en tu primer servicio con el cupón:
+            </span>
+            <span class="highlight-coupon">@empresa.Cupon1</span>
+            <button @onclick="CopyToClipboard" style="margin-left: 10px; border: none; background: none; cursor: pointer;">
+                <i class="bi bi-clipboard" style="font-size: 18px; color: var(--color-fondo-pagina);"></i>
+            </button>
+        </div>
+
+        <div class="scrolling-block">
+            <span class="regular-text" style="margin-right: 10px;">Atención a clientes: </span>
+            <span class="highlight-phone">@empresa.Telefono WhatsApp </span>
+        </div>
+
+        <div class="scrolling-block">
+            <span class="regular-text" style="margin-right: 10px;">Horario de atención: </span>
+            <span class="highlight-hours">@empresa.Horario</span>
+        </div>
+
+@*         <div class="scrolling-block">
+            <span class="regular-text" style="margin-right: 10px;">¡Celebra el Black Friday y obtén un 20% de descuento!:</span>
+            <span class="highlight-coupon">@empresa.Cupon2</span>
+            <button @onclick="CopyToClipboard2" style="margin-left: 10px; border: none; background: none; cursor: pointer;">
+                <i class="bi bi-clipboard" style="font-size: 18px; color: var(--color-fondo-pagina);"></i>
+            </button>
+
+        </div> *@
+
+    </div>
+</div>
+
+
+@code {
+
+    private FsEstudioDTO empresa;
+    // Obtenemos el correo desde el objeto empresa (FsEstudioDTO debe tener la propiedad Correo)
+
+
+    protected override void OnInitialized()
+    {
+        // Asigna el primer elemento de la lista retornada como ejemplo
+        empresa = FsEstudioService.ObtenerInformacionEmpresa().FirstOrDefault();
+
+    }
+
+
+    private async Task CopyToClipboard()
+    {
+        // Copiar al portapapeles
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", empresa.Cupon1);
+
+        // Mostrar mensaje usando SweetAlert2
+        await JSRuntime.InvokeVoidAsync("Swal.fire", new
+        {
+            icon = "success",
+            title = "¡Copiado!",
+            text = "El cupón ha sido copiado al portapapeles.",
+            timer = 1500,
+            showConfirmButton = false
+        });
+    }
+    private async Task CopyToClipboard2()
+    {
+        // Copiar al portapapeles
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", empresa.Cupon2);
+
+        // Mostrar mensaje usando SweetAlert2
+        await JSRuntime.InvokeVoidAsync("Swal.fire", new
+        {
+            icon = "success",
+            title = "¡Copiado!",
+            text = "El cupón ha sido copiado al portapapeles.",
+            timer = 1500,
+            showConfirmButton = false
+        });
+    }
+
+
+
+
+
+}

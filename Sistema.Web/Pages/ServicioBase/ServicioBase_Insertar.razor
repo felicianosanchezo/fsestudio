@@ -1,0 +1,289 @@
+﻿@page "/servicio-base-insertar"
+@inject IJSRuntime js
+
+@inject NavigationManager navigationManager
+@inject IRepositorio repositorio
+@inject AuthenticationProviderJWT AuthenticationStateProvider
+
+
+<div class="servicio-container-fondo">
+    <div class="dashboard-main">
+        <TituloConDescripcion Title="Nuevo Servicio Base"
+                              Description="Completa el formulario para registrar un nuevo servicio base." />
+
+        <EditForm EditContext="contextoEdicion" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label for="codigo" class="form-label">Codigo</label>
+                <InputText id="codigo" class="form-control" @bind-Value="servicio.Codigo" />
+                <ValidationMessage For="@(() => servicio.Unidad)" />
+            </div>
+            <div class="mb-3">
+                <label for="nivel" class="form-label">Nivel</label>
+                <InputText id="nivel" class="form-control" @bind-Value="servicio.Nivel" />
+                <ValidationMessage For="@(() => servicio.Unidad)" />
+            </div>
+            <!-- Nombre del Servicio -->
+            <div class="mb-3">
+                <label class="form-label">Nombre del Servicio</label>
+                <InputText class="form-control" @bind-Value="servicio.Nombre" />
+                <ValidationMessage For="@(() => servicio.Nombre)" />
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <InputTextArea class="form-control" rows="4" @bind-Value="servicio.Descripcion" />
+                <ValidationMessage For="@(() => servicio.Descripcion)" />
+            </div>
+
+
+
+
+            <!-- Capitulo -->
+            <div class="mb-3">
+                <label class="form-label">Capitulo</label>
+                <InputSelect class="form-control" @bind-Value="servicio.Capitulo">
+                    
+                    <option value="">Seleccione un Capitulo</option>
+                  
+                    <option value="Anteproyecto Arquitectónico">Anteproyecto Arquitectónico</option>
+                    <option value="Proyecto Arquitectónico">Proyecto Arquitectónico</option>
+                    <option value="Proyecto Ejecutivo">Proyecto Ejecutivo</option>
+                  
+                </InputSelect>
+            </div>
+
+
+
+            <!-- Categoría -->
+            <div class="mb-3">
+                <label class="form-label">Categoría</label>
+                <InputSelect class="form-control" @bind-Value="servicio.Categoria">
+                    <option value="">Seleccione una Categoría</option>
+                    <option value="Anteproyecto">Anteproyecto</option>
+                    <option value="Diseño arquitectónico">Diseño arquitectónico</option>
+                    <option value="Detalles técnicos arquitectónicos">Detalles técnicos arquitectónicos</option>
+                    <option value="Proyecto estructural">Proyecto estructural</option>
+                    <option value="Proyecto eléctrico">Proyecto eléctrico</option>
+                    <option value="Proyecto hidráulico">Proyecto hidráulico</option>
+                    <option value="Proyecto sanitario">Proyecto sanitario</option>
+                    <option value="Proyecto de gas">Proyecto de gas</option>
+                    <option value="Proyecto de iluminación">Proyecto de iluminación</option>
+                    <option value="Proyecto de paisaje">Proyecto de paisaje</option>
+                    <option value="Proyecto de acabados">Proyecto de acabados</option>
+                    <option value="Cuantificación y generadores">Cuantificación y generadores</option>
+                </InputSelect>
+            </div>
+
+
+            <!-- Tipo -->
+            <div class="mb-3">
+                <label class="form-label">Tipo</label>
+                <InputSelect class="form-control" @bind-Value="servicio.Tipo">
+                    <option value="">Seleccione un Tipo</option>
+                    <option value="Ilustración 2D">Ilustración 2D</option>
+                    <option value="Render 3D">Render 3D</option>
+                    <option value="Modelo 3D">Modelo 3D</option>
+                    <option value="Plano técnico">Detalle técnico</option>
+                    <option value="Revisión">Revisión</option>
+                    <option value="Tabla de cuantificación">Tabla de cuantificación</option>
+                    <option value="Memoria técnica">Memoria técnica</option>
+                </InputSelect>
+            </div>
+
+
+@*             <div class="mb-3">
+                <label for="portadaUrl" class="form-label">Cargar Imagen de Portada</label>
+                <InputFile id="portadaUrl" class="form-control" OnChange="OnImageSelected" accept="image/*" />
+            </div>
+
+            @if (!string.IsNullOrEmpty(imagenPortadaBase64))
+            {
+                <img src="@imagenPortadaBase64" alt="Portada del Proyecto" class="img-fluid" style="max-width:100%; height:auto;" />
+            }
+ *@
+
+            <!-- Fecha -->
+            <div class="mb-3">
+                <label class="form-label">Fecha del Proyecto</label>
+                <InputDate class="form-control" @bind-Value="servicio.Fecha" />
+            </div>
+
+            <!-- Unidad -->
+            <div class="mb-3">
+                <label for="unidad" class="form-label">Unidad</label>
+                <InputText id="unidad" class="form-control" @bind-Value="servicio.Unidad" />
+                <ValidationMessage For="@(() => servicio.Unidad)" />
+            </div>
+
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="Estado" @bind="servicio.Activo" />
+                <label class="form-check-label" for="Estado">Estado (Activo/Inactivo)</label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="Estado" @bind="servicio.AplicaPorM2" />
+                <label class="form-check-label" for="Aplica">Aplica(Aplica/No Aplica)</label>
+            </div>
+
+
+            <!-- Botones -->
+            <div class="button-container">
+                <button type="submit" class="custom-save-btn">
+                    <i class="bi bi-save"></i> Guardar Servicio
+                </button>
+          @*       <button type="button" class="custom-cancel-btn" @onclick="() => navigationManager.NavigateTo("/proyecto-insertar")">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </button> *@
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private ServicioBaseDTO servicio = new();
+    private EditContext contextoEdicion = null!;
+    private int idUsuario;
+    private const long MaxFileSize = 7 * 1024 * 1024;
+    protected override async Task OnInitializedAsync()
+    {
+        contextoEdicion = new EditContext(servicio);
+
+        var auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (auth.User.Identity?.IsAuthenticated == true)
+        {
+            idUsuario = AuthenticationStateProvider.GetIdUsuario();
+        }
+        else
+        {
+
+            navigationManager.NavigateTo("/login");
+        }
+    }
+
+
+
+
+    private IBrowserFile? imagenPortadaSeleccionada;
+    private string? imagenPortadaBase64;
+
+
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            var formData = new MultipartFormDataContent();
+
+            formData.Add(new StringContent(servicio.Codigo ?? ""), "Codigo");
+            formData.Add(new StringContent(servicio.Codigo ?? ""), "Codigo");
+            formData.Add(new StringContent(servicio.Nombre ?? ""), "Nombre");
+            formData.Add(new StringContent(servicio.Descripcion ?? ""), "Descripcion");
+            formData.Add(new StringContent(servicio.Categoria ?? ""), "Categoria");
+            formData.Add(new StringContent(servicio.Capitulo ?? ""), "Capitulo");
+            formData.Add(new StringContent(servicio.Tipo ?? ""), "Tipo");
+            formData.Add(new StringContent(servicio.Unidad ?? ""), "Unidad");
+            formData.Add(new StringContent(servicio.Nivel ?? ""), "Nivel");
+
+            formData.Add(new StringContent(servicio.AplicaPorM2.ToString()), "AplicaPorM2");
+            formData.Add(new StringContent(servicio.Activo.ToString()), "Activo");
+            formData.Add(new StringContent(servicio.Fecha.ToString("yyyy-MM-dd")), "Fecha");
+
+     
+            // if (imagenPortadaSeleccionada is not null)
+            // {
+            //     using var stream = imagenPortadaSeleccionada.OpenReadStream(long.MaxValue);
+            //     var content = new StreamContent(stream);
+            //     content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(imagenPortadaSeleccionada.ContentType);
+
+            //     var extension = Path.GetExtension(imagenPortadaSeleccionada.Name);
+            //     var nombreArchivo = $"portada{extension}";
+
+            //     formData.Add(content, "portada", nombreArchivo); // <-- asegurate que coincida con el backend
+            // }
+
+
+
+
+
+
+
+
+
+
+
+
+            var response = await repositorio.PostMultipartContent("/api/serviciobase/insertar", formData);
+
+            if (response.Error)
+            {
+                var msg = await response.GetErrorMessageAsync();
+                await js.InvokeVoidAsync("Swal.fire", new
+                {
+                    icon = "error",
+                    title = "Error",
+                    text = msg
+                });
+                return;
+            }
+
+
+            // Mostrar alerta de éxito con Swal.fire
+            await js.InvokeVoidAsync("Swal.fire", new
+            {
+                icon = "success",
+                title = "Guardado",
+                text = "El servicio base se guardó correctamente."
+            });
+
+            navigationManager.NavigateTo("/servicio-base-listar");
+
+
+
+
+
+
+        }
+        catch (Exception ex)
+        {
+            var mensajeError = ex.Message;
+
+            if (ex is HttpRequestException httpEx)
+            {
+                mensajeError = $"Error HTTP: {httpEx.Message}";
+            }
+
+            await js.InvokeVoidAsync("Swal.fire", new
+            {
+                icon = "error",
+                title = "Error",
+                text = mensajeError
+            });
+        }
+
+    }
+
+
+    private async Task OnImageSelected(InputFileChangeEventArgs e)
+    {
+        imagenPortadaSeleccionada = e.File;
+
+
+        var file = e.File;
+        if (file != null && file.Size <= MaxFileSize)
+        {
+            using var stream = file.OpenReadStream(MaxFileSize);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            var base64 = Convert.ToBase64String(ms.ToArray());
+            imagenPortadaBase64 = $"data:{file.ContentType};base64,{base64}";
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+}

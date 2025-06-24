@@ -1,0 +1,52 @@
+[
+  {
+    "IdServicio": 1,
+    "Nombre": "Ambientación de Plantas Arquitectónicas",
+    "PortadaUrl": "/Images/Portadas/001 - Ambientación de plantas arquitectonicas.jpg"
+  },
+  {
+    "IdServicio": 2,
+    "Nombre": "Render Exterior de Día",
+    "PortadaUrl": "/Images/Portadas/002-Renders de Día.jpg"
+  },
+  {
+    "IdServicio": 3,
+    "Nombre": "Paquete Básico: Esencial Arquitectónico",
+    "PortadaUrl": "/Images/Portadas/003-Modelado de vivienda en Revit.jpg"
+  },
+  {
+    "IdServicio": 4,
+    "Nombre": "Generación de Planos con REVIT",
+    "PortadaUrl": "/Images/Portadas/004-Generación de Planos Arquitectónicos con Revit.jpg"
+  },
+  {
+    "IdServicio": 5,
+    "Nombre": "Instalaciones Hidrosanitarias en Revit",
+    "PortadaUrl": "/Images/Portadas/005-Modelado de Instalaciones Hidrosanitarias para Viviendas en REVIT.jpg"
+  },
+  {
+    "IdServicio": 6,
+    "Nombre": "Modelado de Viviendas en SketchUp",
+    "PortadaUrl": "/Images/Portadas/005-Modelado de Viviendas en SketchUp1.jpg"
+  },
+  {
+    "IdServicio": 7,
+    "Nombre": "Maquilado de Planos en AutoCad",
+    "PortadaUrl": "/Images/Portadas/005-Maquilado de Planos para Viviendas en AutoCad1.jpg"
+  },
+  {
+    "IdServicio": 8,
+    "Nombre": "Diseño de Fachadas Personalizadas",
+    "PortadaUrl": "/Images/Portadas/008-Diseño de Fachadas Personalizadas.jpg"
+  },
+  {
+    "IdServicio": 9,
+    "Nombre": "Renders Interiores Profesionales",
+    "PortadaUrl": "/Images/Portadas/010-Render Interior1.jpg"
+  },
+  {
+    "IdServicio": 10,
+    "Nombre": "Diseño Arquitectónico",
+    "PortadaUrl": "/Images/Portadas/011-Diseño Arquitectonico.jpg"
+  }
+]

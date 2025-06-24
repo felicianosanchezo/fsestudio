@@ -1,0 +1,112 @@
+﻿/* Estilos generales */
+.contenedor-terminos {
+    display:flex;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color:aqua;
+  
+
+}
+
+.modal-terminos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: var(--color-fondo-pagina);
+   
+    padding: 45px;
+    height: 100%;
+}
+
+.terminos-container1 {
+    height: 100%;
+    width:60%;
+    background-color: transparent;
+
+
+}
+
+.terminos-content1 {
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina),var(--color-gris-claro1) );
+
+    padding: 30px;
+    overflow-y: auto;
+    font-family: var(--fuente-principal);
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--color-gris-linea);
+}
+
+.titulo-terminos {
+    font-size: 1.8rem;
+    color: var(--color-azul-oscuro1);
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.lista-terminos {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .lista-terminos li {
+        padding: 15px;
+        font-size: 1.1rem;
+        line-height: 1.5;
+        color: var(--color-gris-descripcion);
+        border-bottom: 1px solid var(--color-gris-linea);
+    }
+
+        .lista-terminos li:last-child {
+            border-bottom: none;
+        }
+
+        .lista-terminos li strong {
+            color: red;
+
+            font-weight: 600;
+        }
+
+        .lista-terminos li:hover {
+            background-color: var(--color-gris-claro1);
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+/* Estilos para pantallas pequeñas */
+@media (max-width: 768px) {
+    .modal-terminos {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .terminos-container1 {
+        width: 100%;
+        height: auto;
+    }
+
+    .terminos-content1 {
+        padding: 20px;
+        font-size: 0.9rem;
+    }
+
+    .titulo-terminos {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .lista-terminos li {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+}

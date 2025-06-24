@@ -1,0 +1,1663 @@
+﻿@page "/servicio/{IdServicio:int}"
+@using System.Text.Json
+
+@inject IRepositorio repositorio
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+@inject AuthenticationProviderJWT AuthProvider
+@inject SweetAlertService sweetAlertService
+@inject NavigationManager navigationManager
+
+<div class="contenedor1">
+
+
+    <div id="fila0"></div>
+
+    <div id="fila1">
+        <Venta_Servicio_Fila1 IdServicio="@IdServicio" @key="IdServicio" OnIrAFila2="ScrollToFila2" OnSeleccionarServicio="RecibirServicioSeleccionado" />
+    </div>
+
+    <div id="fila2">
+        <Venta_Servicio_Fila2 IdServicio="@IdServicio" Nombre_Servicio="@Nombre_Servicio" @key="IdServicio" BotonSeleccionarDiseñador="BotonSeleccionarDiseñador " OnSeleccionarUsuario="RecibirColaboradorSeleccionado" />
+    </div>
+
+    <div id="fila3-1">
+    </div>
+    <div id="fila3" style="padding:0;margin:0;">
+
+
+        @if (ColaboradorSeleccionado != null)
+        {
+
+
+
+            <div class="Cliente_Servicio_Fila3">
+                <!-- Columna 1: Registro de medidas -->
+                <div class="contenedor-base Fila3-Columna1 @ObtenerClaseContenedor()">
+                    <div class="Medidas-fila1">
+                        <h3 class="Titulo-Pasos"><strong>PASO 2&nbsp;&nbsp</strong> Registra las cantidades según la unidad</h3>
+                        @* <button class="boton-info" @onclick="AbrirModalInfo">
+                    <i class="bi bi-question-circle"></i> <!-- Icono de signo de interrogación -->
+                    </button> *@
+                    </div>
+                    <div class="Medidas-fila2">
+                        <div class="detalles-medidas">
+                            <div class="input-contenedor-medidas">
+                                <label for="metros" class="label-medidas">@ColaboradorSeleccionado?.Unidad:</label>
+                                <input type="number"
+                                       id="metros"
+                                       name="metros"
+                                       class="input-medidas"
+                                       placeholder="Ej: 100"
+                                       min="1"
+                                       max="@MaxValue"
+                                       step="1"
+                                       @bind="Metros" />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="Medidas-fila3">
+
+                        @if (EsSeleccionado == false)
+                        {
+
+                            <button class="boton-siguiente" @onclick="Medidas_atras">Atras</button>
+                            <button class="boton-siguiente" @onclick="Medidas_Siguiente">Siguiente</button>
+                        }
+
+
+                    </div>
+                </div>
+
+                <!-- Modal de ayuda -->
+                @if (mostrarModal)
+                {
+                    @*             <div class="modal-overlay">
+            <div class="modal-content">
+            <h4>¿Cómo calcular los metros cuadrados?</h4>
+            <p>
+            Para calcular los metros cuadrados de su proyecto, multiplique el ancho por el largo del área en metros.
+            Esto es esencial para poder estimar el costo total del proyecto.
+            </p>
+            <button class="btn btn-success" @onclick="CerrarModal">Cerrar</button>
+            </div>
+            </div> *@
+                }
+
+                <!-- Columna 2: Tiempo Estimado -->
+                <div id="fila3-2" class="contenedor-base Fila3-Columna1 @ObtenerClaseContenedorTiempo()">
+                    <div class="Medidas-fila1">
+                        <h3 class="Titulo-Pasos"><strong>PASO 3&nbsp;&nbsp;</strong>TIEMPO y COSTO ESTIMADO, y REVISIONES</h3>
+                        @*                   <button class="boton-info" @onclick="AbrirModalInfo">
+                    <i class="bi bi-question-circle"></i>
+                    </button> *@
+                    </div>
+                    <div class="Medidas-fila2">
+                        @if (EsTiempoSeleccionado == false || EsTiempoSeleccionado == true)
+                        {
+                            <div class="detalles-medidas">
+                                <div class="contenedor-tiempo">
+                                    <!-- Mostramos el precio por unidad y el resultado del cálculo -->
+                                    <p><strong>Días Hábiles:</strong>  @TiempoEstimado.ToString("0.0")</p>
+                                    <p><strong>Entrega Estimada:</strong> @Fecha_Estimada_Entrega.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <p><strong>Revisiones:</strong> @Revisiones</p>
+                                    <p><strong>Importe:</strong> @($"{Resultado:C2}")</p>
+
+
+
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="Medidas-fila3">
+
+
+                        @if (EsTiempoSeleccionado == false)
+                        {
+
+                            <button class="boton-siguiente" @onclick="Tiempo_atras">Atrás</button>
+                            @*    <button class="boton-carrito" @onclick="Carrito_Insertar">Agregar al Carrito</button> *@
+                            <button class="boton-siguiente" @onclick="Tiempo_Siguiente">Siguiente</button>
+                        }
+
+
+                    </div>
+                </div>
+
+                <!-- Columna 3: Costo Final -->
+                <div id="fila3-3" class="contenedor-base Fila3-Columna @ObtenerClaseContenedorCosto()">
+                    <div class="Medidas-fila1">
+                        <h3 class="Titulo-Pasos"><strong>PASO 4&nbsp;&nbsp</strong> Costo Final, Cupones y Forma de Pago</h3>
+                        @*                         <button class="boton-info" @onclick="AbrirModalInfo">
+                    <i class="bi bi-question-circle"></i>
+                    </button> *@
+                    </div>
+
+                    <div class="Medidas-fila2">
+                        @if (EsCostoSeleccionado == false || EsCostoSeleccionado == true)
+                        {
+                            <div class="detalles-medidas">
+                                <div class="input-contenedor">
+                                    <!-- Mostramos el precio por unidad y el resultado del cálculo -->
+
+
+                                    <div class="contenedor-cupon">
+                                        <label for="cuponInput" style="margin-right:9px">Cupón:</label>
+                                        <input type="text" style="margin-right:9px" @bind="Cupon" id="cuponInput" />
+                                        <button class="validar-cupon" @onclick="Validar_Cupon">Validar Cupón</button>
+
+                                    </div>
+                                    <!-- Muestra el mensaje de validación -->
+                                    <label style="font-size:18px ">@MensajeValidacion</label>
+
+
+
+                                    <div class="contenedor-totales">
+
+
+                                        <label class="total-descuento"><strong>Descuento: &nbsp;&nbsp</strong>@($"{TotalDescuento:C2}")</label>
+
+
+
+                                    </div>
+                                    <div class="contenedor-totales">
+
+                                        @if (ResultadoDescuento < (decimal)empresa.Limite_Pago)
+                                        {
+
+                                            <label class="total-final"><strong>Total:&nbsp;&nbsp</strong> @($"{ResultadoDescuento:C2}")</label>
+
+
+
+
+                                        }
+                                        else
+                                        {
+                                            <label class="total-final"><strong>Total:&nbsp;&nbsp</strong> @($"{ResultadoDescuento:C2}")</label>
+
+                                            <label class="total-final">
+                                                <strong>Anticipo @((empresa.Porcentaje_Anticipo * 100).ToString("0") + "%") :&nbsp;&nbsp</strong>
+                                                @($"{Anticipo:C2}")
+                                            </label>
+
+                                            <label class="total-final">
+                                                <strong>Finiquito @((empresa.Porcentaje_Finiquito * 100).ToString("0") + "%") :&nbsp;&nbsp</strong>
+                                                @($"{Finiquito:C2}")
+                                            </label>
+
+                                            @*
+
+                                <label class="total-final"><strong>Anticipo @empresa.Porcentaje_Anticipo :&nbsp;&nbsp</strong> @($"{Anticipo:C2}")</label>
+                                <label class="total-final"><strong>Finiquto 40%:&nbsp;&nbsp</strong> @($"{Finiquito:C2}")</label> *@
+                                        }
+
+                                    </div>
+
+
+
+                                </div>
+                                <div class="input-contenedor">
+                                </div>
+
+
+                            </div>
+                        }
+                    </div>
+
+                    <div class="Medidas-fila3">
+                        @if (EsCostoSeleccionado == false)
+                        {
+                            <button class="boton-siguiente" @onclick="Costo_atras">Atrás</button>
+                            <button class="boton-siguiente" @onclick="Costo_siguiente">Aceptar</button>
+                        }
+
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        }
+    </div>
+
+
+    <div>
+        @if (Resumen_Total == true)
+        {
+            @if (EsCostoSeleccionado == true)
+            {
+                <div class="fila-resumen-total">
+                    <div id="fila4" class="resumen-encabezado">
+
+                        <div class="boton-resumen-siguiente"></div>
+                        <h2 class="Titulo-Principal-Secundario">Resumen del Servicio</h2>
+                        <button class="boton-resumen-atras" @onclick="resumen_atras">Atrás</button>
+
+
+                    </div>
+                    <div class="resumen-descripcion">
+
+                        <div class="resumen-columna-cliente">
+
+                            <div class="dashboard-imagen1">
+                                <img src="https://fsalmacenamiento.blob.core.windows.net/fsestudiocontenedor/Logo1.%20Fondo%20Blanco.png" class="img-fluid1" />
+                                @* <div class="menu-text">REGISTRO DE GASTOS</div> *@
+                            </div>
+                            <div class="contenedor-descripciones">
+
+                                <p class="Subtitulos-Resumen"><strong>DATOS DEL SERVICIO:</strong></p>
+                                <p><strong>Servicio:   </strong> @Servicio_Seleccionado.Nombre</p>
+                                <p><strong>Diseñador: </strong> @ColaboradorSeleccionado.Perfil</p>
+                                <p><strong>Revisiones:</strong> @VentaServicio.Revision</p>
+                                <p><strong>Días Hábiles:</strong>  @TiempoEstimado.ToString("0.0")</p>
+                                <p><strong>Tiempo Estimado:</strong> @VentaServicio.FechaEntregaEstimada</p>
+                                <p><strong>Cantidad:</strong> @VentaServicio.Cantidad @ColaboradorSeleccionado.Unidad</p>
+
+                                <hr />
+                                <p class="Subtitulos-Resumen"><strong>DATOS DEL CLIENTE:</strong></p>
+
+                                <p><strong>Cliente:</strong> @VentaServicio.NombreComprador</p>
+                                <p><strong>Email:</strong> @VentaServicio.Email_Cliente</p>
+
+
+
+
+
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="resumen-columna-totales">
+
+
+                            <div class="dashboard-imagen1">
+                                <p class="Titulo-Especificaciones-oscura"><strong>Costo Final</strong></p>
+                            </div>
+                            <div class="contenedor-descripciones">
+
+                                <p class="Subtitulos-Resumen"><strong>RESUMEN DEL COSTO:</strong></p>
+
+                                <p><strong>Importe:</strong> @VentaServicio.Importe.ToString("C")</p>
+                                <p><strong>Descuento:</strong> @VentaServicio.Descuento.ToString("C")</p>
+
+                                <p><span class="precio-resaltado"><strong>Total:</strong> @VentaServicio.Total.ToString("C") MXN</span></p>
+
+                                @if (Anticipo != 0)
+                                {
+
+                                    <p class="Subtitulos-Resumen"><strong>RESUMEN DEL COSTO:</strong></p>
+
+                                    <p><span class="precio-resaltado"><strong>Anticipo @((empresa.Porcentaje_Anticipo * 100).ToString("0") + "%") :&nbsp;&nbsp</strong>@($"{Anticipo:C2}")</span></p>
+                                    <p><span class="precio-resaltado"><strong>Finiquito @((empresa.Porcentaje_Finiquito * 100).ToString("0") + "%") :&nbsp;&nbsp</strong>@($"{Finiquito:C2}")</span></p>
+
+
+                                    <p><span class="precio-resaltado"><strong>Total a Pagar:</strong> @VentaServicio.Pago_Final.ToString("C") MXN</span></p>
+
+
+                                }
+
+
+
+
+                                <p class="Subtitulos-Resumen"><strong>PAGO CON TARJETA:</strong></p>
+                                <p class="Parrafo-Lista-entregables">
+                                    Aceptamos varios medios de pagos, Visa, Mastercard y American Express entre otros.
+                                </p>
+
+                                <label style="padding-bottom:5px;">
+                                    <input type="checkbox" @bind="VentaServicio.TerminosAceptados " /> Acepto los términos y condiciones específicos de este servicio.
+                                </label>
+                                <button class="boton-Pagar-Tarjeta" @onclick="Pagar_Servicio" disabled="@(VentaServicio.TerminosAceptados == false)">Pagar con Tarjeta</button>
+
+
+                                <br />
+                                <hr />
+
+
+                                <p class="Subtitulos-Resumen"><strong>PAGO POR TRANSFERENCIA:</strong></p>
+                                <p class="Parrafo-Lista-entregables">
+                                    Aceptamos transferencia bancaria.
+                                </p>
+
+
+
+
+
+                                <label style="padding-bottom:5px;">
+                                    <input type="checkbox" @bind="VentaServicio.TerminosAceptados " /> Acepto los términos y condiciones específicos de este servicio.
+                                </label>
+
+                                <button class="boton-Pagar-Tranferencia" @onclick="Pagar_Tranferencia" disabled="@(VentaServicio.TerminosAceptados == false)">Pagar por Tranferencia</button>
+
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                @*                 <div class="fila-Email">
+
+
+        <Venta_Servicio_Email venta="VentaServicio" />
+
+
+        </div> *@
+            }
+
+        }
+
+    </div>
+
+
+    @if (mostrarModal)
+    {
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <div class="contenedor-pagos-titulos">
+                    <label for="cardholder-name" class="titulo">Pago con Tarjetas</label>
+                    <p class="subtitulo">
+                        ¡Bienvenido! Su información está en buenas manos. Una vez que complete su pago, recibirá un correo de confirmación y uno de nuestros asesores se pondrá en contacto para brindarle seguimiento personalizado.
+                        El el pago de su servicio es: <strong>@((VentaServicio.Pago_Final).ToString("C"))</strong>.
+                    </p>
+
+                </div>
+
+                <div class="contenedor-pagos-nombre">
+                    <label for="cardholder-name">Nombre en la Tarjeta</label>
+                    <input id="cardholder-name" type="text" placeholder="Nombre del titular de la tarjeta" />
+                </div>
+
+                <div class="contenedor-pagos-card">
+                    <label for="card-element">Número de Tarjeta</label>
+                    <div id="card-element" class="card-placeholder">
+                        <!-- Aquí se carga el elemento de la tarjeta -->
+                    </div>
+                </div>
+
+
+
+
+
+
+
+                <div class="contenedor-pagos-botones">
+                    <button @onclick="ConfirmarPago" disabled="@isProcessing" class="btn-pagar">Pagar</button>
+                    <button @onclick="CerrarModal" class="btn-cerrar">Cerrar</button>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    }
+
+    @if (mostrarModalTransferencia)
+    {
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <div class="contenedor-pagos-titulos">
+                    <label for="cardholder-name" class="titulo">Pago con Tarjetas</label>
+                    <p class="subtitulo">
+                        ¡Bienvenido! Su información está en buenas manos. Una vez que complete su pago, recibirá un correo de confirmación y uno de nuestros asesores se pondrá en contacto para brindarle seguimiento personalizado.
+                        El el pago de su servicio es: <strong>@((VentaServicio.Pago_Final).ToString("C"))</strong>.
+                    </p>
+                </div>
+
+
+                <table class="details-table">
+
+
+                    <tr>
+                        <th>Beficiario:</th>
+                        <td>@empresa.Beneficiario</td>
+                    </tr>
+
+                    <tr>
+                        <th>CLABE:</th>
+                        <td>@empresa.Clabe</td>
+                    </tr>
+                    <tr>
+                        <th>Banco receptor:</th>
+                        <td>@empresa.Banco</td>
+                    </tr>
+                    <tr>
+                        <th>Enviar a correo:</th>
+                        <td>@empresa.Correo</td>
+                    </tr>
+
+                    <tr>
+                        <th>Concepto:</th>
+                        <td>"@empresa.Nombre + @VentaServicio.NumeroOrden"</td>
+                    </tr>
+                </table>
+
+                <br />
+                <br />
+
+
+                <div class="contenedor-pagos-botones">
+                    <button @onclick="ConfirmarTransferencia" class="btn-pagar" disabled="@isProcessing">Confirmar Compra</button>
+                    <button @onclick="CerrarModalTransferencia" class="btn-cerrar">Cerrar</button>
+                </div>
+
+
+
+
+            </div>
+
+
+        </div>
+
+
+    }
+
+    @if (isProcessing)
+    {
+        <LoadingProgress />
+    }
+
+
+
+
+</div>
+
+@code {
+    private bool isProcessing = false;
+    [Parameter] public int IdServicio { get; set; }
+
+    [Parameter] public string? Nombre_Servicio { get; set; }
+
+    private Colaborador_ServicioDTO ColaboradorSeleccionado { get; set; }
+    private bool? EsSeleccionado { get; set; } = false;
+    private bool? EsCostoSeleccionado { get; set; } = false;
+    private bool mostrarModal = false;
+    private bool mostrarModalTransferencia = false;
+    private bool modalPagos = false;
+    private bool? EsTiempoSeleccionado { get; set; } = false;
+    [Parameter] public bool? BotonSeleccionarDiseñador { get; set; }
+    private bool? Resumen_Total { get; set; } = false;
+    private Venta_ServicioDTO VentaServicio { get; set; } = new Venta_ServicioDTO(); // Inicializar el objeto
+    private UsuarioDTO? Cliente_Seleccionado; // Inicializar el objeto
+    private ServicioDTO Servicio_Seleccionado { get; set; } = new ServicioDTO(); // Inicializar el objeto
+    private int IdCupon { get; set; }
+    private int Metros = 0;
+    private decimal Resultado => Metros * PrecioPorUnidad; // Cálculo dinámico
+    private decimal TiempoEstimado => RedondearAlMedio(Metros * (Tiempo / 8));
+    private decimal PrecioPorUnidad = 0; // Puedes cambiar este valor o hacerlo dinámico
+    private decimal Tiempo = 0; // Puedes cambiar este valor o hacerlo dinámico
+    private decimal totalConDescuento = 0; // Puedes cambiar este valor o hacerlo dinámico
+    private string Cupon { get; set; } = string.Empty;
+    private string? Nombre_Cliente { get; set; }
+    private string? Email { get; set; }
+    private int Revisiones => CalcularRevisiones(TiempoEstimado);
+    private async Task ScrollToTopAsync()
+    {
+        await JS.InvokeVoidAsync("scrollTo", 0, 0);
+    }
+    private decimal DescuentoCupon { get; set; } = 0; // Porcentaje de descuento o valor fijo del cupón aplicado
+    private decimal ResultadoDescuento => AplicarDescuento(Metros * PrecioPorUnidad, DescuentoCupon);
+    private decimal Anticipo => ResultadoDescuento < (decimal)empresa.Limite_Pago ? 0 : ResultadoDescuento * (decimal)empresa.Porcentaje_Anticipo;
+    private decimal Finiquito => ResultadoDescuento < (decimal)empresa.Limite_Pago ? 0 : ResultadoDescuento * (decimal)empresa.Porcentaje_Finiquito;
+    private decimal TotalDescuento => CalcularDescuento(Metros * PrecioPorUnidad, DescuentoCupon);
+
+
+
+    private decimal AplicarDescuento(decimal total, decimal descuento)
+    {
+        return total - CalcularDescuento(total, descuento);
+    }
+    private decimal CalcularDescuento(decimal total, decimal descuento)
+    {
+        // Calcula el valor del descuento únicamente
+        return descuento > 0 ? total * (descuento / 100) : 0;
+    }
+    private FsEstudioDTO empresa;
+    protected override void OnInitialized()
+    {
+        // Asigna el primer elemento de la lista retornada como ejemplo
+        empresa = FsEstudioService.ObtenerInformacionEmpresa().FirstOrDefault();
+        mostrarModal = false;
+        ScrollToTopAsync(); // Desplazar hacia arriba al inicializar
+
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        mostrarModal = false;
+        await ScrollToTopAsync(); // Desplazar hacia arriba al inicializar
+    }
+    private async Task Registrar_Visita(string Action)
+    {
+        try
+        {
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            // Verificar si el usuario está autenticado y asignar valores personalizados
+            var userName = user.Identity?.IsAuthenticated == true
+                ? AuthProvider.GetNombreUsuario()
+                : "UsuarioAnónimo";
+            var idUserName = user.Identity?.IsAuthenticated == true
+                ? AuthProvider.GetIdUsuario()
+                : 0;
+
+            // Crear el objeto visita con datos comunes
+            var visita = new VisitaDTO
+                {
+                    Pagina = Nombre_Servicio,
+                    IdServicio = Convert.ToString(IdServicio),
+                    Usuario = userName,
+                    IdUsuario = Convert.ToString(idUserName),
+                    DeviceType = await JS.InvokeAsync<string>("isMobileDevice"),
+                    BrowserInfo = await JS.InvokeAsync<string>("getBrowserInfo"),
+                    Referrer = await JS.InvokeAsync<string>("getReferrer"),
+                    Action = $"Acción registrada: {Action}",
+                    SessionStatus = user.Identity?.IsAuthenticated == true ? "Iniciada" : "Terminada",
+                    IpAddress = await JS.InvokeAsync<string>("getClientIp"),
+
+
+                };
+
+            visita.Location = await JS.InvokeAsync<string>("getLocationFromIp", visita.IpAddress);
+            var utmParams = await JS.InvokeAsync<Dictionary<string, string>>("getUTMParameters");
+
+            if (utmParams != null)
+            {
+                utmParams.TryGetValue("utm_source", out var source);
+                utmParams.TryGetValue("utm_medium", out var medium);
+                utmParams.TryGetValue("utm_campaign", out var campaign);
+                utmParams.TryGetValue("utm_term", out var term);
+                utmParams.TryGetValue("utm_content", out var content);
+
+                visita.TrafficSource = source;
+                visita.Medium = medium;
+                visita.Campaign = campaign;
+                visita.Term = term;
+                visita.Content = content;
+            }
+
+
+            // Obtener ubicación basada en IP
+            // visita.Location = await JS.InvokeAsync<string>("getLocationFromIp", visita.IpAddress);
+
+            // Enviar visita a la API
+
+
+            var httpResponse = await repositorio.Post("/api/registro/registrar-visita", visita);
+            if (httpResponse.Error)
+            {
+                Console.WriteLine("Error al registrar la visita.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al registrar la visita: {ex.Message}");
+        }
+    }
+
+    private List<string> FormatearEspecificaciones(string? especificaciones)
+    {
+        var frasesFormateadas = new List<string>();
+
+        if (!string.IsNullOrEmpty(especificaciones))
+        {
+            var frases = especificaciones.Split('|');
+            foreach (var frase in frases)
+            {
+                if (!string.IsNullOrWhiteSpace(frase))
+                {
+                    var partes = frase.Split(':', 2);
+                    if (partes.Length == 2)
+                    {
+                        var parteEnNegrita = $"<strong>{partes[0].Trim()}:</strong>";
+                        var parteNormal = partes[1].Trim().TrimEnd('.');
+                        frasesFormateadas.Add($"{parteEnNegrita} {parteNormal}");
+                    }
+                    else
+                    {
+                        frasesFormateadas.Add(frase.Trim());
+                    }
+                }
+            }
+        }
+
+        return frasesFormateadas;
+    }
+    public List<string> ConvertirEspecificacionesALista(string? especificaciones)
+    {
+        // Llama al método FormatearEspecificaciones para obtener la lista formateada
+        return FormatearEspecificaciones(especificaciones);
+    }
+    private decimal RedondearAlMedio(decimal valor)
+    {
+        if (valor <= 2)
+        {
+
+            return 2;
+        }
+
+
+        // Redondear al múltiplo más cercano de 0.5
+        return Math.Ceiling(valor * 2) / 2;
+
+
+    }
+    private int CalcularRevisiones(decimal tiempoEstimado)
+    {
+        if (tiempoEstimado > 45m) // Más de 45 días
+        {
+            return 6;
+        }
+        else if (tiempoEstimado > 30m) // Entre 31 y 45 días
+        {
+            return 5;
+        }
+        else if (tiempoEstimado > 15m) // Entre 16 y 30 días
+        {
+            return 4;
+        }
+        else if (tiempoEstimado > 6m) // Entre 7 y 15 días
+        {
+            return 3;
+        }
+        else if (tiempoEstimado > 3m) // Entre 4 y 6 días
+        {
+            return 2;
+        }
+        else if (tiempoEstimado > 1m) // Entre 1.5 y 3 días
+        {
+            return 1;
+        }
+        else // Menor o igual a 1.5 días
+        {
+            return 0;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    private async void RecibirColaboradorSeleccionado(Colaborador_ServicioDTO colaborador)
+    {
+        // Asignamos el colaborador seleccionado
+        ColaboradorSeleccionado = colaborador;
+
+        if (ColaboradorSeleccionado != null)
+        {
+            // Si hay colaborador, cargamos el ID del colaborador en la venta
+            VentaServicio.IdServicio = IdServicio;
+            VentaServicio.IdUsuarioColaborador = ColaboradorSeleccionado.IdUsuario;
+            VentaServicio.IdServicio_Colaborador = ColaboradorSeleccionado.IdServicio_Colaborador;
+            VentaServicio.Precio = ColaboradorSeleccionado.Precio;
+            VentaServicio.Precio_Ajustado = ColaboradorSeleccionado.Precio_Ajustado;
+
+            VentaServicio.NombreColaborador = ColaboradorSeleccionado.Perfil;
+            VentaServicio.Unidad = ColaboradorSeleccionado.Unidad;
+            VentaServicio.Email_Colaborador = ColaboradorSeleccionado.Email;
+
+
+
+
+            PrecioPorUnidad = ColaboradorSeleccionado.Precio_Ajustado;
+
+
+            // Configuración de estados cuando hay un colaborador seleccionado
+            EsSeleccionado = false;
+            EsTiempoSeleccionado = null;
+            EsCostoSeleccionado = null;
+            BotonSeleccionarDiseñador = true;
+
+            Metros = 0;
+            Resumen_Total = false;
+
+
+            // Actualizar el DOM antes de hacer el scroll
+            StateHasChanged();
+            await Task.Delay(100); // Pequeño retraso para asegurar que el DOM esté actualizado
+
+            // Scroll a la fila 3 (asumiendo que fila 3 es donde quieres que se enfoque el usuario)
+            await IrAFila31();
+        }
+        else
+        {
+            // Si el colaborador es null, restablecemos los estados
+            EsSeleccionado = null;
+            EsTiempoSeleccionado = null;
+            EsCostoSeleccionado = null;
+            VentaServicio.IdUsuarioColaborador = 0;
+            VentaServicio.IdServicio_Colaborador = 0;
+            VentaServicio.Cantidad = 0;
+            VentaServicio.Precio = 0;
+            Metros = 0;
+            VentaServicio.Descuento = 0;
+            VentaServicio.Importe = 0;
+            VentaServicio.Total = 0;
+            VentaServicio.IdCupon = 0;
+
+            VentaServicio = new Venta_ServicioDTO(); // Esto crea un nuevo objeto con todos los campos vacíos o valores predeterminados
+
+            StateHasChanged();
+
+            // Navegar a la fila 2 porque no hay colaborador
+
+
+            // Restablecemos el ID del colaborador en la venta
+
+        }
+    }
+    private async void RecibirServicioSeleccionado(ServicioDTO Servicio)
+    {
+
+        if (Servicio != null)
+        {
+            Servicio_Seleccionado.Nombre = Servicio.Nombre;
+
+            Servicio_Seleccionado.Entregables = Servicio.Entregables;
+            Servicio_Seleccionado.Especificaciones = Servicio.Especificaciones;
+            Servicio_Seleccionado.Requisitos_Cliente = Servicio.Requisitos_Cliente;
+            VentaServicio.DescripcionServicio = Servicio.Descripcion;
+
+            Nombre_Servicio=Servicio.Nombre;
+
+
+            Registrar_Visita("Visita Inicial");
+
+
+
+            StateHasChanged();
+
+        }
+        else
+        {
+
+
+            Servicio_Seleccionado = new ServicioDTO(); // Esto crea un nuevo objeto con todos los campos vacíos o valores predeterminados
+
+            StateHasChanged();
+
+
+        }
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        // Detecta si `IdServicio` ha cambiado desde la última carga
+        if (_currentIdServicio != IdServicio)
+        {
+            _currentIdServicio = IdServicio;
+            await ScrollToTopAsync(); // Desplazar hacia arriba cuando cambian los parámetros
+            await ReiniciarEstadoComponente();
+
+
+        }
+    }
+    private async Task ReiniciarEstadoComponente()
+    {
+
+        ColaboradorSeleccionado = null;
+
+        await IrAFila0();
+
+    }
+    private int _currentIdServicio;
+
+    private bool EsMedidasCompletadas { get; set; } = false; // Nueva variable para controlar el estado de medidas
+    private DateTime Fecha_Estimada_Entrega { get; set; }// Puedes cambiar este valor o hacerlo dinámico
+
+
+    //MEDIDAS 
+
+
+
+    private string UnidadSeleccionada => ColaboradorSeleccionado?.Unidad;
+
+    // El valor máximo para el input (depende de la unidad)
+    private int MaxValue => UnidadSeleccionada switch
+    {
+        "M2" => 1500,  // Para metros cuadrados (M2)
+        "Render" => 30, // Para render
+        _ => 100 // Valor por defecto para otras unidades (puedes ajustarlo o añadir más casos)
+    };
+
+
+    private async Task Medidas_Siguiente()
+    {
+        // Validar que Metros esté dentro del rango permitido
+        if (UnidadSeleccionada == "Render" && Metros > 30)
+        {
+            Metros = 30; // Ajustar a 30 si excede el límite
+            await JS.InvokeVoidAsync("Swal.fire", new
+            {
+                title = "Advertencia",
+                text = "La cantidad máxima permitida para Render es 30. Se ha ajustado automáticamente.",
+                icon = "info",
+                background = "#fdfefe", // Fondo blanco
+                color = "#616a6b",      // Texto negro
+                confirmButtonColor = "#3085d6" // Botón azul SweetAlert
+            });
+        }
+        else if (UnidadSeleccionada == "M2" && Metros > 1500)
+        {
+            Metros = 1500; // Ajustar a 1500 si excede el límite
+            await JS.InvokeVoidAsync("Swal.fire", new
+            {
+                title = "Advertencia",
+                text = "La cantidad máxima permitida para M2 es 1500. Se ha ajustado automáticamente.",
+                icon = "info",
+                background = "#fdfefe", // Fondo blanco
+                color = "#616a6b",      // Texto negro
+                confirmButtonColor = "#3085d6" // Botón azul SweetAlert
+            });
+        }
+
+        if (Metros > 0)
+        {
+            EsSeleccionado = true; // Cambia el estado a seleccionado
+            await IrAFila32();
+
+            EsTiempoSeleccionado = false; // Activa la selección del tiempo
+            EsCostoSeleccionado = null;  // Activa la selección del costo
+
+            VentaServicio.Cantidad = Metros;
+            Tiempo = ColaboradorSeleccionado.Duracion;
+
+            Fecha_Estimada_Entrega = CalcularFechaEntrega(Convert.ToDouble(TiempoEstimado));
+
+            Registrar_Visita("Medidas_Siguiente");
+            StateHasChanged();
+        }
+        else
+        {
+            // Mostrar alerta SweetAlert2 si el valor de Metros es 0 o no válido
+            await JS.InvokeVoidAsync("Swal.fire", new
+            {
+                title = "Error",
+                text = "Debes ingresar la cantidad para continuar.",
+                icon = "info",
+                background = "#fdfefe", // Fondo blanco
+                color = "#616a6b",      // Texto negro
+                confirmButtonColor = "#3085d6" // Botón azul SweetAlert
+            });
+        }
+    }
+
+
+    private async Task Medidas_atras()
+    {
+
+        await IrAFila2();
+
+        EsSeleccionado = null;
+        EsTiempoSeleccionado = null;
+        EsCostoSeleccionado = null;
+        ColaboradorSeleccionado = null;
+        BotonSeleccionarDiseñador = false;
+        VentaServicio.Precio = 0;
+        VentaServicio.Cantidad = 0;
+        Tiempo = 0;
+
+
+        StateHasChanged();
+
+
+    }
+    private async Task Tiempo_atras()
+    {
+        EsSeleccionado = false;
+        EsTiempoSeleccionado = null;
+
+        VentaServicio.Tiempo = 0;
+        VentaServicio.Revision = 0;
+        await IrAFila31();
+    }
+    private async Task Tiempo_Siguiente()
+    {
+
+
+        EsTiempoSeleccionado = true;
+        EsCostoSeleccionado = false; // Activa el paso de "Costo Final"
+
+        await IrAFila33(); // O cualquier otra lógica de navegación que tengas
+        VentaServicio.Tiempo = TiempoEstimado;
+        VentaServicio.Revision = Revisiones;
+        VentaServicio.IdUsuarioColaborador = ColaboradorSeleccionado.IdUsuario;
+        VentaServicio.IdServicio_Colaborador = ColaboradorSeleccionado.IdServicio_Colaborador;
+        VentaServicio.FechaEntregaEstimada = CalcularFechaEntrega(Convert.ToDouble(TiempoEstimado));
+
+        StateHasChanged(); // Forzar actualización del componente
+        await Task.Delay(100); // Retraso para permitir la actualización del DOM
+        Registrar_Visita("Tiempo_Siguiente");
+
+
+    }
+    private async Task<string> GenerarNumeroOrden()
+    {
+
+        var response = await repositorio.Get<int>("/api/cliente-servicio/obtener-total-ventas");
+        var clave = response.Response + 1;
+
+        var fecha = DateTime.Now.ToString("yyyyMMdd");
+        return $"SER-{fecha}-{(clave):D4}"; // Ejemplo: ORD-20240101-0001
+    }
+    private async Task Costo_atras()
+    {
+        EsTiempoSeleccionado = false;
+        EsCostoSeleccionado = null;
+        VentaServicio.Tiempo = 0;
+        VentaServicio.Revision = 0;
+        DescuentoCupon = 0;
+
+        VentaServicio.Descuento = 0;
+        VentaServicio.Importe = 0;
+        VentaServicio.Total = 0;
+        VentaServicio.IdCupon = 0;
+        await IrAFila32();
+
+    }
+    private decimal CalcularDescuento(CuponDTO cupon)
+    {
+        // Aquí puedes aplicar la lógica de descuento según si es porcentaje o valor fijo
+        // Supongamos que aplicas un 10% de descuento como ejemplo:
+        decimal descuento = 100; // Suponiendo un precio base, ajusta según tu lógica
+        return cupon.Descuento > 0 ? descuento - (descuento * (cupon.Descuento / 100)) : descuento;
+    }
+
+
+
+    private async Task Costo_siguiente()
+    {
+        // Verificar si el usuario está autenticado
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            // Usuario autenticado, continuar con la lógica normal
+            VentaServicio.IdUsuarioComprador = AuthProvider.GetIdUsuario();
+            var response = await repositorio.Get<UsuarioDTO>($"/api/usuario/listar/{AuthProvider.GetIdUsuario()}");
+            Cliente_Seleccionado = response.Response;
+
+
+            VentaServicio.NumeroOrden = await GenerarNumeroOrden();
+
+
+
+            VentaServicio.IdCupon = IdCupon;
+            VentaServicio.Importe = Resultado;
+
+
+            VentaServicio.Total = ResultadoDescuento;
+
+
+            VentaServicio.Antcipo = Anticipo;
+            VentaServicio.Porcentaje_Anticipo = (decimal)empresa.Porcentaje_Anticipo;
+            VentaServicio.Finiquito = Finiquito;
+            VentaServicio.Porcentaje_Finiquito = (decimal)empresa.Porcentaje_Finiquito;
+
+
+            if (Anticipo != 0)
+            {
+                VentaServicio.Pago_Final = Anticipo;
+
+            }
+            else
+            {
+                VentaServicio.Pago_Final = ResultadoDescuento;
+
+            }
+
+
+
+
+
+
+
+            EsCostoSeleccionado = true;
+            Resumen_Total = true;
+            VentaServicio.Estado = "Pendiente";
+            VentaServicio.PagoRealizado = false;
+            VentaServicio.MetodoEntrega = "En Linea";
+            VentaServicio.MetodoPago = "Ninguno";
+            VentaServicio.FechaEntregaEstimada = CalcularFechaEntrega(Convert.ToDouble(TiempoEstimado));
+            VentaServicio.Descuento = TotalDescuento;
+
+            VentaServicio.NombreComprador = Cliente_Seleccionado.Nombre;
+            VentaServicio.NombreServicio = Servicio_Seleccionado.Nombre;
+            VentaServicio.MetodoPago = "Tarjeta";
+            VentaServicio.Unidad = ColaboradorSeleccionado.Unidad;
+            VentaServicio.Email_Cliente = Cliente_Seleccionado.Email;
+            VentaServicio.Email_Colaborador = ColaboradorSeleccionado.Email;
+            VentaServicio.Revision = Revisiones;
+
+
+            VentaServicio.EspecificacionesAceptados = Servicio_Seleccionado.Especificaciones;
+            VentaServicio.EntregablesAceptados = Servicio_Seleccionado.Entregables;
+            VentaServicio.RequisitosAceptados = Servicio_Seleccionado.Requisitos_Cliente;
+            VentaServicio.Email_Cliente = Cliente_Seleccionado.Email;
+            VentaServicio.TelefonoComprador = Cliente_Seleccionado.Telefono;
+
+
+
+            StateHasChanged(); // Forzar actualización del componente
+            await Task.Delay(100); // Retraso para permitir la actualización del DOM
+
+            // Navegar a la fila 4 o realizar otra acción
+            await IrAFila4();
+            Registrar_Visita("Costo_Siguiente");
+        }
+        else
+        {
+
+
+
+            var result = await JS.InvokeAsync<AlertResult>("Swal.fire", new
+            {
+                title = "Iniciar Sesión",
+                text = "Debes iniciar sesión para continuar con la compra. ¿Deseas iniciar sesión ahora?",
+                icon = "question",
+                showCancelButton = true,
+                confirmButtonText = "Iniciar Sesión",
+                cancelButtonText = "Cancelar"
+            });
+
+
+            // Verifica la respuesta del usuario
+            if (result.IsConfirmed)
+            {
+                // Redirigir a la página de inicio de sesión
+                Navigation.NavigateTo("/login", true);
+            }
+            else
+            {
+                // Acción alternativa si el usuario cancela
+                Console.WriteLine("El usuario canceló la acción.");
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+    }
+   
+
+    private class AlertResult
+    {
+        public bool IsConfirmed { get; set; }
+        public bool IsDismissed { get; set; }
+        public string DismissReason { get; set; }
+    }
+
+
+    
+    
+    public static DateTime CalcularFechaEntrega(double diasHabiles)
+    {
+        DateTime fechaActual = DateTime.Now;
+        DateTime fechaEntrega = fechaActual;
+
+        // Horas hábiles totales necesarias
+        double horasTotales = diasHabiles * 8;
+        double horasSumadas = 0;
+
+        // Definir horario laboral (ejemplo: 9:00 AM - 5:00 PM)
+        TimeSpan inicioJornada = new TimeSpan(9, 0, 0); // 9:00 AM
+        TimeSpan finJornada = new TimeSpan(17, 0, 0);   // 5:00 PM
+        double horasPorDia = 8.0; // Jornada de 8 horas
+
+        // Iterar hasta alcanzar las horas hábiles necesarias
+        while (horasSumadas < horasTotales)
+        {
+            // Si estamos dentro de un horario laboral válido
+            if (fechaEntrega.DayOfWeek != DayOfWeek.Saturday && fechaEntrega.DayOfWeek != DayOfWeek.Sunday)
+            {
+                // Verificar si estamos dentro del horario de trabajo
+                if (fechaEntrega.TimeOfDay >= inicioJornada && fechaEntrega.TimeOfDay < finJornada)
+                {
+                    // Calcular las horas restantes del día hábil
+                    double horasRestantesHoy = (finJornada - fechaEntrega.TimeOfDay).TotalHours;
+
+                    // Sumar las horas que restan hoy o las necesarias para completar el total
+                    double horasASumar = Math.Min(horasRestantesHoy, horasTotales - horasSumadas);
+                    fechaEntrega = fechaEntrega.AddHours(horasASumar);
+                    horasSumadas += horasASumar;
+
+                    // Si se alcanzaron las horas totales, salir
+                    if (horasSumadas >= horasTotales)
+                        break;
+                }
+
+                // Avanzar al siguiente día hábil a las 9:00 AM
+                fechaEntrega = fechaEntrega.Date.AddDays(1) + inicioJornada;
+            }
+            else
+            {
+                // Si es fin de semana, avanzar al siguiente lunes a las 9:00 AM
+                fechaEntrega = fechaEntrega.Date.AddDays(fechaEntrega.DayOfWeek == DayOfWeek.Saturday ? 2 : 1) + inicioJornada;
+            }
+        }
+
+        return fechaEntrega;
+    }
+
+ 
+
+
+
+
+
+
+    
+    //RESUME Y PAGOS
+    private async Task resumen_atras()
+    {
+        EsCostoSeleccionado = false;
+        Resumen_Total = false;
+    }
+    
+    private async Task Pagar_Servicio()
+    {
+        AbrirModalInfo();
+
+
+
+        var ventaDto = new Venta_ServicioDTO
+            {
+                Total = VentaServicio.Pago_Final,
+                DescripcionServicio = VentaServicio.DescripcionServicio
+            };
+
+
+
+
+        // Llama al método `Post` en el repositorio
+        var response = await repositorio.Post<Venta_ServicioDTO, Venta_ServicioDTO>("api/cliente-servicio/procesar-pago", ventaDto);
+
+        if (!response.Error && response.Response != null)
+        {
+            // Almacena ClientSecret y IdTransaccion en el cliente para su uso posterior
+            VentaServicio.ClientSecret = response.Response.ClientSecret;
+            VentaServicio.IdTransaccion = response.Response.IdTransaccion;
+
+
+            // Configura Stripe
+            await JS.InvokeVoidAsync("setupStripe", VentaServicio.ClientSecret);
+            Console.WriteLine("Pago en proceso");
+        }
+        else
+        {
+            var errorContent = await response.HttpResponseMessage.Content.ReadAsStringAsync();
+            Console.WriteLine("Error al procesar el pago: " + errorContent);
+        }
+    }
+    private async Task ConfirmarPago()
+
+    {
+        isProcessing = true;
+
+        var resultadoStripe = await JS.InvokeAsync<JsonElement>("setupStripeInstance.confirmCardPayment");
+        if (resultadoStripe.TryGetProperty("success", out JsonElement successElement) && successElement.GetBoolean())
+        {
+            VentaServicio.NombreColaborador = ColaboradorSeleccionado.Perfil;
+            VentaServicio.NombreComprador = Cliente_Seleccionado.Nombre;
+            VentaServicio.NombreServicio = Servicio_Seleccionado.Nombre;
+            VentaServicio.MetodoPago = "Tarjeta";
+            VentaServicio.Unidad = ColaboradorSeleccionado.Unidad;
+            VentaServicio.Email_Cliente = Cliente_Seleccionado.Email;
+            VentaServicio.Email_Colaborador = ColaboradorSeleccionado.Email;
+
+
+
+            VentaServicio.IdCupon = IdCupon;
+            VentaServicio.Importe = Resultado;
+            VentaServicio.Total = ResultadoDescuento;
+            VentaServicio.Descuento = TotalDescuento;
+
+            VentaServicio.NombreComprador = Cliente_Seleccionado.Nombre;
+            VentaServicio.NombreServicio = Servicio_Seleccionado.Nombre;
+            VentaServicio.Unidad = ColaboradorSeleccionado.Unidad;
+            VentaServicio.Revision = Revisiones;
+            VentaServicio.TerminosAceptados = true;
+
+            VentaServicio.EspecificacionesAceptados = Servicio_Seleccionado.Especificaciones;
+            VentaServicio.EntregablesAceptados = Servicio_Seleccionado.Entregables;
+
+
+
+
+            Console.WriteLine("Pago realizado con éxito.");
+
+
+
+
+
+            var confirmacionResponse = await repositorio.Post("api/cliente-servicio/confirmar-pago", VentaServicio);
+
+            isProcessing = false;
+
+            StateHasChanged();
+
+            if (!confirmacionResponse.Error)
+            {
+                Console.WriteLine("Venta confirmada en la base de datos.");
+
+                  
+
+                var result = await JS.InvokeAsync<AlertResult>("Swal.fire", new
+                {
+                    title = "Compra Confirmada",
+                    text = $"¡Gracias por tu compra!,  N° Orden: {VentaServicio.NumeroOrden}, Recibirás un correo de confirmación. ¿Deseas ir al inicio o a la página de servicios?",
+                    icon = "success",
+                    showCancelButton = true,
+                    confirmButtonText = "Ir al Inicio",
+                    cancelButtonText = "Ver Servicios"
+                });
+
+
+                // Verifica la respuesta del usuario
+                if (result.IsConfirmed)
+                {
+                    // Redirigir a la página de inicio de sesión
+                    Navigation.NavigateTo("/login", true);
+                }
+                else
+                {
+                    // Acción alternativa si el usuario cancela
+                    Navigation.NavigateTo("/venta-servicio-cliente-listar", true); // true para forzar la redirección completa
+                }
+
+
+
+
+
+
+
+
+
+                CerrarModal();
+
+
+
+            }
+            else
+            {
+                Console.WriteLine("Error al confirmar la venta en la base de datos.");
+            }
+
+
+
+
+        }
+        else
+        {
+            var error = resultadoStripe.TryGetProperty("error", out JsonElement errorElement) ? errorElement.GetString() : "Error desconocido";
+            Console.WriteLine("Error en el pago: " + error);
+        }
+
+
+
+
+
+
+    }
+
+
+
+    private async Task Pagar_Tranferencia()
+    {
+         AbrirModalInfoTransferencia();
+
+    }
+    private async Task ConfirmarTransferencia()
+    {
+        VentaServicio.IdCupon = IdCupon;
+        VentaServicio.Importe = Resultado;
+        VentaServicio.Total = ResultadoDescuento;
+        VentaServicio.Estado = "Pendiente";
+        VentaServicio.PagoRealizado = false;
+        VentaServicio.MetodoEntrega = "En Linea";
+        VentaServicio.Descuento = TotalDescuento;
+
+        VentaServicio.NombreComprador = Cliente_Seleccionado.Nombre;
+        VentaServicio.NombreServicio = Servicio_Seleccionado.Nombre;
+        VentaServicio.MetodoPago = "Tarjeta";
+        VentaServicio.Unidad = ColaboradorSeleccionado.Unidad;
+        VentaServicio.Email_Cliente = Cliente_Seleccionado.Email;
+        VentaServicio.Email_Colaborador = ColaboradorSeleccionado.Email;
+        VentaServicio.Revision = Revisiones;
+        VentaServicio.TerminosAceptados = true;
+
+        VentaServicio.EspecificacionesAceptados = Servicio_Seleccionado.Especificaciones;
+        VentaServicio.EntregablesAceptados = Servicio_Seleccionado.Entregables;
+        VentaServicio.RequisitosAceptados = Servicio_Seleccionado.Requisitos_Cliente;
+        VentaServicio.NombreColaborador = ColaboradorSeleccionado.Perfil;
+
+
+        try
+
+
+
+
+        {
+
+            isProcessing = true;
+
+
+            var confirmacionResponse = await repositorio.Post("api/cliente-servicio/confirmar-transferencia", VentaServicio);
+
+
+            isProcessing = false;
+            StateHasChanged();
+
+
+            if (!confirmacionResponse.Error)
+            {
+                Console.WriteLine("Venta confirmada en la base de datos.");
+
+
+
+
+                var result = await JS.InvokeAsync<AlertResult>("Swal.fire", new
+                {
+                    title = "Compra Confirmada",
+                    Text = $"¡Gracias por tu compra!,  N° Orden: {VentaServicio.NumeroOrden}, Recibirás un correo de confirmación. ¿Deseas ir al inicio o a la página de servicios?",
+                    icon = "success",
+                    showCancelButton = true,
+                    confirmButtonText = "Ir al Inicio",
+                    cancelButtonText = "Ver Servicios"
+                });
+
+
+                // Verifica la respuesta del usuario
+                if (result.IsConfirmed)
+                {
+                    // Redirigir a la página de inicio de sesión
+                    Navigation.NavigateTo("/login", true);
+                }
+                else
+                {
+                    // Acción alternativa si el usuario cancela
+                    Navigation.NavigateTo("/venta-servicio-cliente-listar", true); // true para forzar la redirección completa
+                }
+
+
+              CerrarModal();
+                   }
+            else
+            {
+                Console.WriteLine("Error al confirmar la venta en la base de datos.");
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+
+
+
+    }
+    private string ClientSecret { get; set; }
+    private object stripeInstance;
+
+
+    //CUPONES
+
+    private async Task Validar_Cupon()
+    {
+        try
+        {
+
+
+
+            // Llamar al repositorio para validar el cupón
+            var response = await repositorio.Get<CuponDTO>($"/api/cupon/validar/{Cupon.Trim()}");
+
+            // Verificar si la solicitud fue exitosa (código 2xx)
+            if (response.HttpResponseMessage.IsSuccessStatusCode)
+            {
+                // El cupón es válido, procesamos la respuesta
+                var cuponDTO = response.Response; // Aquí accedemos al objeto CuponDTO
+                IdCupon = 0;
+                DescuentoCupon = 0;
+
+                if (cuponDTO != null)
+                {
+                    MensajeValidacion = "Cupón aplicado correctamente.";
+                    DescuentoCupon = cuponDTO.Descuento; // Aplicamos el descuento obtenido del cupón
+
+                    VentaServicio.Descuento = DescuentoCupon;
+
+                    IdCupon = cuponDTO.Id;
+
+
+                }
+                else
+                {
+                    // En el caso raro de que la respuesta tenga éxito pero el cuerpo esté vacío
+                    MensajeValidacion = "Cupón no válido o no encontrado.";
+                    DescuentoCupon = 0;
+                    VentaServicio.Descuento = 0;
+                    IdCupon = 0;
+                }
+            }
+            else if (response.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                // Cupón no válido (retorno 404)
+                MensajeValidacion = "Cupón no válido o no encontrado.";
+                DescuentoCupon = 0; // No hay descuento
+                IdCupon = 0;
+                VentaServicio.Descuento = 0;
+
+
+            }
+            else
+            {
+                // Otros errores inesperados (cualquier código que no sea 2xx o 404)
+                MensajeValidacion = $"Error al validar el cupón: {response.HttpResponseMessage.ReasonPhrase}";
+                DescuentoCupon = 0;
+                IdCupon = 0;
+                VentaServicio.Descuento = 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Manejo de excepción
+            MensajeValidacion = "Ocurrió un error inesperado al validar el cupón.";
+            DescuentoCupon = 0; // Aseguramos que el descuento no se aplique en caso de error
+            Console.Error.WriteLine($"Error al validar el cupón: {ex.Message}");
+            VentaServicio.Descuento = 0;
+        }
+    }
+    private string MensajeValidacion { get; set; } = string.Empty;
+    private decimal ResultadoCupon { get; set; }
+
+
+    //CARRITO
+    private async Task Carrito_Insertar()
+    {
+
+
+
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            // Usuario autenticado, continuar con la lógica normal
+            VentaServicio.IdUsuarioComprador = AuthProvider.GetIdUsuario();
+
+            await IrAFila3(); // O cualquier otra lógica de navegación que tengas
+            VentaServicio.Tiempo = TiempoEstimado;
+            VentaServicio.Revision = Revisiones;
+            VentaServicio.IdUsuarioColaborador = ColaboradorSeleccionado.IdUsuario;
+            VentaServicio.IdServicio_Colaborador = ColaboradorSeleccionado.IdServicio_Colaborador;
+            VentaServicio.FechaEntregaEstimada = CalcularFechaEntrega(Convert.ToDouble(TiempoEstimado));
+
+
+
+            Nombre_Cliente = AuthProvider.GetNombreUsuario();
+
+
+            var httpResponse = await repositorio.Post("/api/cliente-servicio/AgregarAlCarrito", VentaServicio);
+
+            if (httpResponse.Error)
+            {
+                var message = await httpResponse.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+
+            await sweetAlertService.FireAsync("Éxito", "Se Agrego al Carrito con éxito", SweetAlertIcon.Success);
+
+
+
+            StateHasChanged(); // Forzar actualización del componente
+            await Task.Delay(100); // Retraso para permitir la actualización del DOM
+            await IrAFila4();
+        }
+        else
+        {
+            // Usuario no autenticado, mostrar mensaje de confirmación para iniciar sesión
+            var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Iniciar Sesión",
+                    Text = "Debes iniciar sesión para continuar con la compra. ¿Deseas iniciar sesión ahora?",
+                    Icon = SweetAlertIcon.Question,
+                    ShowCancelButton = true,
+                    ConfirmButtonText = "Iniciar Sesión",
+                    CancelButtonText = "Cancelar"
+                });
+
+            // Verificar si el usuario seleccionó "Iniciar Sesión"
+            if (result.IsConfirmed)
+            {
+                // Redirigir a la página de inicio de sesión
+                Navigation.NavigateTo("/login", true); // true para forzar la redirección completa
+            }
+            // Si selecciona "Cancelar", no se realiza ninguna acción
+        }
+
+
+
+
+
+
+
+
+
+
+    }
+
+    private string ObtenerClaseContenedor()
+    {
+
+
+
+
+        if (ColaboradorSeleccionado == null)
+            return "";
+        else if (EsSeleccionado == true)
+            return "columna-inicio-seleccionado";
+        else
+            return "columna-inicio";
+
+
+    }
+    private string ObtenerClaseContenedorTiempo()
+    {
+        if (EsTiempoSeleccionado == true)
+            return "columna-inicio-seleccionado"; // Si no hay colaborador seleccionado, no aplicamos ninguna clase adicional
+        if (EsTiempoSeleccionado == false)
+            return "columna-inicio"; // Si no hay colaborador seleccionado, no aplicamos ninguna clase adicional
+        else
+            return ""; // Si el colaborador está seleccionado pero no se ha ingresado el tiempo
+
+
+
+
+
+
+
+
+    }
+    private string ObtenerClaseContenedorCosto()
+    {
+        if (EsCostoSeleccionado == false)
+            return "columna-inicio"; // Estado deshabilitado o sin seleccionar
+
+        if (EsCostoSeleccionado == true)
+            return "columna-inicio-seleccionado"; // Estado deshabilitado o sin seleccionar
+        else
+            return "";
+
+
+
+
+
+
+
+    }
+    private void AbrirModalInfo() => mostrarModal = true;
+    private void CerrarModal() => mostrarModal = false;
+    private void AbrirModalInfoTransferencia() => mostrarModalTransferencia = true;
+    private void CerrarModalTransferencia() => mostrarModalTransferencia = false;
+
+
+
+    //SCROLL
+
+    private async Task ScrollToFila2() => await JS.InvokeVoidAsync("scrollToElement", "fila2");
+    private async Task ScrollToFila3() => await JS.InvokeVoidAsync("scrollToElement", "fila3");
+    private async Task IrAFila0() => await JS.InvokeVoidAsync("scrollToElement", "fila0");
+    private async Task IrAFila1() => await JS.InvokeVoidAsync("scrollToElement", "fila1");
+    private async Task IrAFila2() => await JS.InvokeVoidAsync("scrollToElement", "fila2");
+    private async Task IrAFila3() => await JS.InvokeVoidAsync("scrollToElement", "fila3");
+    private async Task IrAFila31() => await JS.InvokeVoidAsync("scrollToElement", "fila3-1");
+    private async Task IrAFila32() => await JS.InvokeVoidAsync("scrollToElement", "fila3-2");
+    private async Task IrAFila33() => await JS.InvokeVoidAsync("scrollToElement", "fila3-3");
+    private async Task IrAFila4() => await JS.InvokeVoidAsync("scrollToElement", "fila4");
+}
+
+
+
+
+
+
+<style>
+    main {
+        background-color: var(--color-fondo-pagina);
+        /* background: linear-gradient(to bottom right, #f8f9f9, #eaeded, #f8f9f9, #eaeded,#f8f9f9); */
+    }
+
+</style>
+

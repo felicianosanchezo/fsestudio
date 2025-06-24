@@ -1,0 +1,349 @@
+﻿@code {
+    [Parameter]
+    public Venta_ServicioDTO venta { get; set; } = new Venta_ServicioDTO();
+    private FsEstudioDTO empresa;
+    protected override void OnInitialized()
+    {
+        // Asigna el primer elemento de la lista retornada como ejemplo
+        empresa = FsEstudioService.ObtenerInformacionEmpresa().FirstOrDefault();
+    }
+    private List<string> FormatearEspecificaciones(string? especificaciones)
+    {
+        var frasesFormateadas = new List<string>();
+
+        if (!string.IsNullOrEmpty(especificaciones))
+        {
+            var frases = especificaciones.Split('|');
+            foreach (var frase in frases)
+            {
+                if (!string.IsNullOrWhiteSpace(frase))
+                {
+                    var partes = frase.Split(':', 2);
+                    if (partes.Length == 2)
+                    {
+                        var parteEnNegrita = $"<strong>{partes[0].Trim()}:</strong>";
+                        var parteNormal = partes[1].Trim().TrimEnd('.');
+                        frasesFormateadas.Add($"{parteEnNegrita} {parteNormal}");
+                    }
+                    else
+                    {
+                        frasesFormateadas.Add(frase.Trim());
+                    }
+                }
+            }
+        }
+
+        return frasesFormateadas;
+    }
+
+
+
+
+}
+
+<div class="container">
+
+    <div class="email-header ">
+        <h1 class="email-header-titulo">¡Gracias por tu compra, @venta.NombreComprador!</h1>
+    </div>
+    <div class="dashboard-imagen">
+        <img src="https://fsalmacenamiento.blob.core.windows.net/fsestudiocontenedor/Logo1.%20Fondo%20Blanco.png" class="img-fluid" />
+        @* <div class="menu-text">REGISTRO DE GASTOS</div> *@
+    </div>
+
+
+    <div class="content">
+
+    
+
+        <p>Estimado <span class="highlight">@venta.NombreComprador</span>,</p>
+        <p>Nos complace informarte que tu compra del servicio <span class="highlight">@venta.NombreServicio</span> ha sido confirmada exitosamente.</p>
+        <p>Numero de orden: <span class="highlight">@venta.NumeroOrden</span></p>
+
+        <div class="subtitulo-filas">
+            <span class="subtitulo-filas">RESUMEN DEL COSTO:</span>
+
+        </div>
+        
+        
+        <table class="details-table">
+           
+            <tr>
+                <th>Importe:</th>
+                <td>@venta.Importe.ToString("C")</td>
+            </tr>
+
+            <tr>
+                <th>Descuento:</th>
+                <td>@venta.Descuento.ToString("C")</td>
+            </tr>
+            <tr>
+                <th>Total (Incluye Iva):</th>
+                <td>@venta.Total.ToString("C")</td>
+            </tr>
+   
+        </table>
+
+        <div class="subtitulo-filas">
+            <span class="subtitulo-filas">RESUMEN DEL SERVICIO:</span>
+
+        </div>
+
+        <table class="details-table">
+
+       
+            <tr>
+                <th>Servicio:</th>
+                <td>@venta.NombreServicio</td>
+            </tr>
+            <tr>
+                <th>Descripcion:</th>
+                <td>@venta.DescripcionServicio</td>
+            </tr>
+
+            <tr>
+                <th>Diseñador:</th>
+                <td>@venta.NombreColaborador</td>
+            </tr>
+            <tr>
+                <th>Cantidad:</th>
+                <td>@venta.Cantidad  @venta.Unidad</td>
+            </tr>
+            <tr>
+                <th>Revisiones:</th>
+                <td>@venta.Revision</td>
+            </tr>
+            <tr>
+                <th>Entrega estimada:</th>
+                <td>@venta.FechaEntregaEstimada</td>
+            </tr>
+      
+        </table>
+
+
+        
+
+
+        <div class="subtitulo-filas">
+            <span class="subtitulo-filas">ESPECIFICACIONES:</span>
+
+        </div>
+        <table class="details-table">
+            @foreach (var item in FormatearEspecificaciones(venta.EspecificacionesAceptados))
+            {
+                <tr>
+                    <td>@((MarkupString)item)</td>
+                </tr>
+            }
+        </table>
+
+
+
+
+        <div class="subtitulo-filas">
+            <span class="subtitulo-filas">ENTREGABLES</span>
+
+        </div>
+        <table class="details-table">
+            @foreach (var item in FormatearEspecificaciones(venta.EntregablesAceptados))
+            {
+                <tr>
+                    <td>@((MarkupString)item)</td>
+                </tr>
+            }
+        </table>
+
+
+        <div class="subtitulo-filas">
+            <span class="subtitulo-filas">REQUERIMIENTO</span>
+
+        </div>
+        <table class="details-table">
+            @foreach (var item in FormatearEspecificaciones(venta.RequisitosAceptados))
+            {
+                <tr>
+                    <td>@((MarkupString)item)</td>
+                </tr>
+            }
+        </table>
+
+
+
+
+        <div class="subtitulo-filas">
+            <span class="subtitulo-filas">PAGO POR TRANSFERENCIA:</span>
+
+        </div>
+
+
+        <table class="details-table">
+
+           
+            <tr>
+                <th>Beficiario:</th>
+                <td>@empresa.Beneficiario</td>
+            </tr>
+
+            <tr>
+                <th>CLABE:</th>
+                <td>@empresa.Clabe</td>
+            </tr>
+            <tr>
+                <th>Banco receptor:</th>
+                <td>@empresa.Banco</td>
+            </tr>
+            <tr>
+                <th>Enviar comprobante a:</th>
+                <td>@empresa.Correo</td>
+            </tr>
+
+            <tr>
+                <th>Concepto:</th>
+                <td>"@empresa.Nombre + @venta.NumeroOrden"</td>
+            </tr>
+        </table>
+
+        <p></p>
+        <p>Estamos seguros de que quedarás satisfecho con el servicio. Para cualquier consulta adicional, no dudes en ponerte en contacto con nosotros.</p>
+        <p>Saludos cordiales,</p>
+        <p><strong>FS Estudio</strong></p>
+        <p></p>
+
+        <p>Atencion al Cliente: <span class="highlight">@empresa.Telefono</span></p>
+        <p>Horario: <span class="highlight">@empresa.Horario</span></p>
+    </div>
+
+
+    <div class="footer">
+        <p>FS Estudio - Todos los derechos reservados</p>
+        <p><a href="https://fsestudio.com">www.fsestudio.com</a> | contacto@fsestudio.com | Telefono @empresa.Telefono  WhatsApp</p>
+    </div> 
+</div>
+
+<style>
+    /* Estilos generales */
+    .container {
+        max-width: 900px;
+        margin: 20px auto;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-imagen {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fdfefe;
+
+        padding:30px;
+        display: flex;
+        position: center;
+        justify-content: center; /* Centra el texto horizontalmente */
+        align-items: center; /* Centra el texto verticalmente */
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .img-fluid {
+
+        width: 30%;
+        height: auto;
+        object-fit: cover; /* Asegura que la imagen cubra todo el espacio del contenedor sin distorsión */
+    }
+
+
+
+
+    .email-header {
+        background-color: var(--color-azul-oscuro1);
+        padding: 20px;
+        text-align: center;
+        color: #ffffff;
+    }
+
+    .email-header-titulo {
+            margin: 0;
+            font-size: 30px;
+    }
+
+    .content {
+        padding: 20px;
+        color: #515a5a;
+    }
+
+
+        .content .highlight {
+            color: var(--color-azul-turquesa);
+            font-weight: bold;
+        }
+
+    .subtitulo-filas{
+        display:flex;
+        color: var(--color-azul-turquesa);
+        font-weight:600;
+        font-size:20px;
+        margin-top: 20px;
+        margin-bottom:30px;
+        flex-direction: row; /* Coloca los elementos en columna */
+        width:100%;
+        height:30px;
+        text-align:left;
+
+    }
+
+
+
+    .details-table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+        background: linear-gradient(135deg, var(--color-gris-claro1),#f4f6f7,var(--color-gris-claro1) );
+
+
+
+
+    }
+
+        .details-table th {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dddddd;
+            width:30%;
+            color: #515a5a;
+        }
+
+        .details-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dddddd;
+            width: 70%;
+            color: #515a5a;
+        }
+
+
+    .details-table1 {
+        width: 100px;
+        margin-top: 20px;
+        border-collapse: collapse;
+        background-color: red;
+    }
+
+    .details-table1-list {
+        display: flex;
+        list-style-type: disc;
+    }
+
+
+
+    .footer {
+        background-color: #E3B866;
+        text-align: center;
+        padding: 10px;
+        font-size: 15px;
+        color: white;
+    }
+
+        .footer p {
+            margin: 5px;
+        }
+</style>

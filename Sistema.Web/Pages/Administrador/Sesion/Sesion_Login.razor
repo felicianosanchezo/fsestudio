@@ -1,0 +1,163 @@
+﻿@page "/Login"
+@inject IRepositorio repositorio
+@inject SweetAlertService sweetAlertService
+@inject NavigationManager navigationManager
+@inject ILoginServicio loginServicio
+@inject NotificationHub notificationHub
+@inject AuthenticationProviderJWT AuthProvider
+@using System.Security.Claims
+@inject IJSRuntime JS
+
+<div class="usuario-container-fondo">
+
+    <!-- Overlay que cubre toda la página -->
+    <div class="overlay"></div>
+
+    <div class="login-container">
+
+
+        <div class="logo-container">
+         
+            <img src="\Images\Logo1. Fondo Blanco.png" alt="Logotipo" class="logo-img" />
+
+
+
+
+        </div>
+
+
+
+
+        <hr class="custom-hr" />
+
+        <br />
+        <EditForm Model="loginDTO" OnValidSubmit="LoginAsync">
+            <DataAnnotationsValidator />
+            <div class="mb-3">
+                <label class="form-label">Usuario:</label>
+                <div>
+                    <InputText class="form-control" @bind-Value="@loginDTO.Usuario" />
+                    <ValidationMessage For="@(() => loginDTO.Usuario)" class="validation-message" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Contraseña:</label>
+                <div>
+                    <InputText type="password" class="form-control" @bind-Value="@loginDTO.Password" />
+                    <ValidationMessage For="@(() => loginDTO.Password)" class="validation-message" />
+                </div>
+            </div>
+            <div>
+                <br />
+                <button class="login-btn" type="submit">Iniciar Sesión</button>
+                <br />
+                <br />
+
+                <button class="login-btn" @onclick="Cancelar"> Cancelar</button>
+               
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+
+
+
+
+@code {
+    private LoginDTO loginDTO = new();
+
+    private async Task LoginAsync()
+    {
+        try
+        {
+            // Realizar la autenticación enviando las credenciales al servidor
+            var responseHttp = await repositorio.Post<LoginDTO, LoginUsuarioDTO>("/api/Login", loginDTO);
+
+            if (responseHttp.Error)
+            {
+                // Obtener el mensaje de error del servidor
+                var message = await responseHttp.GetErrorMessageAsync();
+
+                // Si el error es debido a credenciales inválidas
+                if (responseHttp.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    message = "Nombre de usuario o contraseña incorrectos.";  // Mensaje personalizado para credenciales inválidas
+                }
+
+                
+                
+                
+                
+                // Mostrar el mensaje de error al usuario
+                // await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+              
+                await JS.InvokeVoidAsync("Swal.fire", new
+                {
+                    title = "Advertencia",
+                    text = message,
+                    icon = "info",
+                    background = "#fdfefe", // Fondo blanco
+                    color = "#616a6b",      // Texto negro
+                    confirmButtonColor = "#3085d6" ,// Botón azul SweetAlert
+
+
+                    customClass = new { popup = "my-custom-class" }
+                });
+                
+                
+                
+                
+                
+                return;
+            }
+
+            // Si la autenticación es exitosa, guarda el token y actualiza el estado de autenticación
+            await loginServicio.LoginAsync(responseHttp.Response!.Token);
+
+            await ConectarSignalR();
+
+            // Actualiza la barra de navegación u otros componentes que dependan del estado de autenticación
+            navigationManager.NavigateTo("/", true);  // Forzamos una redirección y recarga para que Blazor actualice la UI
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error inesperado", $"Ocurrió un error inesperado: {ex.Message}", SweetAlertIcon.Error);
+        }
+    }
+
+
+
+
+
+
+    private async Task ConectarSignalR()
+    {
+        if (notificationHub != null)
+        {
+            // Obtener el estado actual de autenticación
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                // Puedes obtener el rol o cualquier otro claim si es necesario
+
+                var rolUsuario = AuthProvider.GetRolUsuario().ToString();
+                var userId = AuthProvider.GetIdUsuario().ToString();
+
+                // Conectar a SignalR
+                await notificationHub.IniciarConexionAsync(rolUsuario,userId);
+            }
+        }
+    }
+
+
+
+
+
+    private void Cancelar()
+    {
+        navigationManager.NavigateTo("/");
+    }
+}

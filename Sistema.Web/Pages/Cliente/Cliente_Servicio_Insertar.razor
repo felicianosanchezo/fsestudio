@@ -1,0 +1,466 @@
+﻿@page "/cliente-insertar"
+
+@inject IRepositorio repositorio
+@inject NavigationManager navigationManager
+@inject IJSRuntime JS
+@inject AuthenticationProviderJWT AuthProvider
+
+
+<div class="usuario-container-fondo">
+    <div class="dashboard-main">
+
+
+        <div class="title-container">
+
+
+            <div class="logo-imagen">
+                <img src="https://fsalmacenamiento.blob.core.windows.net/fsestudiocontenedor/Logo1.%20Fondo%20Blanco.png" class="imagen-logo" />
+                @* <div class="menu-text">REGISTRO DE GASTOS</div> *@
+            </div>
+
+            <h1 class="Titulo-Principal-Secundario">@Title</h1>
+            <hr />
+            <p class="Parrafo-Principal">
+                @((MarkupString)Description)
+            </p>
+
+        </div>
+
+
+
+
+
+
+        <EditForm EditContext="contextoEdicion" OnValidSubmit="Crear">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <!-- Nombre -->
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <InputText id="nombre" class="form-control" @bind-Value="usuario.Nombre" />
+                <ValidationMessage For="@(() => usuario.Nombre)" />
+            </div>
+
+            <!-- Apellidos -->
+            <div class="mb-3">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <InputText id="apellidos" class="form-control" @bind-Value="usuario.Apellidos" />
+                <ValidationMessage For="@(() => usuario.Apellidos)" />
+            </div>
+
+            <!-- Nombre Público -->
+            <div class="mb-3">
+                <label for="nombre_publico" class="form-label">Nombre Público </label>
+                <InputText id="nombre_publico" class="form-control" @bind-Value="usuario.Nombre_Publico" />
+                <ValidationMessage For="@(() => usuario.Nombre_Publico)" />
+            </div>
+
+
+            <!-- Teléfono -->
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <InputText id="telefono" class="form-control" @bind-Value="usuario.Telefono" />
+                <ValidationMessage For="@(() => usuario.Telefono)" />
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <InputText id="email" class="form-control" @bind-Value="usuario.Email" />
+                <ValidationMessage For="@(() => usuario.Email)" />
+            </div>
+
+            <!-- Usuario -->
+            <div class="mb-3">
+                <label for="usuario" class="form-label">Usuario (Inicio de sesión)</label>
+                <InputText id="usuario" class="form-control" @bind-Value="usuario.Usuario" />
+                <ValidationMessage For="@(() => usuario.Usuario)" />
+            </div>
+
+            <!-- Contraseña -->
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <InputText id="password" type="password" class="form-control" @bind-Value="usuario.Password" />
+                <ValidationMessage For="@(() => usuario.Password)" />
+            </div>
+
+            <!-- Dirección -->
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Dirección</label>
+                <InputText id="direccion" class="form-control" @bind-Value="usuario.Direccion" />
+                <ValidationMessage For="@(() => usuario.Direccion)" />
+            </div>
+            <!-- Ciudad -->
+            <div class="mb-3">
+                <label for="ciudad" class="form-label">Ciudad</label>
+                <InputText id="ciudad" class="form-control" @bind-Value="usuario.Ciudad" />
+                <ValidationMessage For="@(() => usuario.Ciudad)" />
+            </div>
+            <!-- Estado / Región -->
+            <div class="mb-3">
+                <label for="estado_region" class="form-label">Estado/Región</label>
+                <InputText id="estado_region" class="form-control" @bind-Value="usuario.Estado_Region" />
+                <ValidationMessage For="@(() => usuario.Estado_Region)" />
+            </div>
+
+            <!-- Foto de Perfil -->
+            <div class="mb-3">
+                <label for="portadaUrl" class="form-label">Foto de Perfil</label>
+                <InputFile id="portadaUrl" class="form-control" OnChange="OnImageSelected" accept="image/*" />
+                <ValidationMessage For="@(() => usuario.Foto_Perfil)" />
+            </div>
+            <!-- Botones -->
+            <br />
+       
+
+            <!-- Términos Generales -->
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="terminos_generales" @bind="usuario.Terminos_Generales" />
+                <label class="form-check-label" for="terminos_generales">Aceptar Términos Generales</label>
+                <div class="Ver-Terminos" @onclick="AbrirModalInfo">
+                    Ver Términos
+                </div>
+            </div>
+            <div> <ValidationMessage For="@(() => usuario.Terminos_Generales)" /> </div>
+
+
+
+            <br />
+
+
+            <div class="button-container">
+                      
+                
+                
+                <button type="submit" class="boton-aceptar-terminos" disabled="@(usuario.Terminos_Generales== false)">
+                   Guardar
+                </button>
+
+
+
+                <button type="button" class="boton-no-aceptar" @onclick="Cancelar">
+                   Cancelar
+                </button>
+            </div>
+
+          
+   
+
+        </EditForm>
+   
+
+
+
+
+
+
+        @if (mostrarModal)
+        {
+            
+            <div class="modal-overlay1">
+                <div class="modal-content1">
+
+
+                    <Cliente_Servicios_TerminosGenerales/>
+
+                    <div class="contenedor-botones">
+                        <button @onclick="Aceptar_Terminos" class="boton-aceptar-terminos ">Aceptar</button>
+                        <button @onclick="CerrarModal" class="boton-no-aceptar">Cerrar</button>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+        }
+    </div>
+
+    @if (isProcessing)
+    {
+        <LoadingProgress />
+    }
+
+</div>
+
+
+@code {
+    private bool isProcessing = false;
+    private UsuarioDTO usuario = new UsuarioDTO();
+    private EditContext contextoEdicion;
+
+
+    private List<RolDTO> roles = new List<RolDTO>();
+    public bool formularioPostOk { get; set; }
+    private bool mostrarModal = false;
+    private List<TerminosDto> terminos = TerminosService.ObtenerTerminos();
+
+
+
+
+
+
+    public string Title { get; set; } = "¡Bienvenido! Regístrate para comenzar";   // Parámetro para el título
+    public string Description { get; set; } = "Completa este formulario y únete a nuestra comunidad. Aquí podrás ingresar tus datos personales de forma rápida y segura. Al registrarte, tendrás acceso a nuestras mejores ofertas, novedades y mucho más. ¡Estamos encantados de tenerte con nosotros!";          // Parámetro para la descripción
+
+
+    // Modal de ayuda
+    private void AbrirModalInfo() => mostrarModal = true;
+
+    private void CerrarModal() => mostrarModal = false;
+
+    protected override void OnInitialized()
+    {
+
+        // Obtener términos desde TerminosService
+
+
+        contextoEdicion = new EditContext(usuario);
+        usuario.tipoUsuario = "Usuario Básico";
+        usuario.Terminos_Generales= false;
+
+
+
+
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Registra_Visita();
+
+
+        var terminos = TerminosService.ObtenerTerminos().FirstOrDefault();
+
+        if (terminos != null)
+        {
+            usuario.Terminos_Generales_Aceptados = terminos.Especificaciones;
+            usuario.Version_Terminos_Aceptados = terminos.Version;
+            usuario.Fecha_Terminos = terminos.FechaTerminos;
+        }
+
+
+
+
+
+    }
+    private async Task Registra_Visita()
+    {
+        try
+        {
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            // Verificar si el usuario está autenticado y asignar valores personalizados
+            var userName = user.Identity?.IsAuthenticated == true
+                ? AuthProvider.GetNombreUsuario()
+                : "UsuarioAnónimo";
+            var idUserName = user.Identity?.IsAuthenticated == true
+                ? AuthProvider.GetIdUsuario()
+                : 0;
+
+            // Crear el objeto visita con datos comunes
+            var visita = new VisitaDTO
+                {
+                    Pagina = "Registro de Cliente",
+                    IdServicio = "0",
+                    Usuario = userName,
+                    IdUsuario = Convert.ToString(idUserName),
+                    DeviceType = await JS.InvokeAsync<string>("isMobileDevice"),
+                    BrowserInfo = await JS.InvokeAsync<string>("getBrowserInfo"),
+                    Referrer = await JS.InvokeAsync<string>("getReferrer"),
+                    Action = "Visita Inicial",
+                    SessionStatus = user.Identity?.IsAuthenticated == true ? "Iniciada" : "Terminada",
+                    IpAddress = await JS.InvokeAsync<string>("getClientIp"),
+
+
+                };
+
+            visita.Location = await JS.InvokeAsync<string>("getLocationFromIp", visita.IpAddress);
+            var utmParams = await JS.InvokeAsync<Dictionary<string, string>>("getUTMParameters");
+
+            if (utmParams != null)
+            {
+                utmParams.TryGetValue("utm_source", out var source);
+                utmParams.TryGetValue("utm_medium", out var medium);
+                utmParams.TryGetValue("utm_campaign", out var campaign);
+                utmParams.TryGetValue("utm_term", out var term);
+                utmParams.TryGetValue("utm_content", out var content);
+
+                visita.TrafficSource = source;
+                visita.Medium = medium;
+                visita.Campaign = campaign;
+                visita.Term = term;
+                visita.Content = content;
+            }
+
+
+
+            var httpResponse = await repositorio.Post("/api/registro/registrar-visita", visita);
+            if (httpResponse.Error)
+            {
+                Console.WriteLine("Error al registrar la visita.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al registrar la visita: {ex.Message}");
+        }
+    }
+    private async Task Aceptar_Terminos()
+    {
+        usuario.Terminos_Generales = true;
+        CerrarModal();
+
+    }
+
+
+
+
+
+
+    private IBrowserFile? imagenPortadaSeleccionada;
+
+    private async Task OnImageSelected(InputFileChangeEventArgs e)
+    {
+        imagenPortadaSeleccionada = e.File;
+
+        usuario.Foto_Perfil = "Foto seleccionada";
+    }
+
+
+
+
+
+    private async Task<string> GenerarNumeroOrden()
+    {
+
+        var response = await repositorio.Get<int>("/api/usuario/clave");
+        var clave = response.Response + 1;
+
+        var fecha = DateTime.Now.ToString("yyyyMMdd");
+        return $"US-{fecha}-{(clave):D4}"; // Ejemplo: ORD-20240101-0001
+    }
+
+
+
+    private async Task Crear()
+    {
+
+           usuario.NumeroUsuario= await GenerarNumeroOrden();
+
+
+        var formData = new MultipartFormDataContent
+            {
+                { new StringContent(usuario.Nombre ?? string.Empty), "nombre" },
+                { new StringContent(usuario.Apellidos ?? string.Empty), "apellidos" },
+                { new StringContent(usuario.Nombre_Publico ?? string.Empty), "nombre_publico" },
+                { new StringContent(usuario.Telefono ?? string.Empty), "telefono" },
+                { new StringContent(usuario.Email ?? string.Empty), "email" },
+                { new StringContent(usuario.Usuario ?? string.Empty), "usuario" },
+                { new StringContent(usuario.Password ?? string.Empty), "password" },
+                { new StringContent(usuario.Direccion ?? string.Empty), "direccion" },
+                { new StringContent(usuario.Ciudad ?? string.Empty), "ciudad" },
+                { new StringContent(usuario.Estado_Region ?? string.Empty), "estado_region" },
+                { new StringContent(usuario.Terminos_Generales.ToString()), "terminos_generales" },
+              { new StringContent(usuario.NumeroUsuario?? string.Empty), "numerousuario" },
+
+                // Agregando los términos con manejo de valores nulos
+                { new StringContent(usuario.Terminos_Generales_Aceptados ?? string.Empty), "terminos_generales_aceptados"  },
+                { new StringContent(usuario.Version_Terminos_Aceptados ?? string.Empty),  "version_terminos_aceptados" },
+                { new StringContent(usuario.Fecha_Terminos?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd")), "fecha_terminos" }
+            };
+
+        if (imagenPortadaSeleccionada != null)
+        {
+            var imagenStream = imagenPortadaSeleccionada.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024);
+            var imagenContent = new StreamContent(imagenStream);
+            imagenContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(imagenPortadaSeleccionada.ContentType);
+
+            // Asignar el nombre de la imagen como "Portada.extensión"
+            var extensionImagen = Path.GetExtension(imagenPortadaSeleccionada.Name);
+            var nombrePortada = $"perfil{extensionImagen}";
+
+            formData.Add(imagenContent, "portada", nombrePortada);
+        }
+
+        isProcessing = true;
+        var httpResponse = await repositorio.PostMultipartContent("/api/usuario/insertar-cliente", formData);
+
+        isProcessing = false;
+        if (!httpResponse.Error)
+        {
+ 
+
+
+
+
+            var result = await JS.InvokeAsync<AlertResult>("Swal.fire", new
+            {
+                title = "Registro Confirmado",
+                text = "¡Gracias por registrarte! Recibirás un correo de confirmación",
+                icon = "success",
+                background = "#fdfefe", // Fondo blanco
+                color = "#616a6b",      // Texto negro
+                confirmButtonColor = "#3085d6" // Botón azul SweetAlert
+            });
+
+            if (result.IsConfirmed)
+            {
+                // Redirigir a la página de inicio de sesión
+                navigationManager.NavigateTo("/", true); // true para forzar la redirección completa
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+        else
+        {
+            Console.WriteLine("Error al confirmar el registro en la base de datos.");
+            var message = await httpResponse.GetErrorMessageAsync();
+
+            await JS.InvokeVoidAsync("Swal.fire", new
+            {
+                title = "Advertencia",
+                text = message,
+                icon = "error",
+                background = "#fdfefe", // Fondo blanco
+                color = "#616a6b",      // Texto negro
+                confirmButtonColor = "#3085d6" // Botón azul SweetAlert
+            });
+
+            return;
+        }
+
+    }
+
+
+    private class AlertResult
+    {
+        public bool IsConfirmed { get; set; }
+        public bool IsDismissed { get; set; }
+        public string DismissReason { get; set; }
+    }
+
+
+
+    private void Cancelar()
+    {
+        formularioPostOk = true;
+        navigationManager.NavigateTo("/");
+    }
+
+
+}
+

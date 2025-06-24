@@ -1,0 +1,270 @@
+﻿@page "/proyecto-insertar"
+@inject SweetAlertService sweetAlertService
+@inject NavigationManager navigationManager
+@inject IRepositorio repositorio
+@inject AuthenticationProviderJWT AuthenticationStateProvider
+@inject IJSRuntime js
+
+<div class="servicio-container-fondo">
+    <div class="dashboard-main">
+
+        <TituloConDescripcion Title="Nuevo Proyecto"
+                              Description="Completa el formulario para registrar un nuevo proyecto en tu portafolio." />
+
+        <EditForm EditContext="contextoEdicion" OnValidSubmit="OnValidSubmit" enctype="multipart/form-data">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <!-- Nombre -->
+            <div class="mb-3">
+                <label class="form-label">Nombre del Proyecto</label>
+                <InputText class="form-control" @bind-Value="proyecto.Nombre" />
+                <ValidationMessage For="@(() => proyecto.Nombre)" />
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <InputTextArea class="form-control" rows="4" @bind-Value="proyecto.Descripcion" />
+            </div>
+
+            <!-- Categoría -->
+            <div class="mb-3">
+                <label class="form-label">Categoría</label>
+                <InputSelect class="form-control" @bind-Value="proyecto.Categoria">
+                    <option value="">Seleccione una categoría</option>
+                    <option value="Residencial">Residencial</option>
+                    <option value="Comercial">Comercial</option>
+                    <option value="Paisajismo">Paisajismo</option>
+                    <option value="Reforma">Reforma</option>
+                </InputSelect>
+            </div>
+
+            <!-- Ubicación -->
+            <div class="mb-3">
+                <label class="form-label">Ubicación</label>
+                <InputText class="form-control" @bind-Value="proyecto.Ubicacion" />
+            </div>
+
+            <!-- Fecha -->
+            <div class="mb-3">
+                <label class="form-label">Fecha del Proyecto</label>
+                <InputDate class="form-control" @bind-Value="proyecto.Fecha" />
+            </div>
+
+            <!-- m² Construidos -->
+            <div class="mb-3">
+                <label class="form-label">Superficie Construida (m²)</label>
+                <InputNumber class="form-control" @bind-Value="proyecto.SuperficieConstruidaM2" />
+            </div>
+
+            <!-- m² Terreno -->
+            <div class="mb-3">
+                <label class="form-label">Superficie de Terreno (m²)</label>
+                <InputNumber class="form-control" @bind-Value="proyecto.SuperficieTerrenoM2" />
+            </div>
+
+            <!-- ¿Construido? -->
+            <div class="mb-3">
+                <label class="form-label">¿Este proyecto fue construido?</label>
+                <InputSelect class="form-control" @bind-Value="proyecto.FueConstruido">
+                    <option value="">Seleccione una opción</option>
+                    <option value="true">Sí</option>
+                    <option value="false">Solo diseño</option>
+                </InputSelect>
+            </div>
+
+
+            <!-- Imagen de Portada -->
+            <!-- Imagen de Portada -->
+            <div class="mb-3">
+                <label for="portadaUrl" class="form-label">Cargar Imagen de Portada</label>
+                <InputFile id="portadaUrl" class="form-control" OnChange="OnImageSelected" accept="image/*" />
+            </div>
+
+
+            @if (!string.IsNullOrEmpty(imagenPortadaBase64))
+            {
+                <img src="@imagenPortadaBase64" alt="Portada del Proyecto" class="img-fluid" style="max-width:100%; height:auto;" />
+            }
+
+
+
+            <!-- Carga de imágenes (hasta 6) -->
+            <div class="mb-3">
+                <label class="form-label">Imágenes del Proyecto</label>
+                <div class="contenedor-imagenes">
+                    <div class="row">
+                        @for (int i = 0; i < 6; i++)
+                        {
+                            var localIndex = i;  // ahora empieza en 0
+
+                            var inputId = $"fileInput-{localIndex}";
+                            <div class="col-2">
+                                <div class="image-square" @onclick='() => AbrirSelectorImagen(inputId)'>
+                                    <img src="@((imagenRutas[localIndex] != null) ? imagenRutas[localIndex] : "/Images/Fondos/ImagenVacia.jpg")"
+                                         alt="Imagen @localIndex" class="img-thumbnail" />
+                                    <InputFile id="@inputId" OnChange="(e) => SubirImagen(e, localIndex)" style="display:none" />
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <!-- Botón Guardar -->
+            <div class="button-container">
+                <button type="submit" class="custom-save-btn">
+                    <i class="bi bi-save"></i> Guardar Proyecto
+                </button>
+            </div>
+        </EditForm>
+
+    </div>
+</div>
+
+@code {
+    private ProyectoDTO proyecto = new();
+    private EditContext contextoEdicion = null!;
+    private List<string?> imagenRutas = new() { null, null, null, null, null, null };
+    private int idUsuario;
+
+    private const long MaxFileSize = 7 * 1024 * 1024;
+
+
+
+    private string? imagenPortadaBase64;
+
+    private async Task OnImageSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        if (file != null && file.Size <= MaxFileSize)
+        {
+            using var stream = file.OpenReadStream(MaxFileSize);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            var base64 = Convert.ToBase64String(ms.ToArray());
+            imagenPortadaBase64 = $"data:{file.ContentType};base64,{base64}";
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        contextoEdicion = new EditContext(proyecto);
+
+        var auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (auth.User.Identity?.IsAuthenticated == true)
+        {
+            idUsuario = AuthenticationStateProvider.GetIdUsuario();
+        }
+        else
+        {
+            await sweetAlertService.FireAsync("Advertencia", "Por favor, inicia sesión para continuar.", SweetAlertIcon.Warning);
+            navigationManager.NavigateTo("/login");
+        }
+    }
+
+    private async Task OnValidSubmit()
+    {
+        if (string.IsNullOrEmpty(imagenRutas[0]))
+        {
+            await sweetAlertService.FireAsync("Error", "Debes cargar al menos la imagen de portada.", SweetAlertIcon.Error);
+            return;
+        }
+
+        var formData = new MultipartFormDataContent
+        {
+            { new StringContent(proyecto.Nombre), "Nombre" },
+            { new StringContent(proyecto.Descripcion ?? ""), "Descripcion" },
+            { new StringContent(proyecto.Categoria ?? ""), "Categoria" },
+            { new StringContent(proyecto.Ubicacion ?? ""), "Ubicacion" },
+            { new StringContent(proyecto.SuperficieConstruidaM2.ToString()), "SuperficieConstruidaM2" },
+            { new StringContent(proyecto.SuperficieTerrenoM2.ToString()), "SuperficieTerrenoM2" },
+            { new StringContent(proyecto.Fecha.ToString("yyyy-MM-dd")), "Fecha" },
+            { new StringContent(proyecto.FueConstruido.ToString()), "FueConstruido" },
+            { new StringContent(idUsuario.ToString()), "IdUsuario" }
+        };
+
+        for (int i = 0; i < imagenRutas.Count; i++)
+        {
+            if (!string.IsNullOrEmpty(imagenRutas[i]))
+            {
+                formData.Add(ProcesarImagen(imagenRutas[i]!), $"imagen{i + 1}", $"imagen{i + 1}.jpg");
+            }
+        }
+
+        var response = await repositorio.PostMultipartContent("/api/proyecto/insertar", formData);
+
+        if (response.Error)
+        {
+            var mensaje = await response.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", mensaje, SweetAlertIcon.Error);
+            return;
+        }
+
+        await sweetAlertService.FireAsync("Éxito", "Proyecto guardado con éxito", SweetAlertIcon.Success);
+        navigationManager.NavigateTo("/proyectos");
+    }
+
+    private StreamContent ProcesarImagen(string base64Image)
+    {
+        var partes = base64Image.Split(',');
+        var base64Data = partes.Length == 2 ? partes[1] : partes[0];
+
+        var bytes = Convert.FromBase64String(base64Data);
+        var stream = new MemoryStream(bytes);
+        var content = new StreamContent(stream);
+        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+
+        return content;
+    }
+
+    private async Task SubirImagen(InputFileChangeEventArgs e, int index)
+    {
+        if (index < 0 || index >= imagenRutas.Count) return;
+
+        var file = e.File;
+        if (file.Size > MaxFileSize)
+        {
+            await sweetAlertService.FireAsync("Error", "La imagen supera los 7MB.", SweetAlertIcon.Warning);
+            return;
+        }
+
+        using var stream = file.OpenReadStream(MaxFileSize);
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream);
+
+        var base64 = Convert.ToBase64String(memoryStream.ToArray());
+        imagenRutas[index] = $"data:{file.ContentType};base64,{base64}";
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task AbrirSelectorImagen(string inputId)
+    {
+        await js.InvokeVoidAsync("abrirSelectorDeArchivo", inputId);
+    }
+
+
+
+    public class ProyectoDTO
+    {
+        public string Nombre { get; set; } = string.Empty;
+        public string? Descripcion { get; set; }
+        public string? Categoria { get; set; }
+        public string? Ubicacion { get; set; }
+        public DateTime Fecha { get; set; } = DateTime.Today;
+        public decimal SuperficieConstruidaM2 { get; set; }
+        public decimal SuperficieTerrenoM2 { get; set; }
+        public bool FueConstruido { get; set; }
+    }
+}

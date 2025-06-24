@@ -1,0 +1,17 @@
+﻿
+
+
+<div class="title-container">
+    <h1>@Title</h1>
+
+    <div class="text-content">
+        <p class="description">
+            @((MarkupString)Description)
+        </p>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "Default Title";   // Parámetro para el título
+    [Parameter] public string Description { get; set; } = "";          // Parámetro para la descripción
+}

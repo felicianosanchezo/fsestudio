@@ -1,0 +1,151 @@
+﻿@page "/portafolio"
+
+@inject IRepositorio repositorio
+@inject NavigationManager Navigation
+    @inject IJSRuntime JS
+
+<div class="full-background">
+    <div class="top-products-wrapper">
+        <div class="titulo-con-descripcion">
+            <p class="Titulo-Principal-Secundario">@Titulo</p>
+            <hr />
+            <p class="Descripcion-Principal">
+                Descubre nuestra colección de <span class="highlight">proyectos arquitectónicos</span> diseñados con visión, creatividad y precisión. Desde casas de campo hasta espacios urbanos, cada proyecto refleja nuestra pasión por el diseño funcional y estético.
+            </p>
+            <hr />
+        </div>
+
+        <div class="top-products-container">
+            @foreach (var proyecto in Proyectos)
+            {
+                <div class="product-item1">
+
+                    <div class="contenedor-informacion1">
+                        <h4>@proyecto.Nombre</h4>
+                    </div>
+
+           
+
+                        <div @onclick="() => NavegarADetalle(proyecto.IdPortafolio)" style="cursor: pointer;">
+                            <img src="@proyecto.PortadaUrl" alt="@proyecto.Nombre" loading="lazy" />
+                        </div>
+
+                        <div class="contenedor-informacion">
+                            <div class="color-unidad">@proyecto.Categoria</div>
+                            <div class="color-descripcion">@proyecto.Ubicacion</div>
+                            <div class="color-descripcion">Fecha: @proyecto.Fecha.ToString("yyyy")</div>
+
+                            <div>
+                                <button class="btn-azul1" @onclick="() => NavegarADetalle(proyecto.IdPortafolio)">
+                                    MAS INFORMACIÓN...
+                                </button>
+                            </div>
+
+
+                        </div>
+
+
+            
+
+
+
+                    <!-- Llamado a la acción -->
+                    <div class="contenedor-botones1">
+                        <button class="boton-accion-portada1" title="Solicitar Información" @onclick="() => EnviarCorreoInformacion(proyecto.Nombre)">
+                            <i class="bi bi-envelope-at"></i> <span class="boton-texto1">Correo</span>
+                        </button>
+
+                        <button class="boton-accion-portada1" title="Enviar WhatsApp" @onclick="() => EnviarWhatsApp(proyecto.Nombre)">
+                            <i class="bi bi-whatsapp"></i> <span class="boton-texto1">WhatsApp</span>
+                        </button>
+
+                        <button class="boton-accion-portada1" title="Compartir Proyecto" @onclick="() => CompartirPorWhatsApp(proyecto.Nombre,proyecto.IdPortafolio)">
+                            <i class="bi bi-share-fill"></i> <span class="boton-texto1">Compartir</span>
+                        </button>
+                    </div>
+
+
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Titulo { get; set; } = "PORTAFOLIO";
+    [Parameter] public string Descripcion { get; set; } = "Conoce algunos de nuestros trabajos más destacados, cada uno pensado para lograr funcionalidad, belleza y coherencia con el entorno.";
+
+    public List<PortafolioDTO> Proyectos { get; set; } = new();
+
+    private void NavegarADetalle(int idProyecto)
+    {
+        Navigation.NavigateTo($"/portafolio/{idProyecto}");
+    }
+    private FsEstudioDTO empresa;
+    protected override async Task OnInitializedAsync()
+    {
+        await Cargar();
+        empresa = FsEstudioService.ObtenerInformacionEmpresa().FirstOrDefault();
+    }
+
+    private async Task Cargar()
+    {
+        int intentos = 0;
+        const int maxIntentos = 3;
+        const int delayMilisegundos = 2000;
+
+        while (intentos < maxIntentos)
+        {
+            try
+            {
+                var response = await repositorio.Get<List<PortafolioDTO>>("/api/portafolio/listar");
+                if (response?.Response != null)
+                {
+                    Proyectos = response.Response;
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en intento {intentos + 1}: {ex.Message}");
+            }
+
+            intentos++;
+            if (intentos < maxIntentos)
+            {
+                await Task.Delay(delayMilisegundos);
+            }
+        }
+
+        Console.WriteLine("Error: No se pudo cargar el listado de proyectos.");
+    }
+    private void EnviarCorreoInformacion(string nombre)
+    {
+        var email = empresa.Correo;
+        var subject = $"Interés en el proyecto {nombre}";
+        var body = $"Hola, estoy interesado en recibir más información sobre el proyecto {nombre}.";
+        var mailtoUrl = $"mailto:{email}?subject={Uri.EscapeDataString(subject)}&body={Uri.EscapeDataString(body)}";
+        Navigation.NavigateTo(mailtoUrl, true);
+    }
+
+
+    private async Task CompartirPorWhatsApp(string nombre, int id)
+    {
+        var mensaje = $"Te comparto este proyecto de FS Estudio: {nombre} - https://www.fsestudio.com/portafolio/{id}";
+        var whatsappUrl = $"https://wa.me/?text={Uri.EscapeDataString(mensaje)}";
+
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", whatsappUrl);
+    }
+
+
+    private async Task EnviarWhatsApp(string nombre)
+    {
+        var mensaje = $"Hola, estoy interesado en el proyecto {nombre} que vi en su página.";
+        var whatsappUrl = $"https://wa.me/{empresa.WhatsAppTelefono}?text={Uri.EscapeDataString(mensaje)}";
+        
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", whatsappUrl);
+    }
+
+
+
+}

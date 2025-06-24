@@ -1,0 +1,901 @@
+﻿/* Contenedor principal */
+.fila-servicio {
+    display: flex;
+    gap: 45px; /* Espacio entre las columnas */
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina), var(--color-gris-claro1));
+    height: 680px; /* Asegura una altura fija para evitar que crezca demasiado */
+    padding: 90px 60px;
+    border-radius: 15px;
+    border: 1px solid #ccd1d1;
+    box-sizing: border-box;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    margin-bottom: 0px;
+}
+    .fila-servicio.seleccionado {
+        border: 3px solid #E3B866;
+    }
+
+
+
+
+.columna-seleccion-colaboradores {
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    overflow: hidden;
+    padding: 0px;
+    box-sizing: border-box;
+    flex-grow: 1;
+    width: 1018px;
+    max-width: 100%;
+    flex-shrink: 1;
+    border: 1px solid #ccd1d1;
+    border-radius: 15px;
+}
+
+
+
+/* Título */
+.titulo-fila {
+    display: flex; /* Activa el modo Flexbox */
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    border-bottom: 1px solid #ccd1d1;
+    padding: 0px;
+    height: 60px;
+    overflow: hidden;
+    background-color: var(--color-gris-claro1);
+}
+
+.subtitulo-fila {
+    display: flex;
+    text-align: center; /* Centra el contenido de texto */
+    justify-content: center; /* Centrar el contenido horizontalmente */
+    height: 45px; /* Ajusta la altura de la barra */
+    /*border-bottom: 1px solid #ccd1d1;*/
+    overflow: hidden;
+    background-color: var(--color-gris-claro1);
+}
+
+
+
+
+
+
+
+
+
+/* Descripción */
+.descripcion-fila {
+    color: #707b7c;
+    flex-grow: 1; /* Permite que crezca para llenar el espacio */
+    display: flex; /* Flexbox para centrar el contenido */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    text-align: center; /* Centrar el texto dentro del párrafo */
+    padding: 12px;
+    height: 180px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Contenedor del carrusel y extras */
+#colaboradorCarruselContainer {
+    display: flex;
+    height:210px;
+    overflow: hidden;
+    background-color: transparent;
+    padding: 0;
+    overflow: hidden;
+    border-top: 1px solid #ccd1d1;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#colaboradorExtrasSection {
+    height: 210px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    overflow: hidden;
+    padding: 0px;
+    margin: 0;
+    border-left: 1px solid #ccd1d1;
+}
+
+/* Contenedor principal del carrusel */
+#colaboradorCarruselSection {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    margin: 0;
+    background-color: transparent;
+ 
+    height: 210px;
+}
+
+    #colaboradorCarruselSection .row {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding: 0px;
+        overflow: hidden;
+        padding: 0px 30px;
+    }
+
+/* Flechas del carrusel */
+.carousel-control-prev, .carousel-control-next {
+    color: #0097a7;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    z-index: 10;
+    margin-top: 60px;
+}
+
+    /* Cambiar el color de las flechas cuando están activas */
+    .carousel-control-prev:active, .carousel-control-next:active,
+    .carousel-control-prev:focus, .carousel-control-next:focus {
+        color: #0097a7;
+        outline: none;
+    }
+
+/* Icono de flechas del carrusel */
+.carousel-control-prev-icon, .carousel-control-next-icon  .bi{
+    background-color: transparent;
+    font-size: 60px;
+}
+
+    .carousel-control-prev-icon:hover, .carousel-control-next-icon:hover {
+        background-color: gold;
+    }
+
+/* Flechas de Bootstrap */
+.bi-chevron-left, .bi-chevron-right  {
+    font-size:45px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.col-2 {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Contenido central del carrusel */
+.carousel-inner {
+    height: 100%;
+    padding: 15px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.carousel-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #0097a7;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Nombre del colaborador */
+.carousel-item h5 {
+    margin-top: 10px;
+    color: #3E5369;
+}
+
+/* Estrellas de calificación */
+.carousel-item i {
+    font-size: 20px;
+    margin-right: 2px;
+}
+
+/* Estrellas */
+.estrella-vacia {
+    color: #e4e5e9;
+}
+
+.estrella-llena {
+    color: #E3B866;
+}
+
+
+
+/* Contenedores de PDF, Video, Unidad y Precio */
+.fila-pdf-video {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0px 0px;
+    background-color: transparent;
+    border-bottom: 1px solid #ccd1d1;
+}
+
+
+
+
+
+.contenedor-pdf, .contenedor-video, .contenedor-unidad {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color:transparent;
+    align-items: center;
+    width:100%;
+    height:100%;
+}
+.contenedor-precio {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: transparent;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    width: 1200px;
+}
+
+
+/* Estilo para el enlace de PDF, Video, Unidad y Precio */
+.pdf-button-container a, .video-button-container a, .unidad-container, .precio-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 0 15px;
+    background-color: transparent;
+
+}
+
+/* Iconos en botones PDF, Video, Unidad y Precio */
+.bi {
+    font-size: 2em;
+    vertical-align: middle;
+}
+
+.btn-primary, .btn-secondary {
+    color: #0097a7;
+    border: none;
+    text-align: center;
+}
+
+    .btn-primary:hover, .btn-secondary:hover {
+        color: #E3B866; /* Cambia el color del texto al pasar el ratón */
+        background-color: transparent; /* Cambia el color de fondo al pasar el ratón */
+    }
+
+    .btn-primary:active, .btn-secondary:active{
+        color: #E3B866; /* Cambia el color del texto al pasar el ratón */
+        background-color: transparent; /* Cambia el color de fondo al pasar el ratón */
+    }
+
+
+
+/* Estilo adicional para los textos de unidad y precio */
+
+/* Contenedores de Unidad y Precio */
+.contenedor-unidad, .contenedor-precio {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+.unidad-container, .precio-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    text-align: center;
+}
+
+
+/* Segunda fila para seleccionar diseñador */
+.fila-seleccionar-usuario {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: var(--color-gris-claro1);
+}
+
+.pdf-button-container, .video-button-container {
+    margin-bottom: 30px;
+    text-align: center;
+    padding-top: 30px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Negrita solo para las etiquetas */
+.unidad-etiqueta, .precio-etiqueta {
+    font-weight: normal;
+    font-size: 1em;
+    color: #707b7c;
+}
+
+/* Normal para los valores */
+.unidad-valor, .precio-valor {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #0097a7;
+}
+
+
+
+
+
+
+/* Botones Seleccionar Diseñador */
+.seleccion-usuarios .btn {
+    display: flex; /* Activa el modo Flexbox */
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    font-weight: 500;
+    background-color: var(--color-azul-turquesa);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.0em;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 230px;
+    height: 45px;
+    text-align: center;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    border: 3px solid #0097a7;
+}
+
+    .seleccion-usuarios .btn:hover {
+        background-color: #138d75;
+        transform: scale(1.06); /* Aumento ligero */
+        color: white;
+        border: 3px solid #138d75;
+    }
+
+
+
+
+
+/* Estilo para el botón seleccionado */
+.seleccion-usuarios .btn-seleccionado {
+    display: flex; /* Activa el modo Flexbox */
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    width: 230px;
+    height: 45px;
+    background-color: #E3B866;
+    color: white;
+    box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.2); /* Efecto de botón presionado */
+    transform: translateY(2px); /* Simula que el botón está presionado */
+    cursor: pointer; /* Asegura que el cursor sea siempre "pointer" */
+    border: none;
+}
+
+.btn-default {
+    background-color: #0097a7;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Contenedor de la imagen principal */
+/* Columna principal que contiene la imagen */
+
+/* Columna principal que contiene la imagen */
+.columna-imagen-principal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    overflow: hidden; /* Evita que el contenido se desborde */
+    border-radius: 15px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+    border: 3px solid #f8f9f9;
+    width: 100%; /* Ancho al 100% del contenedor padre */
+    max-width: 500px; /* Limita el ancho máximo del contenedor principal */
+    height: 100%;
+    box-sizing: border-box;
+}
+
+/* Nuevo contenedor exclusivo para la imagen */
+.contenedor-imagen {
+    position: relative;
+    width: 100%; /* Ocupará todo el ancho disponible */
+
+    padding-bottom: 100%; /* Mantiene la proporción cuadrada (1:1) */
+    border-radius: 15px;
+    overflow: hidden; /* Evita que la imagen se desborde */
+
+    user-select: none; /* Evita seleccionar el contenido */
+}
+
+/* Imagen principal */
+.imagen-principal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Asegura que la imagen cubra todo el contenedor sin distorsionarse */
+    border-radius: 15px;
+    box-sizing: border-box;
+    pointer-events: none; /* Deshabilita la interacción directa con la imagen */
+}
+
+.contenedor-imagen::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/Images/Fondos/Marca de agua.png');  
+    background-repeat: repeat;  
+    background-size: 250px 250px;  
+    opacity: .6; 
+    pointer-events: none;  
+    z-index:1005; 
+}
+
+
+
+
+
+
+
+/* Miniaturas */
+.columna-miniaturas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0px;
+    padding: 0px;
+    width: 70px;
+    background-color: transparent;
+}
+
+.miniatura {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    overflow: hidden;
+    background-color: transparent;
+    border-radius: 9px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+        cursor: pointer;
+
+
+}
+
+    .miniatura img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 9px;
+        transition: border 0.3s ease-in-out;
+        border: 3px solid #f8f9f9;
+        user-select: none; /* Evita seleccionar el contenido */
+        pointer-events: none; /* Deshabilita la interacción directa con la imagen */
+    }
+
+.miniatura-seleccionada {
+    border: 3px solid #0097a7 !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+
+@media (max-width: 768px) {
+
+    /* Ajustes para el contenedor principal */
+    .fila-servicio {
+        flex-direction: column; /* Apilar contenido verticalmente */
+        height: auto; /* Altura automática */
+        padding: 20px 15px;
+        gap: 20px;
+        border-radius:0px;
+    }
+
+        .fila-servicio.seleccionado {
+            border-width: 2px;
+            margin-bottom: 0px;
+            margin-top: 15px;
+        }
+
+    /* Columna de selección de colaboradores */
+    .columna-seleccion-colaboradores {
+        width: 100%; /* Ancho completo */
+        padding: 0px;
+    }
+
+    /* Ajustes del título */
+    .titulo-fila {
+        font-size: 1.2em;
+        height: 100%;
+        padding: 10px;
+        align-items:center;
+
+    }
+
+    .subtitulo-fila {
+
+        height: auto;
+        padding: 6px;
+        height: 60px;
+    }
+
+    /* Ajustes de la descripción */
+    .descripcion-fila {
+        font-size: 0.9em;
+        height: auto;
+        padding: 10px;
+    }
+
+    /* Contenedor de carrusel */
+    #colaboradorCarruselContainer {
+        display: flex;
+        flex-direction: column;
+        width: 100%; /* Ancho completo */
+        height: auto; /* Ajuste automático */
+        padding: 0px;
+    }
+
+    /* Contenedor de extras del colaborador */
+    #colaboradorExtrasSection {
+        display: flex;
+        flex-direction: column;
+        width: 100%; /* Ancho completo */
+        padding: 0px;
+        border-top: 1px solid var(--color-gris-linea);
+        box-sizing: border-box;
+        border-left:none;
+
+    }
+
+    /* Sección del carrusel */
+    #colaboradorCarruselSection {
+        display: flex;
+        flex-direction: column;
+        width: 100%; /* Ancho completo */
+        padding: 0px;
+        box-sizing: border-box;
+    }
+
+    /* Flechas del carrusel */
+    .carousel-control-prev, .carousel-control-next {
+        margin-top: 60px;
+        font-size: 30px;
+    }
+
+    .carousel-control-prev-icon, .carousel-control-next-icon {
+        font-size: 30px;
+    }
+
+    /* Contenedor de PDF, Video, Unidad y Precio */
+    .fila-pdf-video {
+       display:flex;
+        flex-direction: column;
+        gap: 0px;
+        padding: 0px 0;
+        width: 100%; /* Ancho completo */
+        margin-to:15px;
+
+    }
+
+    .contenedor-pdf, .contenedor-video, .contenedor-unidad, .contenedor-precio {
+        display:flex;
+        width: 100%; /* Ancho completo */
+     
+        box-sizing: border-box;
+        border: none;
+
+    }
+
+    .pdf-button-container a, .video-button-container a, .unidad-container, .precio-container {
+        padding: 5px 10px;
+        font-size: 0.80em;
+        width: 100%; /* Asegura el ancho completo para los botones */
+        box-sizing: border-box;
+        text-align: center;
+        border: none;
+    }
+
+  
+    /* Contenedores de Unidad y Precio */
+    .unidad-container, .precio-container {
+        font-size: 0.8rem;
+        gap: 0px;
+        width: 100%; /* Ancho completo */
+    }
+
+    /* Segunda fila para seleccionar diseñador */
+
+
+
+
+
+
+    .fila-seleccionar-usuario {
+        display: flex;
+        justify-content: center; /* Centra horizontalmente */
+        align-items: center; /* Centra verticalmente */
+        width: 100%; /* Ancho completo */
+        height: 60px; /* Altura especificada */
+        padding: 0; /* Sin relleno */
+    }
+
+    /* Botón de seleccionar diseñador */
+    .seleccion-usuarios .btn {
+        display: flex;
+        justify-content: center; /* Centra el contenido del botón horizontalmente */
+        align-items: center; /* Centra el contenido del botón verticalmente */
+        font-size: 0.9em;
+        padding: 10px 15px;
+        width: 200px;
+        height: 35px;
+    }
+
+    /* Columna de la imagen principal */
+    .columna-imagen-principal {
+        max-width: 100%;
+        padding: 0px;
+    }
+
+    .contenedor-imagen {
+        width: 100%;
+        padding-bottom: 100%; /* Mantiene la proporción cuadrada */
+    }
+
+    .imagen-principal {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Miniaturas */
+    .columna-miniaturas {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 5px;
+        padding: 0px;
+        width: 100%;
+
+    }
+
+    .miniatura {
+        width: 50px;
+        height: 50px;
+        cursor:pointer;
+    }
+
+        .miniatura img {
+            border-width: 2px;
+        }
+
+    /* Texto dentro del carrusel */
+    .carousel-item h5 {
+        font-size: 1em;
+    }
+
+    .carousel-item i {
+        font-size: 18px;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+/* Fondo que cubre toda la pantalla */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050; /* Siempre al frente */
+}
+
+/* Contenedor del modal */
+.modal-content {
+    position: relative;
+    background-color: #ffffff; /* Fondo del modal */
+    width: 800px;
+    height: 800px;
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra del modal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Para evitar desbordes */
+}
+
+/* Botón de cierre */
+.btn-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    background: none;
+    border: none;
+    color: #fdfefe;
+    cursor: pointer;
+    z-index: 10000;
+}
+
+    .btn-close:hover {
+        color: red; /* Cambia de color al pasar el mouse */
+    }
+
+
+
+.modelo3dd {
+    width: 800px;
+    height: 800px;
+    margin: auto;
+    z-index: 1088;
+    /* Asegúrate de que este valor esté por encima del fondo pero por debajo del contenido del modal */
+}
+
+
+
+@media (max-width: 480px) {
+    .modal-content {
+        width: 90%; /* Ajusta el ancho */
+        height: auto; /* Permite que el modal se ajuste al contenido */
+        max-height: 90vh; /* Limita la altura máxima al 90% de la ventana */
+        border-radius: 5px;
+        overflow: hidden; /* Evita desbordes si el contenido crece */
+    }
+
+    .modelo3dd {
+        width: 100%; /* Asegura que el canvas ocupe el ancho completo */
+        height: 60vw; /* Altura proporcional al ancho para pantallas pequeñas */
+        overflow: hidden; /* Evita desbordes */
+    }
+}

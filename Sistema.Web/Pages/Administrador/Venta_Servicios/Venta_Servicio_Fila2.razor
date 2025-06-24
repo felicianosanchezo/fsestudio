@@ -1,0 +1,688 @@
+﻿@page "/cliente-servicio-fila2/{IdServicio:int}"
+@inject IRepositorio repositorio
+@inject IJSRuntime JS
+@using System.Globalization
+@inject AuthenticationProviderJWT AuthProvider
+
+<div class="fila-servicio @(colaboradorSeleccionado ? "seleccionado" : "")">
+    <!-- Columna 1: Selección de colaboradores -->
+    <div class="columna-seleccion-colaboradores">
+
+        <div class="subtitulo-fila">
+            <p class="Subtitulo-Principal">Paso 1. Mi Portafolio</p>
+        </div>
+
+        <div class="titulo-fila">
+            <p class="Titulo-Principal-Secundario">Conoce Mi Trabajo Profesional</p>
+        </div>
+
+        <!-- Descripción: Aquí van las notas del colaborador -->
+        <div class="descripcion-fila">
+            @if (Colaborador_Servicios.Count > 0 && Colaborador_Servicios[selectedImageIndex] != null)
+            {
+                    <p class="Parrafo-Principal">
+                        "@Colaborador_Servicios[selectedImageIndex].Notas"
+                    </p>
+
+            }
+        </div>
+
+
+
+        <div id="colaboradorCarruselContainer">
+
+
+
+
+            @*           <div id="colaboradorCarruselSection">
+                <div class="row align-items-center">
+                    <!-- Contenedor izquierdo: Flecha anterior -->
+                    <div class="col-1 text-center">
+                        <button class="carousel-control-prev" type="button" data-bs-target="#colaboradorCarruselInner" data-bs-slide="prev" @onclick="MoverIzquierda">
+                            <i class="bi-chevron-left"></i>
+                        </button>
+                    </div>
+
+                    <!-- Contenedor central: Carrusel de colaboradores -->
+                    <div class="col-10">
+                        <div id="colaboradorCarruselInner" class="carousel slide" data-bs-interval="false">
+                            <div class="carousel-inner">
+                                @if (Colaborador_Servicios == null || Colaborador_Servicios.Count == 0)
+                                {
+                                    <div class="carousel-item active">
+                                        <p class="text-center">No hay colaboradores disponibles.</p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    @for (int i = 0; i < Colaborador_Servicios.Count; i++)
+                                    {
+                                        var colaborador = Colaborador_Servicios[i];
+                                        <div class="carousel-item @(i == selectedImageIndex ? "active" : "")">
+                                            <!-- Imagen del colaborador -->
+                                            <div class="text-center">
+                                                <img src="@colaborador.UrlPerfil" class="d-block mx-auto rounded-circle" alt="Imagen de @colaborador.Perfil">
+                                            </div>
+
+                                            <!-- Nombre del colaborador -->
+                                            <h5 class="Titutlo-Normal">@colaborador.Perfil</h5>
+
+                                            <!-- Calificaciones en forma de estrellas -->
+                                            <div class="text-center">
+                                                @for (int star = 1; star <= 5; star++)
+                                                {
+                                                    <i class="bi bi-star-fill @(star <= colaborador.Calificaciones ? "estrella-llena" : "estrella-vacia")"></i>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenedor derecho: Flecha siguiente -->
+                    <div class="col-1 text-center">
+                        <button class="carousel-control-next" type="button" data-bs-target="#colaboradorCarruselInner" data-bs-slide="next" @onclick="MoverDerecha">
+                            <i class="bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+ *@
+
+
+
+            <!-- Contenedor derecho: PDF, Video y notas adicionales -->
+            <div id="colaboradorExtrasSection">
+                @if (Colaborador_Servicios.Count > 0 && Colaborador_Servicios[selectedImageIndex] != null)
+                {
+
+
+                        <div class="fila-pdf-video">
+
+
+                  @*           <div class="contenedor-pdf">
+                                <div class="pdf-button-container mb-3">
+                                @if (Colaborador_Servicios != null && selectedImageIndex >= 0 && selectedImageIndex < Colaborador_Servicios.Count)
+                                {
+                                    @if (Colaborador_Servicios[selectedImageIndex].IdServicio == 3)
+                                    {
+                                                    <a class="btn btn-primary" @onclick="MostrarModelo3D">
+                                                                                          <i class="fas fa-cube" style="font-size: 2rem;"> </i>Modelo 1 3D
+                                                    </a>
+                                    }
+                                }
+                                </div>
+                            </div> *@
+
+                                                    <div class="contenedor-pdf">
+                                <div class="pdf-button-container mb-3">
+                                @if (Colaborador_Servicios != null && selectedImageIndex >= 0 && selectedImageIndex < Colaborador_Servicios.Count)
+                                {
+                                    @if (Colaborador_Servicios[selectedImageIndex].IdServicio == 3)
+                                    {
+                                                    <a class="btn btn-primary" @onclick="MostrarModelo3D2">
+                                                                                          <i class="fas fa-cube" style="font-size: 2rem;"> </i>Modelo 3D
+                                                    </a>
+                                    }
+                                }
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+
+                            <!-- Contenedor PDF -->
+
+
+
+
+
+                        <div class="contenedor-pdf">
+                            <div class="pdf-button-container mb-3">
+
+                                    <a href="/Curriculo/Curriculum Fs Estudio.pdf"
+                                       target="_blank"
+                                       class="btn btn-primary"
+                                       @onclick="() => PortafolioClick()">
+                                        <i class="bi bi-file-earmark-pdf-fill"></i> Portafolio
+                                    </a>
+                         
+                            </div>
+                        </div>
+
+
+
+                            <div class="contenedor-pdf">
+                                <div class="pdf-button-container mb-3">
+                                @if (!string.IsNullOrEmpty(Colaborador_Servicios[selectedImageIndex].ArchivoUrl))
+                                {
+                                    <a href="@Colaborador_Servicios[selectedImageIndex].ArchivoUrl"
+                                       target="_blank"
+                                       class="btn btn-primary"
+                                       @onclick="() => OnPdfClick()">
+                                        <i class="bi bi-file-earmark-pdf-fill"></i> Mas Detalles
+                                    </a>
+                                }
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+
+                            <!-- Contenedor Video -->
+                            <div class="contenedor-video">
+                                <div class="video-button-container mb-3">
+                                @if (!string.IsNullOrEmpty(Colaborador_Servicios[selectedImageIndex].VideoUrl))
+                                {
+
+
+
+
+
+                                    <a href="@Colaborador_Servicios[selectedImageIndex].VideoUrl" target="_blank" class="btn btn-secondary" @onclick="() => OnVideoClick()">
+                                      
+                                                <i class="bi bi-play-circle-fill"></i> Ver Video
+                                            </a>
+                                }
+                                </div>
+                            </div>
+
+                            <div class="contenedor-unidad">
+                                <div class="unidad-container mb-3">
+                                @if (!string.IsNullOrEmpty(Colaborador_Servicios[selectedImageIndex].Unidad))
+                                {
+                                            <div class="unidad-etiqueta">Unidad:</div>
+                                            <div class="precio-resaltado">@Colaborador_Servicios[selectedImageIndex].Unidad</div>
+                                }
+                                </div>
+                            </div>
+
+                            <!-- Contenedor Precio -->
+                            <div class="contenedor-precio">
+                                <div class="precio-container mb-3">
+                                @if (Colaborador_Servicios[selectedImageIndex].Precio > 0)
+                                {
+                                            <div class="precio-etiqueta">Precio:</div>
+                                            <div class="precio-resaltado">
+                                        @Colaborador_Servicios[selectedImageIndex].Precio_Ajustado.ToString("C", new CultureInfo("es-MX"))
+                                            </div> 
+
+
+
+                                }
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+
+                        <div class="fila-seleccionar-usuario">
+                            <div class="seleccion-usuarios">
+                                <button class="btn @(colaboradorSeleccionado ? "btn-seleccionado" : "btn-default")" @onclick="ToggleSeleccionColaborador">
+                                @(colaboradorSeleccionado ? "Cotización Express" : "Cotización Express")
+                                </button>
+                            </div>
+                        </div>
+
+                }
+            </div>
+
+        </div>
+
+
+    </div>
+
+    @if (mostrarModal)
+    {
+            <div class="modal-backdrop">
+                <div class="modal-content">
+                    <button class="btn-close" @onclick="CerrarModal">×</button>
+                 <div class="modelo3dd" id="modelo3d"></div>
+
+                </div>
+            </div>
+    }
+
+
+
+
+    <!-- Columna 2: Imagen principal seleccionada -->
+    <div class="columna-imagen-principal">
+        <div class="contenedor-imagen">
+            <img src="@imagenSeleccionada" alt="Imagen Principal" class="imagen-principal">
+        </div>
+    </div>
+
+
+    <!-- Columna 3: Miniaturas -->
+    <div class="columna-miniaturas">
+        <!-- Miniatura 1 -->
+        <div class="miniatura" @onclick="() => ActualizarImagenSeleccionada(imagenUrl1,1)">
+            <img src="@imagenUrl1" alt="Miniatura 1" class="@(imagenSeleccionada == imagenUrl1 ? "miniatura-seleccionada" : "")">
+        </div>
+
+        <!-- Miniatura 2 -->
+        <div class="miniatura" @onclick="() => ActualizarImagenSeleccionada(imagenUrl2,2)">
+            <img src="@imagenUrl2" alt="Miniatura 2" class="@(imagenSeleccionada == imagenUrl2 ? "miniatura-seleccionada" : "")">
+        </div>
+                <!-- Miniatura 3 -->
+        <div class="miniatura" @onclick="() => ActualizarImagenSeleccionada(imagenUrl3,3)">
+            <img src="@imagenUrl3" alt="Miniatura 3" class="@(imagenSeleccionada == imagenUrl3 ? "miniatura-seleccionada" : "")">
+        </div>
+
+        <!-- Miniatura 4 -->
+        <div class="miniatura" @onclick="() => ActualizarImagenSeleccionada(imagenUrl4,4)">
+            <img src="@imagenUrl4" alt="Miniatura 4" class="@(imagenSeleccionada == imagenUrl4 ? "miniatura-seleccionada" : "")">
+        </div>
+
+        <!-- Miniatura 5 -->
+        <div class="miniatura" @onclick="() => ActualizarImagenSeleccionada(imagenUrl5,5)">
+            <img src="@imagenUrl5" alt="Miniatura 5" class="@(imagenSeleccionada == imagenUrl5 ? "miniatura-seleccionada" : "")">
+        </div>
+
+        <!-- Miniatura 6 -->
+        <div class="miniatura" @onclick="() => ActualizarImagenSeleccionada(imagenUrl6,6)">
+            <img src="@imagenUrl6" alt="Miniatura 6" class="@(imagenSeleccionada == imagenUrl6 ? "miniatura-seleccionada" : "")">
+        </div>
+    </div>
+
+
+
+    </div>
+ 
+    @if (isProcessing)
+    {
+        <LoadingProgress2/>
+    }
+
+
+
+
+
+
+@code {
+    [Parameter]
+    public int IdServicio { get; set; }
+
+    [Parameter]
+    public string? Nombre_Servicio { get; set; }
+
+    [Parameter] public EventCallback<Colaborador_ServicioDTO> OnSeleccionarUsuario { get; set; }
+
+    private List<Colaborador_ServicioDTO> Colaborador_Servicios = new List<Colaborador_ServicioDTO>();
+    private int selectedImageIndex = 0;
+    private string imagenSeleccionada;
+    // El EventCallback que enviará el usuario seleccionado al padre.
+    private bool colaboradorSeleccionado = false;
+
+    private async Task Registrar_Visita(string Action)
+    {
+        try
+        {
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            // Verificar si el usuario está autenticado y asignar valores personalizados
+            var userName = user.Identity?.IsAuthenticated == true
+                ? AuthProvider.GetNombreUsuario()
+                : "UsuarioAnónimo";
+            var idUserName = user.Identity?.IsAuthenticated == true
+                ? AuthProvider.GetIdUsuario()
+                : 0;
+
+            // Crear el objeto visita con datos comunes
+            var visita = new VisitaDTO
+                {
+                    Pagina = Nombre_Servicio,
+                    IdServicio = Convert.ToString(IdServicio),
+                    Usuario = userName,
+                    IdUsuario = Convert.ToString(idUserName),
+                    DeviceType = await JS.InvokeAsync<string>("isMobileDevice"),
+                    BrowserInfo = await JS.InvokeAsync<string>("getBrowserInfo"),
+                    Referrer = await JS.InvokeAsync<string>("getReferrer"),
+                    Action = $"Acción registrada: {Action}",
+                    SessionStatus = user.Identity?.IsAuthenticated == true ? "Iniciada" : "Terminada",
+                    IpAddress = await JS.InvokeAsync<string>("getClientIp"),
+
+
+                };
+
+            visita.Location = await JS.InvokeAsync<string>("getLocationFromIp", visita.IpAddress);
+            var utmParams = await JS.InvokeAsync<Dictionary<string, string>>("getUTMParameters");
+
+            if (utmParams != null)
+            {
+                utmParams.TryGetValue("utm_source", out var source);
+                utmParams.TryGetValue("utm_medium", out var medium);
+                utmParams.TryGetValue("utm_campaign", out var campaign);
+                utmParams.TryGetValue("utm_term", out var term);
+                utmParams.TryGetValue("utm_content", out var content);
+
+                visita.TrafficSource = source;
+                visita.Medium = medium;
+                visita.Campaign = campaign;
+                visita.Term = term;
+                visita.Content = content;
+            }
+
+
+            // Obtener ubicación basada en IP
+            // visita.Location = await JS.InvokeAsync<string>("getLocationFromIp", visita.IpAddress);
+
+            // Enviar visita a la API
+
+
+            var httpResponse = await repositorio.Post("/api/registro/registrar-visita", visita);
+            if (httpResponse.Error)
+            {
+                Console.WriteLine("Error al registrar la visita.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al registrar la visita: {ex.Message}");
+        }
+    }
+
+    [Parameter] public bool? BotonSeleccionarDiseñador { get; set; }
+
+    private async void OnPdfClick()
+    {
+        await Registrar_Visita("Link PDF"); // Llama a la función para registrar la visita
+    }
+
+    private async void PortafolioClick()
+    {
+        await Registrar_Visita("Link Portafolio"); // Llama a la función para registrar la visita
+    }
+    private async void OnVideoClick()
+    {
+        await Registrar_Visita("Link Video"); // Llama a la función para registrar la visita
+    }
+
+
+
+
+    private bool isProcessing = false;
+    private bool mostrarModal = false;
+
+    // private async Task MostrarModelo3D()
+    // {
+    //     mostrarModal = true;
+
+    //        isProcessing = true;
+    //     // Espera a que el modal se haya renderizado antes de llamar a JavaScript
+    //     await Task.Delay(100); // Breve espera para garantizar que el DOM esté listo
+    //     await JS.InvokeVoidAsync("loadOBJModel", "modelo3d", "/models/tuModelo.obj", "/models/tuModelo.mtl");
+
+    //     isProcessing = false;
+    // }
+
+
+    private async Task MostrarModelo3D()
+    {
+        mostrarModal = true; isProcessing = true; // Crear una referencia .NET para pasar a JavaScript
+        var dotNetObjectRef = DotNetObjectReference.Create(this); // Espera a que el modal se haya renderizado antes de llamar a JavaScript 
+        await Task.Delay(100); // Breve espera para garantizar que el DOM esté listo 
+        await JS.InvokeVoidAsync("loadOBJModel", "modelo3d", "/models/tuModelo.obj", "/models/tuModelo.mtl", dotNetObjectRef);
+
+    } // Este método será llamado desde JavaScript cuando el modelo se haya cargado completamente 
+
+
+
+    private async Task MostrarModelo3D2()
+    {
+        mostrarModal = true; isProcessing = true; // Crear una referencia .NET para pasar a JavaScript
+        var dotNetObjectRef = DotNetObjectReference.Create(this); // Espera a que el modal se haya renderizado antes de llamar a JavaScript
+        await Task.Delay(100); // Breve espera para garantizar que el DOM esté listo
+        await JS.InvokeVoidAsync("loadOBJModel", "modelo3d", "/models/tuModelo2.obj", "/models/tuModelo2.mtl", dotNetObjectRef);
+
+        await Registrar_Visita("Modelo 3D");
+
+
+
+
+
+    } // Este método será llamado desde JavaScript cuando el modelo se haya cargado completamente
+
+
+
+
+
+    [JSInvokable] 
+    public void OnModelLoaded() { isProcessing = false; StateHasChanged();} // Actualizar la interfaz de usuario
+
+
+
+
+
+
+
+
+    private void CerrarModal()
+    {
+        mostrarModal = false;
+        isProcessing = false;
+
+        // Opcional: Limpia el contenedor del modelo 3D si es necesario
+        JS.InvokeVoidAsync("clear3DModel", "modelo3d");
+    }
+
+    // Método que alterna el estado del botón
+    private async Task Desactivar_Boton()
+    {
+        if (BotonSeleccionarDiseñador == false)
+        {
+            colaboradorSeleccionado = false; // Desactiva la selección del colaborador
+        }
+
+        await Task.CompletedTask; // Es una tarea asíncrona, así que completa la tarea.
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        await Desactivar_Boton(); // Ejecutar Desactivar_Boton cada vez que cambie el parámetro
+    }
+
+    public static decimal AjustarPrecio(decimal precio)
+    {
+        return Math.Round(precio); // Puedes usar Math.Round(precioAjustado) si prefieres redondear al entero más cercano
+    }
+
+
+
+
+
+    private FsEstudioDTO empresa;
+
+    protected override void OnInitialized()
+    {
+        // Asigna el primer elemento de la lista retornada como ejemplo
+        empresa = FsEstudioService.ObtenerInformacionEmpresa().FirstOrDefault();
+
+    }
+
+
+
+
+
+
+
+
+
+    private async Task ToggleSeleccionColaborador()
+    {
+        // Alternar entre seleccionar y deseleccionar
+        var colaborador = Colaborador_Servicios[selectedImageIndex];
+
+
+
+
+        if (colaborador != null)
+        {
+            // Cambiar el estado de seleccionado/deseleccionado
+            colaboradorSeleccionado = !colaboradorSeleccionado;
+
+            if (colaboradorSeleccionado)
+            {
+                // Si se selecciona, enviar el colaborador
+                if (OnSeleccionarUsuario.HasDelegate)
+                {
+                    await OnSeleccionarUsuario.InvokeAsync(colaborador);
+                    Registrar_Visita("Cotización Express");
+                }
+                colaboradorSeleccionado = true; // Desactiva la selección del colaborador
+            }
+            else
+            {
+                // Si se deselecciona, enviar null
+                if (OnSeleccionarUsuario.HasDelegate)
+                {
+                    await OnSeleccionarUsuario.InvokeAsync(null);
+                }
+                colaboradorSeleccionado = false; // Desactiva la selección del colaborador
+            }
+        }
+    }
+
+
+
+
+    // Imágenes dinámicas que se actualizan por colaborador
+    private string imagenUrl1;
+    private string imagenUrl2;
+    private string imagenUrl3;
+    private string imagenUrl4;
+    private string imagenUrl5;
+    private string imagenUrl6;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarColaboradores();
+
+        // Si hay colaboradores, inicializamos con el primer colaborador
+        if (Colaborador_Servicios.Count > 0)
+        {
+            ActualizarImagenesDelColaborador(Colaborador_Servicios[0]);
+            imagenSeleccionada = imagenUrl1; // Seleccionamos la primera imagen por defecto
+        }
+        else
+        {
+            // Si no hay colaboradores, usamos imágenes vacías por defecto
+            imagenUrl1 = "/Images/Fondos/ImagenVacia1.jpg";
+            imagenUrl2 = "/Images/Fondos/ImagenVacia2.jpg";
+            imagenUrl3 = "/Images/Fondos/ImagenVacia3.jpg";
+            imagenUrl4 = "/Images/Fondos/ImagenVacia4.jpg";
+            imagenUrl5 = "/Images/Fondos/ImagenVacia5.jpg";
+            imagenUrl6 = "/Images/Fondos/ImagenVacia6.jpg";
+            imagenSeleccionada = imagenUrl1;
+        }
+    }
+
+    // Método para cargar colaboradores
+    private async Task CargarColaboradores()
+    {
+        Colaborador_Servicios = await ListarColaboradoresPorServicio(IdServicio);
+
+        foreach (var colaborador in Colaborador_Servicios)
+        {
+            // colaborador.Precio_Ajustado = AjustarPrecio(colaborador.Precio * (decimal)empresa.Marketing);
+            colaborador.Precio_Ajustado = AjustarPrecio(colaborador.Precio * (decimal)empresa.Marketing);
+        }
+
+
+
+    }
+
+
+    // Método para obtener la lista de colaboradores desde una API
+    private async Task<List<Colaborador_ServicioDTO>> ListarColaboradoresPorServicio(int idServicio)
+    {
+        try
+        {
+            var response = await repositorio.Get<List<Colaborador_ServicioDTO>>($"/api/colaborador/colaborador-servicio-listar/{idServicio}");
+
+
+
+
+            return response?.Response ?? new List<Colaborador_ServicioDTO>();
+
+
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error al obtener colaboradores: {ex.Message}");
+            return new List<Colaborador_ServicioDTO>();
+        }
+    }
+
+    // Método que actualiza las URLs de las imágenes cuando cambia el colaborador
+    private void ActualizarImagenesDelColaborador(Colaborador_ServicioDTO colaborador)
+    {
+        imagenUrl1 = !string.IsNullOrEmpty(colaborador.ImagenUrl1) ? colaborador.ImagenUrl1 : "/Images/Fondos/ImagenVacia1.jpg";
+        imagenUrl2 = !string.IsNullOrEmpty(colaborador.ImagenUrl2) ? colaborador.ImagenUrl2 : "/Images/Fondos/ImagenVacia2.jpg";
+        imagenUrl3 = !string.IsNullOrEmpty(colaborador.ImagenUrl3) ? colaborador.ImagenUrl3 : "/Images/Fondos/ImagenVacia3.jpg";
+        imagenUrl4 = !string.IsNullOrEmpty(colaborador.ImagenUrl4) ? colaborador.ImagenUrl4 : "/Images/Fondos/ImagenVacia4.jpg";
+        imagenUrl5 = !string.IsNullOrEmpty(colaborador.ImagenUrl5) ? colaborador.ImagenUrl5 : "/Images/Fondos/ImagenVacia5.jpg";
+        imagenUrl6 = !string.IsNullOrEmpty(colaborador.ImagenUrl6) ? colaborador.ImagenUrl6 : "/Images/Fondos/ImagenVacia6.jpg";
+    }
+
+    // Método para navegar hacia la izquierda entre colaboradores
+    private async Task MoverIzquierda()
+    {
+        if (Colaborador_Servicios.Count > 0)
+        {
+            // Mover el índice a la izquierda
+            selectedImageIndex = (selectedImageIndex - 1 + Colaborador_Servicios.Count) % Colaborador_Servicios.Count;
+            ActualizarImagenesDelColaborador(Colaborador_Servicios[selectedImageIndex]);
+            imagenSeleccionada = imagenUrl1; // Seleccionamos la primera imagen por defecto
+
+            // Deseleccionar el colaborador y enviar null
+            colaboradorSeleccionado = false;
+            if (OnSeleccionarUsuario.HasDelegate)
+            {
+                await OnSeleccionarUsuario.InvokeAsync(null);
+            }
+        }
+    }
+
+    private async Task MoverDerecha()
+    {
+        if (Colaborador_Servicios.Count > 0)
+        {
+            // Mover el índice a la derecha
+            selectedImageIndex = (selectedImageIndex + 1) % Colaborador_Servicios.Count;
+            ActualizarImagenesDelColaborador(Colaborador_Servicios[selectedImageIndex]);
+            imagenSeleccionada = imagenUrl1; // Seleccionamos la primera imagen por defecto
+
+            // Deseleccionar el colaborador y enviar null
+            colaboradorSeleccionado = false;
+            if (OnSeleccionarUsuario.HasDelegate)
+            {
+                await OnSeleccionarUsuario.InvokeAsync(null);
+            }
+        }
+    }
+
+
+    // Método para seleccionar una imagen específica
+    private void ActualizarImagenSeleccionada(string nuevaImagenUrl, int miniatura)
+    {
+        imagenSeleccionada = nuevaImagenUrl; // Actualiza la imagen seleccionada
+        // Registrar_Visita($"Miniatura:{miniatura}");
+
+    }
+}
+

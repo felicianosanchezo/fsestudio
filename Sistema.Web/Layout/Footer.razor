@@ -1,0 +1,263 @@
+﻿@page "/contact"
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+
+@if (mostrarUbicacion || mostrarCorreo || mostrarWhatsapp || mostrarFacebook)
+{
+        <div class="info-overlay">
+
+        @if (mostrarCorreo)
+        {
+            <div class="info-card1">
+
+
+                <h3 class="Titulo-Especificaciones-oscura">Información de Contacto</h3>
+                <br />
+                <p class="Parrafo-Principal"><strong>Dirección:</strong> @empresa.Ciudad, @empresa.Estado, Mexico </p>
+                <p class="Parrafo-Principal"><strong>Correo:</strong> @empresa.Correo</p>
+                <p class="Parrafo-Principal"><strong>Teléfono:</strong> @empresa.Telefono</p>
+                <p class="Parrafo-Principal"><strong>Horario:</strong> @empresa.Horario</p>
+                    <!-- Información básica obtenida de empresa -->
+
+
+@* 
+                <label class="Parrafo-Principal" for="userNombre">Tu nombre:</label>
+                <input type="text" id="userNombre" @bind="@userNombre" placeholder="Tu Nombre  aquí..." required>
+                    <!-- Formulario de contacto -->
+                <label class="Parrafo-Principal"  for="userEmail">Tu correo:</label>
+                    <input type="email" id="userEmail" @bind="@userEmail" placeholder="Tu correo o Whastapp aquí..." required>
+
+                <label class="Parrafo-Principal"  for="comments">Comentarios:</label>
+                    <textarea id="comments" @bind="@userComments" placeholder="Escribe tus comentarios aquí..." rows="4" required></textarea>
+
+         
+                    <p>@mensajeConfirmacion</p>
+                    <br />
+                    <button @onclick="EnviarMensaje">Enviar</button> *@
+               
+                  
+            
+
+                    @* Mensaje de confirmación o error *@
+
+        
+               
+              
+            </div>
+
+        }
+        @if (mostrarWhatsapp)
+        {
+            <div class="info-card1">
+                <h3 class="Titulo-Especificaciones-oscura">Enviar mensaje de Whatsapp</h3>
+
+
+
+                <label class="Parrafo-Principal" for="userNombre">Tu nombre:</label>
+                <input type="text" id="userNombre" @bind="@userNombre" placeholder="Tu Nombre  aquí..." required>
+
+                <label class="Parrafo-Principal" for="comments">Comentarios:</label>
+                <textarea id="comments" @bind="@userComments" placeholder="Escribe tus comentarios aquí..." rows="4" required></textarea>
+
+                <!-- Mensaje de confirmación o error -->
+                <p>@mensajeConfirmacion</p>
+                <br />
+
+                <!-- Botón para enviar por WhatsApp -->
+                <button @onclick="EnviarWhatsApp">Enviar por WhatsApp</button>
+            </div>
+
+        }
+ 
+        </div>
+}
+
+<div class="footer-content">
+    <div class="contact-info">
+
+        <div class="contact-item" @onclick="MostrarCorreo">
+            <i class="bi bi-envelope-fill"></i> <!-- Icono de correo -->
+        </div>
+        <div class="contact-item" @onclick="MostrarWhatsapp">
+            <i class="bi bi-whatsapp"></i> <!-- Icono de WhatsApp -->
+        </div>
+        <div class="contact-item" @onclick="MostrarFacebook">
+            <i class="bi bi-facebook"></i> <!-- Icono de Facebook -->
+        </div>
+        <div class="contact-item" @onclick="MostrarInstagram">
+            <i class="bi bi-tiktok social-icon"></i>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    private bool mostrarUbicacion, mostrarCorreo, mostrarWhatsapp, mostrarFacebook;
+
+    private FsEstudioDTO empresa;
+    // Obtenemos el correo desde el objeto empresa (FsEstudioDTO debe tener la propiedad Correo)
+
+
+    protected override void OnInitialized()
+    {
+        // Asigna el primer elemento de la lista retornada como ejemplo
+        empresa = FsEstudioService.ObtenerInformacionEmpresa().FirstOrDefault();
+
+    }
+
+
+
+
+
+
+    private string userNombre= "";
+    private string userEmail = "";
+    private string userComments = "";
+    private string mensajeConfirmacion = "";
+
+    // Método para enviar el mensaje
+    private void EnviarMensaje()
+    {
+        if (string.IsNullOrEmpty(userEmail) || string.IsNullOrEmpty(userComments) || string.IsNullOrEmpty(userNombre))
+        {
+            mensajeConfirmacion = "Por favor, completa todos los campos.";
+            return;
+        }
+
+
+
+        // Aquí iría la lógica para procesar el envío, como llamar a un servicio de email o guardar en base de datos
+        mensajeConfirmacion = "¡Mensaje enviado con éxito! Te responderemos pronto.";
+
+        // Limpia los campos
+        userEmail = "";
+        userComments = "";
+        userNombre = "";
+    }
+
+    private void EnviarWhatsApp()
+    {
+        // Verifica que los campos no estén vacíos
+        if (string.IsNullOrEmpty(userNombre) || string.IsNullOrEmpty(userComments))
+        {
+            mensajeConfirmacion = "Por favor, completa todos los campos.";
+            return;
+        }
+
+        // Número de teléfono de WhatsApp (modificar con el número real de la empresa)
+        string numeroWhatsApp = empresa.Telefono;  // Asegúrate de incluir el código de país (ej., 521 para México)
+
+        // Mensaje formateado
+        string mensajeWhatsApp = $"Hola, soy {userNombre}. Mis comentarios son: {userComments}";
+
+        // Crear enlace para WhatsApp
+        string url = $"https://wa.me/{numeroWhatsApp}?text={Uri.EscapeDataString(mensajeWhatsApp)}";
+
+        
+        JS.InvokeVoidAsync("abrirEnNuevaPestana", url);
+
+
+
+        // Mensaje de confirmación
+        mensajeConfirmacion = "Redirigiendo a WhatsApp...";
+        userComments = "";
+        userNombre = "";
+    }
+
+
+
+    private void MostrarUbicacion()
+    {
+        mostrarUbicacion = true;
+        mostrarCorreo = mostrarWhatsapp = mostrarFacebook = false;
+    }
+
+    private void MostrarCorreo()
+    {
+        mostrarCorreo = true;
+        mostrarUbicacion = mostrarWhatsapp = mostrarFacebook = false;
+    }
+
+    private void MostrarWhatsapp()
+    {
+        mostrarWhatsapp = true;
+        mostrarUbicacion = mostrarCorreo = mostrarFacebook = false;
+    }
+
+    private void MostrarFacebook()
+    {
+        // URL de la página de Facebook de la empresa
+        string facebookUrl = empresa.Facebook; // Reemplaza con el enlace correcto de la empresa
+
+        // Llama a la función de JavaScript para abrir en una nueva pestaña
+        JS.InvokeVoidAsync("abrirEnNuevaPestana", facebookUrl);
+
+        // Opcional: actualizar el estado de los elementos de interfaz, si es necesario
+        mostrarFacebook = false;
+        mostrarUbicacion = mostrarCorreo = mostrarWhatsapp = false;
+    }
+    private void MostrarInstagram()
+    {
+        // URL de la página de Facebook de la empresa
+        string facebookUrl = empresa.TikTok; // Reemplaza con tu enlace
+
+        // Navega al enlace de Facebook
+        JS.InvokeVoidAsync("abrirEnNuevaPestana", facebookUrl);
+
+        mostrarFacebook = false;
+        mostrarUbicacion = mostrarCorreo = mostrarWhatsapp = false;
+    }
+
+
+    private void CerrarInfo()
+    {
+        mostrarUbicacion = mostrarCorreo = mostrarWhatsapp = mostrarFacebook = false;
+    }
+}
+
+<style>
+
+    .info-card {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 400px;
+        margin: auto;
+        background-color: #f9f9f9;
+    }
+
+        .info-card h3 {
+            margin-top: 0;
+        }
+
+        .info-card label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        .info-card input[type="email"],
+        .info-card textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .info-card button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .info-card button:hover {
+                background-color: #0056b3;
+            }
+
+</style>

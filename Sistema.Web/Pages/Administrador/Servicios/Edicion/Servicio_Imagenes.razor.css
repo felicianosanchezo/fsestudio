@@ -1,0 +1,167 @@
+﻿/* Estilos para el fondo del modal (cubre toda la pantalla y centra el modal) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    z-index: 1000; /* Asegura que el modal esté por encima del resto del contenido */
+    padding: 20px; /* Espacio en los bordes */
+    overflow: hidden; /* Evita que aparezca un scroll innecesario */
+}
+
+/* Estilos para el contenedor del modal (ajustable al contenido) */
+.modal-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto; /* Se ajusta al tamaño del contenido interno */
+    height: auto; /* Se ajusta al contenido interno */
+    margin-top:150px;
+}
+
+/* Estilos para el contenido del modal */
+.modal-content {
+    width: 950px; /* Ancho fijo */
+    height: 750px; /* Alto fijo */
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribuye el contenido correctamente */
+    padding: 20px;
+}
+
+
+/* Estilos para el encabezado del modal */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Estilos para el pie del modal */
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+    .modal-footer button {
+        padding: 10px 20px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+        .modal-footer button:hover {
+            background-color: #0056b3;
+        }
+
+.boton {
+    background-color: #16a085; /* Color del botón */
+    color: white; /* Color del texto */
+    padding: 10px 20px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar cursor al pasar sobre el botón */
+    font-size: 16px; /* Tamaño de fuente */
+    border: none; /* Sin borde */
+    display: inline-block; /* Para que se comporte como un botón */
+    text-align: center; /* Alinear el texto en el centro */
+    transition: background-color 0.3s ease; /* Efecto de transición al pasar el ratón */
+}
+
+    .boton:hover {
+        background-color: #0056b3; /* Color al pasar el ratón */
+    }
+
+
+
+
+/* Contenedor de la vista previa de las imágenes */
+.image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Espacio entre las imágenes */
+    justify-content: center; /* Centra las imágenes */
+    margin-bottom: 20px; /* Espacio inferior */
+}
+
+/* Contenedor de cada imagen con su botón y campo de orden */
+
+
+/* Botón para eliminar la imagen */
+.remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 0, 0, 0.8); /* Fondo rojo semitransparente */
+    color: white;
+    border: none;
+    border-radius: 50%; /* Botón redondo */
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    z-index: 10; /* Para que el botón esté sobre la imagen */
+}
+
+
+
+
+/* Contenedor de cada imagen con su botón y campo de orden */
+.image-preview {
+    position: relative; /* Posiciona el botón eliminar sobre la imagen */
+    width: 150px;
+    height: 150px;
+    border: 1px solid #ddd; /* Borde alrededor de la imagen */
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 3px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 70px; /* Agrega un margen inferior para el espacio entre las imágenes y el texto de orden */
+}
+
+    /* Estilo para las imágenes dentro del contenedor */
+    .image-preview img {
+        width: 100%; /* La imagen ocupa el 100% del ancho del contenedor */
+        height: auto; /* Mantiene la proporción de la imagen */
+        border-radius: 5px; /* Bordes redondeados */
+        object-fit: cover; /* Asegura que la imagen cubra todo el espacio del contenedor sin distorsión */
+    }
+
+.input-orden-container {
+    display: flex;
+    /*justify-content: space-between;*/ /* Coloca el label y el input en los extremos */
+    align-items: center; /* Alinea verticalmente el label y el input */
+    width: 100%; /* Asegura que el contenedor ocupe el 100% del ancho */
+    gap: 10px; /* Espacio entre el label y el input */
+    padding:15px;
+}
+
+.input-orden {
+    width: 40px; /* Puedes ajustar el tamaño del input si es necesario */
+    text-align: right; /* Alinea el número dentro del input a la derecha */
+}

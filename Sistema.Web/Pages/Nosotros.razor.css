@@ -1,0 +1,73 @@
+﻿/* Estilos generales para la sección "Nosotros" */
+.nosotros-container {
+    padding: 50px;
+    background-color: #f4f6f7;
+    font-family: 'Roboto', sans-serif;
+}
+
+    .nosotros-container h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        color: #154360;
+        margin-bottom: 20px;
+    }
+
+hr {
+    border: 0;
+    border-top: 1px solid #424949; /* Define el grosor con border-top */
+    margin-bottom: 40px;
+}
+
+
+/* Estilos para las imágenes circulares del equipo */
+.rounded-circle {
+    border: 2px solid #ddd;
+    margin-bottom: 15px;
+    width: 150px;
+    height: 150px;
+    object-fit: cover; /* Asegura que la imagen se mantenga centrada y recortada */
+}
+
+/* Estilos para el nombre y descripción del equipo */
+h5 {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+p {
+    margin-bottom: 10px;
+    color: #2c3e50; /* Gris oscuro para el texto */
+}
+
+/* Estilos para los iconos de redes sociales */
+a {
+    margin: 0 5px;
+    font-size: 1.5rem;
+    color: #3b5998; /* Color de Facebook */
+    transition: color 0.3s ease; /* Suaviza la transición de hover */
+}
+
+    a:hover {
+        color: #1d3a73; /* Color más oscuro al hacer hover */
+    }
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 768px) {
+    .nosotros-container {
+        padding: 20px;
+    }
+
+    .rounded-circle {
+        width: 120px;
+        height: 120px;
+    }
+
+    h5 {
+        font-size: 1rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+    }
+}

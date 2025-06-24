@@ -1,0 +1,72 @@
+﻿.title-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra verticalmente los hijos */
+    align-items: center; /* Centra horizontalmente los hijos */
+    background-color: transparent;
+    text-align: center;
+    padding: 60px 0px 30px 0px;
+    overflow: hidden;
+
+}
+
+.contenedor-titulo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    background-color: transparent;
+}
+
+.text-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    border-top: 1px solid #aab7b8;
+    border-bottom: 1px solid #aab7b8;
+    text-align: center;
+    background-color: transparent;
+    margin-top:15px;
+}
+
+
+.title-container h1 {
+    /*font-size: 2rem;*/ /* Tamaño más grande del título */
+    /*background: linear-gradient(to left, #2c3e50, #808b96);*/ /* Gradiente de azul claro a azul oscuro */
+    /*-webkit-background-clip: text;*/ /* Clipa el fondo al texto */
+    /*-webkit-text-fill-color: transparent;*/ /* Rellena el texto con el gradiente */
+    /*text-transform: uppercase;*/ /* Convierte el texto a mayúsculas */
+    /*font-weight: bold;*/ /* Negrita */
+}
+
+.title-container .description {
+    font-size: 1.2rem; /* Tamaño de la descripción */
+    color: #7f8c8d; /* Color gris claro para el texto */
+    line-height: 1.5;
+    padding-bottom: 0px; /* Ajusta el padding */
+}
+
+
+.highlight {
+    font-weight: bold; /* Texto más grueso */
+    color: var(--color-dorado-oscuro); /* Color dorado */
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    /* Ajusta el ancho del contenido en pantallas pequeñas */
+    .text-content {
+        width: 90%; /* El contenido ocupa el 90% del ancho */
+    }
+
+    /* Ajusta la línea horizontal */
+    .custom-line {
+        width: 90%; /* Ajusta la línea al 90% del contenedor */
+    }
+
+    .title-container {
+        
+        padding: 30px 0px 30px 0px;
+    }
+}

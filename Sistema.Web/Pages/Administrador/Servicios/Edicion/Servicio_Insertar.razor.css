@@ -1,0 +1,123 @@
+﻿/* Fondo general para la página */
+.servicio-container-fondo {
+    width: 100%;
+    background-color: rgba(248, 249, 249, 1); /* Gris claro */
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center;
+    padding: 50px 0; /* Margen superior e inferior para separar el contenido */
+}
+
+
+
+/* Estilo general del contenedor principal */
+.dashboard-main {
+    width: 60%; /* Ajusta el ancho al 60% */
+    background: #fdfefe;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 50px;
+    margin: 50px 0; /* Margen superior e inferior para darle más espacio vertical */
+    border: 1px solid #d0d3d4; /* Línea delgada gris alrededor del menú */
+}
+
+/* Estilo para los labels */
+.form-label {
+    color: #1b4f72;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+/* Estilo para los campos de texto */
+.form-control {
+    border: 1px solid #aab7b8; /* Gris claro */
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+  /*  transition: border-color 0.3s ease;*/
+}
+
+    .form-control:focus {
+        border-color: #2471a3; /* Azul oscuro */
+        box-shadow: 0 0 5px rgba(36, 113, 163, 0.5); /* Sombra azul suave */
+    }
+
+/* Estilo para el checkbox */
+.form-check-input {
+    margin-right: 10px;
+    accent-color: #229954; /* Verde para el checkbox */
+}
+
+.form-check-label {
+    color: #1b4f72;
+    font-size: 16px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-start; /* Alinear los botones hacia la izquierda */
+    gap: 15px; /* Espacio horizontal entre los botones */
+    margin-top: 20px; /* Espacio superior opcional */
+}
+
+.custom-save-btn, .custom-cancel-btn {
+    border: none; /* Sin borde */
+    border-radius: 4px; /* Bordes suavizados */
+    font-size: 16px;
+    display: flex;
+    align-items: center; /* Alinear el icono y el texto verticalmente */
+    padding: 10px 20px; /* Espaciado interno para que se vean proporcionados */
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
+    text-decoration: none;
+}
+
+.custom-save-btn {
+    background-color: #2874a6; /* Azul */
+    color: white; /* Texto blanco */
+}
+
+    .custom-save-btn i {
+        margin-right: 8px;
+        color: white; /* Color del icono igual que el texto */
+    }
+
+    .custom-save-btn:hover {
+        background-color: #16a085; /* Un tono más oscuro al pasar el ratón */
+        color: white;
+    }
+
+.custom-cancel-btn {
+    background-color: #ef5350; /* Rojo claro */
+    color: white; /* Texto blanco */
+}
+
+    .custom-cancel-btn i {
+        margin-right: 8px;
+        color: white; /* Color del icono igual que el texto */
+    }
+
+    .custom-cancel-btn:hover {
+        background-color: #c0392b; /* Un tono más oscuro de rojo al pasar el ratón */
+        color: white;
+    }
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+    .dashboard-main {
+        padding: 20px;
+    }
+
+    .btn {
+        width: 100%; /* Botones ocupan el ancho completo en dispositivos pequeños */
+        margin-bottom: 10px;
+    }
+
+    .form-control {
+        font-size: 14px; /* Fuente más pequeña en pantallas pequeñas */
+    }
+
+    .form-label {
+        font-size: 14px;
+    }
+}

@@ -1,0 +1,312 @@
+﻿
+/* Fondo general */
+.full-background {
+    background-color: var(--color-fondo-pagina);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    min-height: 800px;
+}
+
+.top-products-wrapper {
+    width: 70%;
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    background-color: transparent;
+}
+
+.titulo-con-descripcion {
+    text-align: center;
+    margin-bottom: 15px;
+    margin-top: 40px;
+    padding: 0px;
+}
+
+.highlight {
+    font-weight: bold; /* Texto más grueso */
+    color: var(--color-dorado-oscuro); /* Color dorado */
+}
+
+
+
+/* Contenedor de productos */
+.top-products-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Tres columnas en pantallas grandes */
+    gap: 35px;
+    padding-top: 25px;
+}
+
+/* Estilos de cada producto */
+.product-item1 {
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina),var(--color-gris-claro1) );
+    border: 1px solid var(--color-gris-linea);
+    /*padding: 9px;*/
+    text-align: left;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+    height: auto;
+    max-width: 100%;
+    overflow:hidden;
+}
+
+    .product-item1 img {
+        margin-top: 9px ;
+        padding:0px;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        margin-bottom: 10px;
+        /*border-radius: 10px;*/
+        /*box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);*/
+        /*border: 3px solid #f8f9f9;*/
+        background-color:transparent;
+    }
+
+    .product-item1 h4 {
+        text-align: center;
+        font-size: 1.2rem;
+        color: var(--color-azul-oscuro1);
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    .product-item1 p {
+        color: var(--color-gris-descripcion);
+        font-size: 1rem;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        text-align: left;
+    }
+
+.color-descripcion {
+    color: var(--color-gris-descripcion);
+    font-size: 1.2rem;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.color-unidad {
+    margin-top: 10px;
+    display: flex;
+    align-content: center;
+    text-align: left;
+    color: var(--color-verde-original);
+    font-size: 1.4rem;
+    justify-content: center;
+    font-weight: 400;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+
+
+
+.contenedor-botones1 {
+    display: flex;
+    gap: 60px; /* Espacio entre los botones */
+    justify-content: center;
+    background-color: var(--color-gris-claro1);
+    align-self: center;
+    margin-top: auto;
+    padding: 6px 24px;
+    width: 100%;
+    border-top: 1px solid var(--color-gris-linea);
+}
+
+.boton-accion-portada1 {
+    background-color: transparent;
+    border: 0;
+    border-radius: 50%;
+    /* padding: 12px;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 20px;
+    color: #7f8c8d;
+    flex-direction: column;
+ 
+}
+
+    .boton-accion-portada1:hover {
+        color: var(--color-verde-original);
+        transform: scale(1.1);
+    }
+
+    .boton-accion-portada1 i {
+        pointer-events: none;
+    }
+
+
+.boton-texto1 {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Estilos de las estrellas */
+.estrella-vacia {
+    color: var(--color-gris-linea);
+}
+
+.estrella-llena {
+    color: var(--color-dorado-original);
+}
+
+.custom-button {
+    /*border-radius: 50px;*/
+    cursor: pointer;
+    width: 120px;
+    height: 30px;
+    text-align: center;
+    /*box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.btn-azul1 {
+
+    margin-top: 10px;
+    margin-bottom: 30px;
+
+    font-size: 1.5rem;
+    color: #007c91;
+    border: 0px;
+    background-color: transparent;
+}
+
+    .btn-azul1:hover {
+        background-color: transparent; /* Color azul más oscuro al pasar el cursor */
+        transform: scale(1.05); /* Aumenta ligeramente el tamaño al pasar el cursor */
+    }
+
+.contenedor-informacion {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.contenedor-informacion1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 100px;
+    width: 100%;
+    /*background-color: var(--color-gris-claro1);*/
+    background-color: transparent;
+    /*background-color: #283C4F;*/
+    border-bottom: 1px solid var(--color-gris-linea);
+}
+
+    .contenedor-informacion1 h4 {
+        color: var(--color-gris-linea);
+        font-size: 24px;
+        font-weight: 700;
+        text-transform: uppercase;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, .6);
+        letter-spacing: 3px;
+    }
+
+
+
+@media (max-width: 1600px) {
+
+
+    .top-products-wrapper {
+        width: 90%;
+
+    }
+
+
+
+
+    
+}
+
+
+/* Estilos para pantallas pequeñas */
+@media (max-width: 1090px) {
+
+
+
+
+    .top-products-wrapper {
+        width: 94%;
+    }
+
+    .top-products-container {
+        grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+        gap: 15px; /* Reduce el espacio entre elementos */
+    }
+
+    .contenedor-informacion1 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        height: auto;
+        width: 100%;
+        padding:6px;
+        align-items:center;
+    
+    }
+
+        .contenedor-informacion1 h4 {
+            color: var(--color-gris-linea);
+            font-size: 18px;
+            font-weight: 600;
+
+
+        }
+
+
+    .btn-azul1 {
+        margin-top: 10px;
+        margin-bottom: 30px;
+        font-size: 1.2rem;
+        font-weight:500;
+    }
+
+    .color-unidad {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+
+
+
+}

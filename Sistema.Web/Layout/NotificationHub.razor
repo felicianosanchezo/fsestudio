@@ -1,0 +1,177 @@
+﻿@page "/notificaciones"
+@using Sistema.Entidades.Entidad.FsEstudio
+@using Sistema.Entidades.Entidad
+@inject IRepositorio repositorio
+@inject AuthenticationProviderJWT AuthProvider
+@inject NotificationHub notificationHub
+@inject NavigationManager navigationManager
+@using System.Security.Claims
+
+@implements IDisposable
+
+<li class="nav-notificacion">
+    <div class="notificacion-icono" @onclick="ToggleNotificaciones">
+        <i class="bi bi-bell"></i>
+        @if (TotalNotificaciones > 0)
+        {
+            <span class="notificacion-conteo">@TotalNotificaciones</span>
+        }
+    </div>
+</li>
+
+@if (mostrarNotificaciones)
+{
+    <div class="notificacion-lista">
+        @if (notificaciones.Count == 0)
+        {
+            <p class="no-notificaciones">No tienes notificaciones</p>
+        }
+        else
+        {
+            @foreach (var notificacion in notificaciones)
+            {
+                <div class="notificacion-item">
+                    <span>@notificacion.Mensaje</span>
+                    <button class="icon-button" @onclick="()=>MarcarComoLeida(notificacion.Id)">
+                        <i class="bi bi-check"></i>
+                    </button>
+                    <button class="icon-button" @onclick="()=>IrANotificaciones(notificacion.Url)">
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+            }
+        }
+    </div>
+}
+
+@code {
+    List<Notificacion> notificaciones = new();
+    private bool mostrarNotificaciones = false;
+    private int TotalNotificaciones = 0;
+    private string urlNotificaciones = "/"; // URL por defecto
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Verificar el estado de autenticación antes de obtener el rol
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated != true)
+            {
+                Console.WriteLine("El usuario no está autenticado.");
+                return;
+            }
+
+            // Obtener el rol del usuario autenticado y el ID
+            var rolUsuario = AuthProvider.GetRolUsuario().ToString();
+            var userId = AuthProvider.GetIdUsuario().ToString();
+
+            if (string.IsNullOrEmpty(rolUsuario))
+            {
+                Console.WriteLine("El usuario no tiene un rol asignado.");
+                return;
+            }
+
+            // Intentar obtener las notificaciones con reintentos
+            const int maxRetries = 3;  // Máximo de intentos
+            int attempt = 0;
+            bool success = false;
+
+            while (attempt < maxRetries && !success)
+            {
+                try
+                {
+                    attempt++;
+                    Console.WriteLine($"Intento {attempt} de obtener notificaciones");
+
+                    // Obtener las notificaciones basadas en el rol del usuario
+                    var response = await repositorio.Get<List<Notificacion>>($"/api/notificaciones/rol/{rolUsuario}?userId={userId}");
+
+                    if (!response.Error && response.Response != null)
+                    {
+                        notificaciones = response.Response;
+                        TotalNotificaciones = notificaciones.Count;
+                        success = true;  // Salir del bucle si la llamada fue exitosa
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error al obtener notificaciones. Intentando nuevamente...");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Excepción en el intento {attempt}: {ex.Message}");
+                }
+
+                // Retrasar el próximo intento si no fue exitoso
+                if (!success)
+                {
+                    await Task.Delay(2000); // Espera 2 segundos antes del próximo intento
+                }
+            }
+
+            if (!success)
+            {
+                Console.WriteLine("No se pudo obtener las notificaciones después de varios intentos.");
+                return;
+            }
+
+            // Iniciar la conexión al NotificationHub
+            await notificationHub.IniciarConexionAsync(rolUsuario, userId);
+            notificationHub.OnNotificationReceived += OnNotificationReceivedHandler;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al inicializar las notificaciones: {ex.Message}");
+        }
+    }
+
+
+    private void OnNotificationReceivedHandler(string mensajeCompleto)
+    {
+        var (mensaje, url) = ExtraerMensajeYUrl(mensajeCompleto);
+        notificaciones.Add(new Notificacion { Mensaje = mensaje, Url = url });
+        TotalNotificaciones = notificaciones.Count;
+        InvokeAsync(StateHasChanged); // Actualizar la interfaz
+    }
+
+    private (string mensaje, string url) ExtraerMensajeYUrl(string mensajeCompleto)
+    {
+        var partes = mensajeCompleto.Split('|');
+        if (partes.Length == 2)
+        {
+            return (partes[0], partes[1]);
+        }
+        return (mensajeCompleto, string.Empty);
+    }
+
+    private void ToggleNotificaciones()
+    {
+        mostrarNotificaciones = !mostrarNotificaciones;
+    }
+
+    private async Task MarcarComoLeida(int id)
+    {
+        await repositorio.Put<object>($"/api/notificaciones/marcar-leida/{id}", null);
+        notificaciones = notificaciones.Where(n => n.Id != id).ToList();
+        TotalNotificaciones = notificaciones.Count;
+    }
+
+    private void IrANotificaciones(string Url)
+    {
+        if (!string.IsNullOrEmpty(Url))
+        {
+            navigationManager.NavigateTo(Url);
+        }
+    }
+
+    public async void Dispose()
+    {
+        notificationHub.OnNotificationReceived -= OnNotificationReceivedHandler;
+        await notificationHub.DesconectarAsync();
+    }
+
+
+}

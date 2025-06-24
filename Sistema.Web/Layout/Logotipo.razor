@@ -1,0 +1,42 @@
+﻿<div class="custom-bar1">
+    <div class="logo-container">
+        <a href="/">
+            <img src="\Images\Logo1. Fondo Blanco.png" alt="Logotipo" class="logo-img" />
+        </a>
+    </div>
+
+    <div class="bar-contenedor">
+
+        <Buscador_Independiente />
+    </div>
+
+    <div class="social-media">
+        <a href="@empresa.Facebook" target="_blank">
+            <i class="bi bi-facebook social-icon"></i>
+        </a>
+        <a href="@empresa.WhatsApp" target="_blank">
+            <!-- Enlace a WhatsApp (puedes personalizarlo con un número) -->
+            <i class="bi bi-whatsapp social-icon"></i>
+        </a>
+        <a href="@empresa.TikTok" target="_blank">
+            <i class="bi bi-tiktok social-icon"></i>
+        </a>
+    </div>
+    
+</div>
+
+
+@code{
+
+
+    private FsEstudioDTO empresa;
+    // Obtenemos el correo desde el objeto empresa (FsEstudioDTO debe tener la propiedad Correo)
+
+
+    protected override void OnInitialized()
+    {
+        // Asigna el primer elemento de la lista retornada como ejemplo
+        empresa = FsEstudioService.ObtenerInformacionEmpresa().FirstOrDefault();
+
+    }
+}

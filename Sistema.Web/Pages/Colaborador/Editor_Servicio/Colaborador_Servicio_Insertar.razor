@@ -1,0 +1,449 @@
+﻿@page "/servicio-colaborador-simple"
+@using Sistema.Entidades.Dto
+@inject IRepositorio repositorio
+@inject IJSRuntime js
+@inject AuthenticationProviderJWT AuthenticationStateProvider
+@inject SweetAlertService sweetAlertService
+@inject NavigationManager navigationManager
+@using  System.Text.Json;
+@using System.Text;
+
+
+
+
+
+
+
+<div class="servicio-container-fondo">
+    <div class="dashboard-main">
+
+        <EditForm Model="@servicioColaborador" OnValidSubmit="OnValidSubmit" enctype="multipart/form-data">
+
+            <!-- Título y descripción -->
+            <TituloConDescripcion Title="Elegir servicio"
+                                  Description="Este es el formulario seleccionar un servicio en el cual estoy interesado en realizar" />
+
+            <!-- Selección del servicio -->
+            <div class="mb-3">
+                <label for="IdServicio" class="form-label">Seleccionar Servicio</label>
+                <InputSelect id="IdServicio" class="form-control" @bind-Value="servicioColaborador.IdServicio" @oninput="CargarDescripcionServicioInmediato">
+                    <option value="">Seleccione un servicio</option>
+                    @foreach (var servicioItem in listaServicios)
+                    {
+                        <option value="@servicioItem.IdServicio">@servicioItem.Nombre</option>
+                    }
+                </InputSelect>
+            </div>
+
+
+            @if (ActivarServicio && servicio != null)
+            {
+                <div class="mb-3">
+
+                    <!-- Imagen de Portada -->
+                    <label for="portada" class="form-label">Imagen de Portada</label>
+                    @if (!string.IsNullOrEmpty(servicio?.PortadaUrl))
+                    {
+                        <img src="@servicio.PortadaUrl" alt="Imagen de Portada" class="img-fluid" style="max-width:100%; height:auto;" />
+                    }
+                    else
+                    {
+                        <p>No se ha cargado una imagen de portada.</p>
+                    }
+
+                    <!-- Categoría -->
+                    <label for="categoria" class="form-label">Categoría</label>
+                    <InputText id="categoria" class="form-control" @bind-Value="servicio.Categoria" Disabled />
+
+                    <!-- Descripción -->
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <div class="form-control form-control-descripcion">
+                        @servicio.Descripcion
+                    </div>
+
+                    <!-- Especificaciones -->
+                    <label for="especificaciones" class="form-label">Especificaciones</label>
+                    <div class="form-control form-control-especificaciones">
+                        @foreach (var item in FormatearEspecificaciones(servicio.Especificaciones))
+                        {
+                            <p>@((MarkupString)item)</p>
+                        }
+                    </div>
+
+
+
+     
+
+
+                    <!-- Unidad -->
+                    <label for="unidad" class="form-label">Unidad</label>
+                    <InputText id="unidad" class="form-control" @bind-Value="servicio.Unidad" Disabled />
+
+                    <!-- Precio (Editable) -->
+                    <label for="precio" class="form-label">Precio</label>
+                    <InputNumber id="precio" class="form-control" @bind-Value="servicioColaborador.Precio" />
+
+                    <!-- Notas (Editable) -->
+                    <label for="notas" class="form-label">Notas</label>
+                    <InputTextArea id="notas" class="form-control" @bind-Value="servicioColaborador.Notas" />
+
+                    <!-- Tiempo (Editable) -->
+                    <label for="tiempo" class="form-label">Tiempo (Horas)</label>
+                    <InputNumber id="tiempo" class="form-control" @bind-Value="servicioColaborador.Duracion" />
+
+                    <!-- Imágenes adicionales -->
+                    <div class="contenedor-imagenes">
+                        <div class="row">
+                            @for (int i = 1; i <= 6; i++)
+                            {
+                                // Crear una copia local de la variable i
+                                var localIndex = i;  // Esta es la clave para evitar problemas con la captura de variables en el bucle
+
+                                var inputId = $"fileInput-{localIndex}";
+                                <div class="col-2">
+                                    <div class="image-square" @onclick='() => AbrirSelectorImagen(inputId)'>
+                                        <img src="@((imagenRutas[localIndex - 1] != null) ? imagenRutas[localIndex - 1] : "/Images/Fondos/ImagenVacia.jpg")" alt="Imagen @localIndex" class="img-thumbnail" />
+                                        <InputFile id="@inputId" OnChange="(e) => SubirImagen(e, localIndex)" style="display:none" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+
+                    <!-- Carga de archivos PDF -->
+                    <div class="mb-3">
+                        <label for="archivoUrl" class="form-label">Cargar Archivo (PDF)</label>
+                        <InputFile id="archivoUrl" class="form-control" OnChange="OnFileSelected" accept=".pdf" />
+                    </div>
+
+                    <!-- Carga de video -->
+                    <div class="mb-3">
+                        <label for="videoUrl" class="form-label">Cargar Video</label>
+                        <InputFile id="videoUrl" class="form-control" OnChange="OnVideoSelected" accept="video/*" />
+                    </div>
+
+
+
+
+                    <div class="button-container">
+                        <button type="submit" class="custom-save-btn">
+                            <i class="bi bi-save"></i> Guardar
+                        </button>
+                    </div>
+
+                </div>
+            }
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private const long MaxFileSize = 7 * 1024 * 1024;  // 5 MB
+    private const long MaxVideoSize = 7 * 1024 * 1024;  // 7 MB
+
+    private Colaborador_ServicioDTO servicioColaborador = new Colaborador_ServicioDTO();
+    private List<ServicioDTO> listaServicios = new List<ServicioDTO>();
+    private ServicioDTO? servicio; // El servicio seleccionado
+    private bool ActivarServicio = false;
+    private List<string?> imagenRutas = new List<string?> { null, null, null, null, null, null };  // Aseguramos que tenga 6 elementos
+    private int? imagenSeleccionada = null;  // Para manejar el modal
+    private IBrowserFile? archivoSeleccionado;
+    private IBrowserFile? videoSeleccionado;
+    private int idUsuario;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Inicializa las rutas de imágenes y carga la lista de servicios
+      
+        
+            // while (imagenRutas.Count < 6)
+            // {
+            //     imagenRutas.Add(null);
+            // }
+        
+        // Obtener el estado de autenticación
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            // Obtener el ID del usuario autenticado
+            idUsuario = AuthenticationStateProvider.GetIdUsuario();
+            // Cargar las categorías solo si está autenticado
+            await Servicio_Listar ();
+        }
+        else
+        {
+            // Mostrar un mensaje o habilitar algún comportamiento que indique que no está autenticado
+            await sweetAlertService.FireAsync("Advertencia", "Por favor, inicia sesión para continuar.", SweetAlertIcon.Warning);
+
+            // Aquí puedes decidir si redirigir o no según sea necesario
+            navigationManager.NavigateTo("/login");
+        }
+    }
+
+
+    private async Task Servicio_Listar()
+    {
+
+        var response = await repositorio.Get<List<ServicioDTO>>("/api/colaborador/servicio-listar");
+        if (response?.Response != null)
+        {
+            listaServicios = response.Response;
+        }
+    }
+    
+    private async Task CargarDescripcionServicioInmediato(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int idServicio) && idServicio > 0)
+        {
+            servicioColaborador.IdServicio = idServicio;
+            
+            servicio = listaServicios.FirstOrDefault(s => s.IdServicio == servicioColaborador.IdServicio);
+            ActivarServicio = servicio != null;
+
+            servicioColaborador.Nombre = servicio.Nombre; // Asignar solo el Nombre (de tipo string)
+        }
+        else
+        {
+            ActivarServicio = false;
+        }
+
+        await InvokeAsync(StateHasChanged);  // Forzar renderizado
+    }
+
+
+
+    private async Task OnValidSubmit()
+    {
+        var formData = new MultipartFormDataContent();
+
+        // Validar que las primeras tres imágenes no sean nulas o vacías
+        if (string.IsNullOrEmpty(imagenRutas[0]) || string.IsNullOrEmpty(imagenRutas[1]) || string.IsNullOrEmpty(imagenRutas[2]))
+        {
+            await sweetAlertService.FireAsync("Error", "Debes cargar al menos 3 imágenes.", SweetAlertIcon.Error);
+            return;
+        }
+
+        // Añadir los campos del servicio colaborador
+        formData.Add(new StringContent(servicioColaborador.IdServicio.ToString()), "IdServicio");
+        formData.Add(new StringContent(servicioColaborador.Nombre), "Nombre");
+        formData.Add(new StringContent(idUsuario.ToString()), "IdUsuario"); // ID del usuario
+        formData.Add(new StringContent(servicioColaborador.Precio.ToString()), "Precio");
+        formData.Add(new StringContent(servicioColaborador.Duracion.ToString()), "Duracion");
+        formData.Add(new StringContent(servicioColaborador.Notas ?? string.Empty), "Notas");
+        formData.Add(new StringContent("false"), "Estado");  // Enviar estado como false
+
+        // Procesar el archivo PDF (Opcional)
+        if (archivoSeleccionado != null)
+        {
+            var archivoStream = archivoSeleccionado.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+            var archivoContent = new StreamContent(archivoStream);
+            archivoContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(archivoSeleccionado.ContentType);
+
+            var extensionArchivo = Path.GetExtension(archivoSeleccionado.Name);
+            var nombreArchivo = $"Archivo{extensionArchivo}";
+
+            formData.Add(archivoContent, "ArchivoPDF", nombreArchivo);
+        }
+
+        // Procesar el video (Opcional)
+        if (videoSeleccionado != null)
+        {
+            var videoStream = videoSeleccionado.OpenReadStream(maxAllowedSize: 100 * 1024 * 1024);  // Tamaño límite de 100MB para el video
+            var videoContent = new StreamContent(videoStream);
+            videoContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(videoSeleccionado.ContentType);
+
+            var extensionVideo = Path.GetExtension(videoSeleccionado.Name);
+            var nombreVideo = $"Video{extensionVideo}";
+
+            formData.Add(videoContent, "VideoUrl", nombreVideo);
+        }
+
+        // Procesar las imágenes obligatorias (1, 2, 3)
+        formData.Add(ProcesarImagen(imagenRutas[0]), "imagen1", "Imagen1.jpg");
+        formData.Add(ProcesarImagen(imagenRutas[1]), "imagen2", "Imagen2.jpg");
+        formData.Add(ProcesarImagen(imagenRutas[2]), "imagen3", "Imagen3.jpg");
+
+        // Procesar las imágenes opcionales (4, 5, 6)
+        if (!string.IsNullOrEmpty(imagenRutas[3]))
+        {
+            formData.Add(ProcesarImagen(imagenRutas[3]), "imagen4", "Imagen4.jpg");
+        }
+        if (!string.IsNullOrEmpty(imagenRutas[4]))
+        {
+            formData.Add(ProcesarImagen(imagenRutas[4]), "imagen5", "Imagen5.jpg");
+        }
+        if (!string.IsNullOrEmpty(imagenRutas[5]))
+        {
+            formData.Add(ProcesarImagen(imagenRutas[5]), "imagen6", "Imagen6.jpg");
+        }
+
+        // Enviar los datos mediante una solicitud POST multipart/form-data
+        var httpResponse = await repositorio.PostMultipartContent("/api/colaborador/servicio-insertar", formData);
+
+        // Manejo de errores
+        if (httpResponse.Error)
+        {
+            var message = await httpResponse.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        // Éxito al guardar
+        await sweetAlertService.FireAsync("Éxito", "Servicio guardado con éxito", SweetAlertIcon.Success);
+        navigationManager.NavigateTo("/");
+    }
+
+
+    private StreamContent ProcesarImagen(string base64Image)
+    {
+        try
+        {
+            // Verificar si la cadena base64 tiene el encabezado esperado (e.g. data:image/jpeg;base64,)
+            var base64DataParts = base64Image.Split(',');
+            if (base64DataParts.Length == 2)
+            {
+                var base64Data = base64DataParts[1];  // Obtener la segunda parte que es la cadena base64 real
+
+                // Convertir la imagen base64 a un array de bytes
+                var imagenBytes = Convert.FromBase64String(base64Data);
+
+                // Crear el stream de la imagen
+                var imagenStream = new MemoryStream(imagenBytes);
+                var imagenContent = new StreamContent(imagenStream);
+
+                // Establecer el tipo MIME adecuado basado en el encabezado base64
+                var mimeType = base64DataParts[0].Contains("jpeg") ? "image/jpeg" : "image/png";  // Ajustar si es JPEG o PNG
+                imagenContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(mimeType);
+
+                return imagenContent;
+            }
+            else
+            {
+                throw new Exception("Formato de imagen no válido.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al procesar la imagen: {ex.Message}");
+            throw;  // Propagar la excepción para manejarla en niveles superiores
+        }
+    }
+
+
+
+
+
+
+    private async Task AbrirSelectorImagen(string inputId)
+    {
+        await js.InvokeVoidAsync("abrirSelectorDeArchivo", inputId);  // Usamos JS Interop para abrir el input file
+    }
+
+
+
+
+
+
+    private async Task SubirImagen(InputFileChangeEventArgs e, int imagenId)
+    {
+        // Validar que el ID de la imagen está en el rango esperado
+        if (imagenId < 1 || imagenId > 6)
+        {
+            Console.WriteLine($"Índice fuera de rango: {imagenId}");
+            return;
+        }
+
+        // Asegurarse de que la lista imagenRutas tiene al menos 6 elementos
+        while (imagenRutas.Count < 6)
+        {
+            imagenRutas.Add(null);  // Inicializamos con null las posiciones que falten
+        }
+
+        var archivo = e.File;
+        if (archivo != null)
+        {
+            // Verificar el tamaño del archivo antes de cargarlo
+            if (archivo.Size > MaxFileSize)
+            {
+                Console.WriteLine("El archivo excede el tamaño máximo permitido de 5MB.");
+                return;
+            }
+
+            // Leer el archivo y convertirlo a Base64
+            using var stream = archivo.OpenReadStream(MaxFileSize);  // Limitar el tamaño de la carga
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            var base64Image = Convert.ToBase64String(memoryStream.ToArray());
+
+            // Asignar la imagen en el índice correcto de imagenRutas
+            imagenRutas[imagenId - 1] = $"data:{archivo.ContentType};base64,{base64Image}";
+        }
+
+        // Forzar la actualización de la UI
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        archivoSeleccionado = e.File;
+        Console.WriteLine("Pdf Cargado exitosamente");
+    }
+
+    private async Task OnVideoSelected(InputFileChangeEventArgs e)
+    {
+        videoSeleccionado = e.File;
+
+        if (videoSeleccionado != null)
+        {
+            Console.WriteLine($"Video seleccionado: {videoSeleccionado.Name}, tamaño: {videoSeleccionado.Size}");
+            using var stream = videoSeleccionado.OpenReadStream(MaxVideoSize);
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            var base64Video = Convert.ToBase64String(memoryStream.ToArray());
+        }
+        else
+        {
+            Console.WriteLine("No se seleccionó ningún video.");
+        }
+    }
+
+    private List<string> FormatearEspecificaciones(string? especificaciones)
+    {
+        var frasesFormateadas = new List<string>();
+
+        if (!string.IsNullOrEmpty(especificaciones))
+        {
+            var frases = especificaciones.Split('|');
+            foreach (var frase in frases)
+            {
+                if (!string.IsNullOrWhiteSpace(frase))
+                {
+                    var partes = frase.Split(':', 2);
+                    if (partes.Length == 2)
+                    {
+                        var parteEnNegrita = $"<strong>{partes[0].Trim()}:</strong>";
+                        var parteNormal = partes[1].Trim().TrimEnd('.');
+                        frasesFormateadas.Add($"{parteEnNegrita} {parteNormal}");
+                    }
+                    else
+                    {
+                        frasesFormateadas.Add(frase.Trim());
+                    }
+                }
+            }
+        }
+
+        return frasesFormateadas;
+    }
+
+
+
+
+
+
+
+}

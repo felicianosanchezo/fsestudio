@@ -1,0 +1,574 @@
+﻿/* Contenedor principal de la fila */
+.contenedor-servicio {
+    display: flex;
+    gap: 60px; /* Espacio entre las columnas */
+    height: 660px; /* Asegura una altura fija para evitar que crezca demasiado */
+    padding: 90px 60px;
+    border-radius: 15px;
+    box-sizing: border-box; /* Asegura que el padding y el border se respeten */
+    overflow: hidden; /* Evita desbordamientos */
+    border: 1px solid #ccd1d1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina),var(--color-gris-claro1) );
+    margin-bottom: 60px;
+}
+
+
+.boton-info1 {
+    border: none;
+    cursor: pointer;
+    font-size: 1.6em;
+    transition: color 0.3s ease;
+    background-color: transparent;
+    border:none;
+}
+
+    .boton-info1:hover {
+        color: #0056b3;
+    }
+
+    .boton-info1 i {
+        margin-left: 5px;
+        color: #0097a7;
+    }
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegura que el modal esté por encima de otros elementos */
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 80%;
+    max-width: 400px; /* Ajuste el ancho máximo del modal */
+    display: flex;
+    flex-direction: column; /* Para mostrar los elementos en columna */
+    align-items: center;
+}
+
+.contendor-comentarios {
+    display: flex;
+    flex-direction: column; /* Para alinear las imágenes en columna */
+    gap: 10px; /* Espacio entre las imágenes */
+    margin-bottom: 20px;
+    width:100%; /* Ajusta el tamaño de las imágenes */
+    overflow:hidden;
+}
+
+    .contendor-comentarios img {
+        width: 600px; /* Ajusta el tamaño de las imágenes */
+        height: auto; /* Ajusta el tamaño de las imágenes */
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+.contenedor-pagos-botones {
+    display: flex;
+    justify-content: center; /* Centra el botón de cerrar */
+}
+
+.btn-cerrar {
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    background-color: var(--color-azul-turquesa);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1em;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 90px;
+    height: 36px;
+    text-align: center;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+
+    .btn-cerrar .btn:hover {
+        background-color: #138d75;
+        transform: scale(1.06); /* Aumento ligero */
+        color: white;
+        border: 3px solid #138d75;
+    }
+
+
+
+
+
+
+
+
+
+
+
+/* Estrellas de calificación */
+.text-center i {
+    font-size: 20px;
+    margin-right: 2px;
+}
+
+
+
+/* Estilos de las estrellas */
+.estrella-vacia {
+    color: var(--color-gris-linea);
+}
+
+.estrella-llena {
+    color: var(--color-dorado-original);
+}
+
+/* Columna izquierda (Imagen de portada) */
+.columna-imagen-servicio {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%; /* Ocupa el 50% del ancho del contenedor */
+    height: 100%; /* Asegura que la columna ocupe toda la altura disponible */
+    background-color: transparent; /* Color temporal para visualización */
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+    border: 3px solid #f8f9f9;
+    transition: border 0.3s ease-in-out;
+
+
+}
+
+
+
+
+
+
+
+.contenedor-imagen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: 100%; /* Hace que el contenedor ocupe toda la altura de la columna */
+
+
+}
+
+    .contenedor-imagen img {
+        width: 100%;
+        height: auto; /* Ajusta la imagen para que ocupe todo el contenedor */
+        object-fit: cover; /* Hace que la imagen cubra todo el área, pero puede recortarse si es necesario */
+        border-radius: 10px;
+
+    }
+
+
+
+
+
+/* Columna derecha (Información del servicio) */
+.columna-detalles-servicio {
+    display: flex;
+    flex-direction: column; /* Organiza los elementos en una columna vertical */
+    text-align: center; /* Centra el contenido de texto */
+    width: 50%; /* Ocupa el 50% del ancho del contenedor */
+    padding: 0px;
+    gap: 0px; /* Espacio entre los elementos internos */
+    box-sizing: border-box;
+    background-color: transparent; /* Color temporal para visualización */
+
+    border: 1px solid #ccd1d1;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.subtitulo-servicio {
+    display: flex;
+    text-align: center; /* Centra el contenido de texto */
+    justify-content: center; /* Centrar el contenido horizontalmente */
+    height: 40px; /* Ajusta la altura de la barra */
+    /*border-bottom: 1px solid #ccd1d1;*/
+    overflow: hidden;
+       background-color: var(--color-gris-claro1);
+
+
+
+
+
+
+
+
+   
+   }
+
+.titulo-servicio {
+    display: flex; /* Activa el modo Flexbox */
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    border-bottom: 1px solid #ccd1d1;
+    padding: 6px;
+    height: 90px;
+    overflow: hidden;
+    background-color: var(--color-gris-claro1);
+}
+
+
+
+
+.descripcion-servicio {
+    background-color: transparent; /* Color temporal para visualización */
+    flex-grow: 1; /* Permite que crezca para llenar el espacio */
+    display: flex; /* Flexbox para centrar el contenido */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    text-align: center; /* Centrar el texto dentro del párrafo */
+    padding:15px;
+
+}
+
+.text-center {
+    border-bottom: 1px solid #ccd1d1;
+    height:45px;
+    padding-bottom:5px;
+    display:flex;
+    flex-direction:row;
+    align-content:center;
+    align-items:center;
+    justify-content:center;
+
+}
+
+
+
+.contenedor-botones {
+    display: flex;
+    gap: 120px; /* Espacio entre los botones */
+    justify-content: center;
+    background-color: var(--color-gris-claro1);
+    align-self: center;
+    margin-top: auto;
+    padding: 12px 24px;
+    width: 100%;
+}
+
+/* Estilo base para todos los botones */
+button {
+    font-size: 1.0rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 200px;
+    height: 45px;
+    text-align: center;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Estilos específicos para el botón azul */
+.btn-azul {
+    color: white;
+    border: 3px solid #0097a7;
+}
+/* Estilos específicos para el botón transparente */
+.btn-transparente {
+    background-color: transparent;
+    color: #0097a7;
+    border: 3px solid #0097a7;
+}
+
+
+       /* Efecto hover para los botones */
+.contenedor-botones button:hover {
+    background-color: #138d75;
+    transform: scale(1.06); /* Aumento ligero */
+    color: white;
+    border: 3px solid #138d75;
+}
+
+/* Botón seleccionado (presionado) */
+    .contenedor-botones .btn-seleccionado {
+        background-color: #E3B866;
+        color: white;
+        box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.2); /* Efecto de botón presionado */
+        transform: translateY(2px); /* Simula que el botón está presionado */
+        cursor: pointer; /* Asegura que el cursor sea siempre "pointer" */
+        border:none;
+    }
+
+/* Botón no seleccionado (por defecto) */
+.btn-default {
+    background-color: #0097a7;
+
+    color: white;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+/* Botón seleccionado (presionado) */
+.contenedor-botones .btn-seleccionado1 {
+    background-color: var(--color-dorado-original);
+
+    color: white;
+    box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.2); /* Efecto de botón presionado */
+    transform: translateY(2px); /* Simula que el botón está presionado */
+    cursor: pointer; /* Asegura que el cursor sea siempre "pointer" */
+    border: none;
+}
+
+/* Botón no seleccionado (por defecto) */
+.btn-default1 {
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+
+/* Estilos para pantallas medianas (tablets, 768px a 1024px) */
+@media (max-width: 1024px) {
+    .contenedor-servicio {
+        flex-direction: column; /* Cambia a diseño de columna en lugar de filas */
+        padding: 15px 40px;
+        height: auto; /* Ajusta la altura automáticamente */
+        gap: 15px; /* Reduce el espacio entre columnas */
+        margin-bottom:0px;
+    }
+
+
+    .columna-imagen-servicio,
+    .columna-detalles-servicio {
+        width: 100%; /* Asegura que ambas columnas ocupen el 100% */
+        height: auto;
+    }
+
+    .titulo-servicio {
+        font-size: 1.2rem; /* Ajusta el tamaño de fuente */
+        height: 70px;
+    }
+
+    .contenedor-botones {
+        gap: 60px; /* Reduce el espacio entre botones */
+        padding: 8px 16px;
+    }
+
+    button {
+        width: 180px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Estilos para pantallas pequeñas (móviles, hasta 768px) */
+@media (max-width: 768px) {
+    #filaLocal1 {
+        background-color: red;
+        margin: 0px;
+    }
+
+    .contenedor-servicio {
+        padding: 30px 15px;
+        gap: 20px;
+        border-radius: 0px;
+    }
+
+    .titulo-servicio {
+        overflow: hidden;
+        height: auto;
+    }
+
+    .columna-imagen-servicio {
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .contenedor-botones {
+        gap: 30px;
+        padding: 8px;
+    }
+
+    button {
+        width: 130px;
+        font-size: 0.9rem;
+        height: 40px;
+    }
+
+
+   
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.contenedor-servicio-especificaciones {
+    display: flex;
+    /*flex-direction: row;*/
+    gap: 45px; /* Espacio entre las columnas */
+    height: 100%; /* Altura fija */
+    padding: 0px;
+    border-radius: 15px;
+    box-sizing: border-box; /* Asegura que el padding y el border se respeten */
+
+
+
+    margin-bottom: 60px;
+}
+
+.contenedor-Especificaciones {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    width: 100%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    border: 3px solid #E3B866;
+    border-radius: 15px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina), var(--color-gris-claro1));
+}
+
+.contenedor-Especificaciones-titulo {
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+
+
+    padding: 0px;
+    height: 45px;
+    background-color: #E3B866;
+}
+
+
+
+.contenedor-Especificaciones-descripcion {
+    padding: 30px;
+}
+
+
+
+.contenedor-Especificaciones-descripcion-list {
+    display: flex;
+    list-style-type: disc;
+}
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 768px) {
+    /* Contenedor principal para apilar los contenedores en columna */
+    .contenedor-servicio-especificaciones {
+        flex-direction: column; /* Cambia de filas a columnas */
+        gap: 15px; /* Espacio entre los contenedores */
+        align-items: center; /* Centra los elementos */
+        width: 100%; /* Usa todo el ancho disponible */
+        box-sizing: border-box;
+        overflow: hidden;
+        width: 100%;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        padding: 0px 15px;
+    }
+
+    /* Ajustes para cada contenedor de especificaciones */
+    .contenedor-Especificaciones {
+        flex-direction: column; /* Cambia de filas a columnas */
+
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        border-radius: 15px;
+        width: 100%;
+        margin: 0px; /* Centra cada contenedor */
+        overflow: hidden;
+    }
+
+    /* Estilo para los títulos dentro de cada contenedor */
+    .contenedor-Especificaciones-titulo {
+        flex-direction: column; /* Cambia de filas a columnas */
+        height: auto; /* Ajusta la altura al contenido */
+        padding: 10px;
+        font-size: 1.2rem; /* Reduce el tamaño del título */
+        text-align: center;
+        background-color: #E3B866; /* Color de fondo para los títulos */
+        border-radius: 10px 10px 0 0; /* Bordes redondeados en la parte superior */
+    }
+
+    /* Ajuste de padding y fuentes en la descripción */
+    .contenedor-Especificaciones-descripcion {
+        padding: 15px; /* Reduce el padding para pantallas pequeñas */
+        font-size: 1rem; /* Ajusta el tamaño del texto */
+        flex-direction: column; /* Cambia de filas a columnas */
+        overflow: hidden;
+    }
+
+    /* Ajuste en la lista de descripciones */
+    .contenedor-Especificaciones-descripcion-list {
+        flex-direction: column; /* Alinea los elementos en columna */
+        padding-left: 20px; /* Espacio de alineación */
+        overflow: hidden;
+    }
+
+    /* Estilo del título oscuro */
+    .Titulo-Especificaciones-oscura {
+        color: var(--color-dorado-original); /* Ajuste de color */
+        font-size: 1.2rem;
+    }
+
+    /* Ajuste de párrafos para evitar demasiado espacio en pantallas pequeñas */
+    .Parrafo-Lista {
+        font-size: 0.95rem; /* Reduce el tamaño de fuente */
+        line-height: 1.4; /* Mejora la legibilidad */
+        padding-bottom: 5px; /* Espacio entre párrafos */
+    }
+}
+
+
+
+
+
+

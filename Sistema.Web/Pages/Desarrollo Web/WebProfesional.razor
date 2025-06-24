@@ -1,0 +1,149 @@
+﻿@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+
+<section class="contenedor-plan">
+
+
+    <div class="plan-wb">
+
+        <div class="plan-wb-header">
+            <h3>Web Profesional - <span class="highlight">Portafolio o Blog Profesional </span></h3>
+            <p>
+                Ideal para despachos activos que quieren mostrar proyectos o publicar contenido técnico.
+            </p>
+        </div>
+        <div class ="plan-wb-img-contenedor">
+            <div class="plan-wb-img">
+                <img src="Images/Soluciones Web/SOLUCIONES WEB 2.webp" alt="Imagen de portada" loading="lazy">
+            </div>
+        </div>
+
+
+        <div class="plan-wb-especificaciones">
+
+            <h4 class="titulo-lista">📌¿Qué te entregamos?</h4>
+            <br />
+            <ul>
+                <li>✅ Sitio web de hasta 6 páginas con un máximo de 15 secciones.</li>
+                <li>✅ Diseño responsive adaptado para celular, tablet y escritorio.</li>
+                <li>✅ Galería dinámica de proyectos Ó sección de blog técnico facil de administrar a elegir</li>
+                <li>✅ Formulario de contacto + botones de WhatsApp, Google Maps, redes sociales.</li>
+                <li>✅ Dominio incluido por 1 año (.com o .com.mx).</li>
+                <li>✅ Hosting y certificado SSL gratuitos por 6 meses.</li>
+                <li>✅ Panel de administración (CMS básico) para editar contenido.</li>
+                <li>✅ Optimización SEO básica para buscadores.</li>
+            </ul>
+
+            <br />
+
+            <h4 class="titulo-valor">🎯 ¿Por qué te conviene este plan?</h4>
+            <br />
+            <ul class="lista-valor-plan">
+                <li>✅ Profesionaliza tu imagen y posiciona tu marca con una web completa y personalizada.</li>
+                <li>✅ Controla tu contenido sin depender de terceros gracias al panel autoadministrable.</li>
+                <li>✅ Aumenta tu visibilidad en buscadores y facilita el contacto directo con tus clientes.</li>
+            </ul>
+
+        </div>
+
+        <div class="plan-wb-llamada">
+            <div class="plan-wb-precios">
+                <p><strong>⏱ Entrega estimada:</strong> <span class="precios-resaltados">9 días hábiles</span></p>
+                <p><strong>💼 Plan Profesional:</strong> <span class="precios-resaltados-tachado">$9,300 MXN</span></p>
+                <p><strong>🗓️ Promoción activa:</strong> <span class="precios-resaltados">15% OFF solo en JUNIO</span></p>
+                <p><strong>💵 Precio con descuento:</strong> <span class="precios-resaltados">$7,900 MXN</span></p>
+            </div>
+
+            <button class="plan-wb-btn-adquirir" @onclick="Web_Profesional">
+                ¡Solicita tu Descuento por WhatsApp!
+            </button>
+        </div>
+
+
+        <div class="plan-wb-botones">
+   @*          <button class="plan-wb-btn" title="Solicitar Información" @onclick="EnviarCorreoInformacion">
+                <i class="bi bi-envelope-at"></i> <span>Más Información</span>
+            </button> *@
+
+            <button class="plan-wb-btn" title="Enviar WhatsApp" @onclick="EnviarWhatsApp">
+                <i class="bi bi-whatsapp"></i> <span>Cotizar por WhatsApp</span>
+            </button>
+
+            <button class="plan-wb-btn" title="Compartir Proyecto" @onclick="CompartirPorWhatsApp">
+                <i class="bi bi-share-fill"></i> <span>Compartir Proyecto</span>
+            </button>
+        </div>
+    </div>
+
+
+
+
+
+</section>
+
+
+
+@code {
+    private FsEstudioDTO empresa;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+
+        empresa = FsEstudioService.ObtenerInformacionEmpresa().FirstOrDefault();
+
+    }
+
+
+
+    private async Task Web_Profesional()
+    {
+        var mensaje = "Hola, estoy interesado en adquirir el Plan Web Profesional  que vi en su página.";
+        var telefonoLimpio = empresa.WhatsAppTelefono; // asegúrate que esto esté en tu clase
+        var whatsappUrl = $"https://wa.me/{telefonoLimpio}?text={Uri.EscapeDataString(mensaje)}";
+
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", whatsappUrl);
+    }
+
+
+
+
+    private void IrAModulosWeb()
+    {
+        Navigation.NavigateTo("/modulos-web");
+    }
+
+
+
+
+
+    private async Task EnviarCorreoInformacion()
+    {
+        var email = empresa.Correo;
+        var subject = "Interés en soluciones web para mi estudio o constructora";
+        var body = "Hola, estoy interesado en conocer más sobre sus planes de desarrollo web. Me gustaría tener presencia en línea para mostrar mi portafolio y automatizar procesos de mi estudio o empresa constructora.";
+        var mailtoUrl = $"mailto:{email}?subject={Uri.EscapeDataString(subject)}&body={Uri.EscapeDataString(body)}";
+
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", mailtoUrl);
+    }
+
+    private async Task CompartirPorWhatsApp()
+    {
+        var mensaje = "Te comparto las soluciones web de FS Estudio: https://www.fsestudio.com/soluciones-web";
+
+        var whatsappUrl = $"https://wa.me/?text={Uri.EscapeDataString(mensaje)}";
+
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", whatsappUrl);
+    }
+
+
+    private async Task EnviarWhatsApp()
+    {
+        var mensaje = "Hola, vi sus soluciones web en la página de FS Estudio y me interesa tener una página profesional para mi estudio o empresa constructora. ¿Me podrían brindar más información?";
+        var whatsappUrl = $"https://wa.me/{empresa.WhatsAppTelefono}?text={Uri.EscapeDataString(mensaje)}";
+
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", whatsappUrl);
+    }
+
+}

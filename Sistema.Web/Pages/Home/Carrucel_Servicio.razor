@@ -1,0 +1,258 @@
+﻿@inject IJSRuntime JS
+@inject IRepositorio repositorio
+@inject NavigationManager Navigation
+ @inject HttpClient Http
+
+
+
+<div class="carousel-container-fondo">
+
+    <div class="title-container">
+        <div class="contenedor-titulo">
+            <h1 class="Titulo-Principal-2">Servicios de Arquitectura</h1>
+        </div>
+       
+        <div class="text-content">
+            <p class="Descripcion-Principal-Home">
+                En <span class="highlight">FS ESTUDIO</span> ofrecemos soluciones completas en <span class="highlight">diseño arquitectónico</span>, adaptadas a las necesidades de desarrolladores, constructoras y clientes particulares. Nuestros servicios incluyen <span class="highlight">paquetes arquitectónicos</span> (básico, intermedio y premium), <span class="highlight">renders fotorrealistas</span> interiores y exteriores, así como <span class="highlight">planos técnicos</span> en AutoCAD y Revit. También realizamos <span class="highlight">diseño de fachadas personalizadas</span>, modelado 3D detallado y <span class="highlight">ambientación de plantas</span> para proyectos en venta. Si tu obra lo requiere, integramos <span class="highlight">instalaciones hidrosanitarias en Revit</span>, garantizando funcionalidad y presentación profesional en cada entrega.
+            </p>
+
+            <div>
+                <a href="/servicios" class="btn-ver-mas">Ver nuestros Servicios</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="carousel-container">
+        <div id="carouselServicios" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+            <div class="carousel-indicators">
+                @for (int i = 0; i < Servicios.Count; i++)
+                {
+                    <button type="button" data-bs-target="#carouselServicios" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i + 1)"></button>
+                }
+            </div>
+
+            <div class="carousel-inner">
+                @for (int i = 0; i < Servicios.Count; i++)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <img src="@Servicios[i].PortadaUrl" loading="lazy"  class="d-block w-100" alt="Image @(i + 1)" />
+                    </div>
+                }
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselServicios" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselServicios" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="carousel-text-below-outside">
+
+
+        <div class="contenedor-titulo-2">
+
+            <h4 class="Titulo-Proyecto">@SelectedImage?.Nombre</h4> <!-- Mostrando el título de la imagen seleccionada -->
+        </div>
+
+
+        <div class="contenedor-descripcion-2">
+
+            <p class="Descripcion-Principal-Proyecto">@DescripcionTruncada</p>
+    
+
+        </div>
+
+        <div class="contenedor-boton-2">
+
+           
+            <button class="btn-azul1 custom-button" @onclick="() => NavegarADetalle(SelectedImage.IdServicio)">
+                Ir a Servicio
+            </button>
+
+        </div>
+
+        <div class="contenedor-botones">
+            <!-- Botón: Enviar correo para solicitar información -->
+            <button class="boton-accion-portada" title="Solicitar Información" @onclick="EnviarCorreoInformacion">
+                <i class="bi bi-envelope-at"></i> <span class="boton-texto">Más Información</span>
+            </button>
+
+            <button class="boton-accion-portada" title="Enviar WhatsApp" @onclick="EnviarWhatsApp">
+                <i class="bi bi-whatsapp"></i> <span class="boton-texto">Enviar WhatsApp</span>
+            </button>
+
+            <button class="boton-accion-portada" title="Compartir Proyecto" @onclick="CompartirPorWhatsApp">
+                <i class="bi bi-share-fill"></i> <span class="boton-texto">Compartir Servicio</span>
+            </button>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+    </div>
+</div>
+
+@code {
+    public List<ServicioListadoDTO>? Servicios = new List<ServicioListadoDTO>();
+
+    // Imagen seleccionada que se muestra fuera del carrusel
+    public ServicioListadoDTO SelectedImage = new ServicioListadoDTO();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+
+
+        await Cargar();
+        InicializarPrimeraImagen();
+        // Inicializa el interop de JavaScript para manejar el cambio de slide
+        InvokeAsync(() => JS.InvokeVoidAsync("carouselInterop.initCarousel", "carouselServicios", DotNetObjectReference.Create(this)));
+
+        empresa = FsEstudioService.ObtenerInformacionEmpresa().FirstOrDefault();
+
+    }
+
+    private FsEstudioDTO empresa;
+  
+    private async Task EnviarCorreoInformacion()
+    {
+        var email = empresa.Correo;
+        var subject = $"Interés en el proyecto {SelectedImage.Nombre}";
+        var body = $"Hola, estoy interesado en recibir más información sobre el proyecto {SelectedImage.Nombre}.";
+        var mailtoUrl = $"mailto:{email}?subject={Uri.EscapeDataString(subject)}&body={Uri.EscapeDataString(body)}";
+
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", mailtoUrl);
+    }
+
+    private async Task CompartirPorWhatsApp()
+    {
+        var mensaje = $"Te comparto este Servicio de FS Estudio: {SelectedImage.Nombre} - https://www.fsestudio.com/servicio/{SelectedImage.IdServicio}";
+        var whatsappUrl = $"https://wa.me/?text={Uri.EscapeDataString(mensaje)}";
+
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", whatsappUrl);
+    }
+
+    private async Task EnviarWhatsApp()
+    {
+        var mensaje = $"Hola, estoy interesado en el Servicio: {SelectedImage?.Nombre} que vi en su página.";
+        var whatsappUrl = $"https://wa.me/{empresa.WhatsAppTelefono}?text={Uri.EscapeDataString(mensaje)}";
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", whatsappUrl);
+    }
+
+  
+
+
+
+    private int wordLimit = 30; // Límite de palabras, puedes ajustar este valor
+    private void NavegarADetalle(int idServicio) { Navigation.NavigateTo($"/servicio/{idServicio}"); }
+    // Propiedad calculada para obtener la descripción truncada
+    private string DescripcionTruncada
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(SelectedImage?.Descripcion))
+                return string.Empty;
+
+            var palabras = SelectedImage.Descripcion.Split(' '); // Dividir el texto en palabras
+            if (palabras.Length <= wordLimit)
+                return SelectedImage.Descripcion; // Retorna la descripción completa si está dentro del límite
+
+            // Toma las primeras palabras hasta el límite y agrega "..."
+            return string.Join(" ", palabras.Take(wordLimit)) + "...";
+        }
+    }
+
+    private void InicializarPrimeraImagen()
+    {
+        // Inicializa la primera imagen al cargar la página
+        if (Servicios != null && Servicios.Count > 0)
+        {
+            SelectedImage = Servicios.First();
+            StateHasChanged(); // Notifica a Blazor que el estado ha cambiado
+        }
+    }
+
+
+    private async Task Cargar()
+    {
+        int intentos = 0;
+        const int maxIntentos = 3; // Número máximo de intentos
+        const int delayMilisegundos = 2000; // Tiempo de espera entre intentos (en milisegundos)
+
+        while (intentos < maxIntentos)
+        {
+            try
+            {
+
+                var response = await repositorio.Get<List<ServicioListadoDTO>>("/api/servicio/home-carrucel");
+                if (response != null && response.Response != null)
+                {
+                    Servicios = response.Response;
+                    return; // Salir del método si la carga fue exitosa
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en intento {intentos + 1}: {ex.Message}");
+                // Opcional: puedes registrar o manejar el error de cada intento aquí
+            }
+
+            intentos++;
+            if (intentos < maxIntentos)
+            {
+                await Task.Delay(delayMilisegundos); // Espera antes de intentar nuevamente
+            }
+        }
+
+        Console.WriteLine("Error: No se pudo conectar con el servidor después de varios intentos.");
+        // Opcional: aquí puedes mostrar un mensaje de error al usuario si es necesario
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            JS.InvokeVoidAsync("carouselInterop.initCarousel", "carouselServicios", DotNetObjectReference.Create(this));
+        }
+    }
+
+    [JSInvokable]
+    public void OnCarouselSlideChange(int slideIndex)
+    {
+        if (slideIndex >= 0 && slideIndex < Servicios.Count)
+        {
+            SelectedImage = Servicios[slideIndex];
+            StateHasChanged(); // Notifica a Blazor que el estado ha cambiado
+        }
+    }
+}

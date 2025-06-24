@@ -1,0 +1,399 @@
+:root {
+    --color-fondo-pagina: #fdfefe; /* Color gris muy clarito*/
+    --color-gris-claro1: #ecf0f1;
+    --color-gris-descripcion: #4D4D4D;
+    --color-azul-oscuro1: #39546F;
+    --color-azul-oscuro2: #283C4F;
+    --color-azul-oscuro2-transparente: rgba(40, 60, 79, 0.7); /* 50% transparencia */
+    /*--color-azul-turquesa: #0097a7;*/
+    --color-azul-turquesa: #007c91;
+    --color-dorado-original: #E3B866;
+    --color-dorado-oscuro: #D2AE6D;
+    --color-verde-original: #7cb342;
+    --color-verde-oscuro: #27ae60;
+    /*   --fuente-principal: Segoe UI;
+    --fuente-secundaria: Segoe UI;*/
+    --fuente-principal: 'Poppins', sans-serif;
+    --fuente-secundaria: 'Poppins', sans-serif;
+    --color-gris-linea: #d0d3d4;
+    --color-accion-principal: #007c91;
+    --fondo-oscuro-gris: #2e2e2e;
+    --color-verde-claro: #a8d675;
+    --color-dorado-claro: #f0dba6;
+    --fondo-oscuro-gris: #2e2e2e;
+}
+
+/* Asegúrate de que HTML y BODY ocupen el 100% del viewport */
+
+
+/* Page: Contenedor principal que envuelve el contenido */
+.page {
+    display: flex;
+    flex-direction: column; /* Apilar verticalmente */
+    width: 100%;
+    flex-grow: 1; /* Permite que la página ocupe el espacio restante */
+    background-color: white;
+    box-sizing: border-box;
+}
+
+
+/* Footer: Siempre pegado debajo de main */
+footer {
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: auto; /* Empuja el footer al final */
+}
+
+
+
+
+
+
+/* Títulos principales (h1) */
+.Titulo-Principal {
+    display: flex;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+
+    font-family: var(--fuente-secundaria);
+    color: var(--fondo-oscuro-gris);
+    font-size: 1.6rem; /* 40px */
+    font-weight: 900 !important;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+/* Títulos principales (h1) */
+.Titulo-Principal-Secundario {
+    display: flex;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+
+    font-family: var(--fuente-secundaria);
+    color: var(--color-azul-oscuro1);
+    font-size: 2rem; /* 40px */
+    font-weight: 900 !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    letter-spacing: 4px;
+    /*    text-transform: uppercase;*/
+    height: 100%;
+    text-transform: uppercase;
+}
+
+
+/* Subtítulos grandes (h2) */
+.Subtitulo-Principal {
+    display: flex;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    font-size: 1.6rem;
+    font-family: var(--fuente-principal);
+    color: var(--color-dorado-oscuro);
+    letter-spacing: 3px;
+    text-align: center;
+    height: 100%;
+    font-weight: 400;
+}
+
+.Subtitulo-Principal-secundario {
+    display: flex;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    font-size: 1.6rem;
+    font-family: var(--fuente-principal);
+    color: var(--color-dorado-original);
+    letter-spacing: 3px;
+    text-align: center;
+    height: 100%;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+
+
+
+
+.precio-resaltado {
+    color: var(--color-verde-original);
+    font-weight: bold;
+    font-size: 28px;
+}
+
+/* Subtítulos grandes (h2) */
+.Titulo-Especificaciones {
+    display: flex;
+    position: center;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    font-size: 1.5rem;
+    font-family: var(--fuente-principal);
+    color: var(--color-fondo-pagina);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+    letter-spacing: 3px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 700 !important;
+    padding: 0px;
+}
+
+.Titulo-Especificaciones-oscura {
+    display: flex;
+    position: center;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    font-size: 1.6rem;
+    font-family: var(--fuente-principal);
+    color: var(--color-verde-original);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+    letter-spacing: 3px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 700 !important;
+    padding: 0px;
+}
+
+.Titulo-Pasos {
+    display: flex;
+    position: center;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    font-size: 1.4rem !important;
+    font-family: var(--fuente-secundaria);
+    color: var(--color-azul-oscuro1);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+    letter-spacing: 2px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 500 !important;
+    padding: 0px;
+}
+
+
+/* Subtítulos grandes (h2) */
+.Parrafo-Lista {
+    font-size: 1.1rem; /* 16px */
+    font-family: var(--fuente-principal);
+    color: var(--color-gris-descripcion);
+    font-weight: 400;
+}
+
+
+
+
+.Subtitlo-Nosotros {
+    display: flex;
+    position: center;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    font-size: 1.4rem;
+    font-family: var(--fuente-principal);
+    color: var(--color-dorado-original);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+    letter-spacing: 3px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 700 !important;
+    padding: 0px;
+}
+
+
+
+
+
+
+
+
+.Parrafo-Principal {
+    font-size: 1.1rem; /* 16px */
+    font-family: var(--fuente-principal);
+    color: var(--color-gris-descripcion);
+    /*font-style: italic;*/
+    /*font-weight: 200;*/
+}
+
+
+
+
+.Descripcion-Principal {
+    font-size: 1.4rem; /* 16px */
+    font-family: var(--fuente-principal);
+    text-align: center;
+    color: var(--color-gris-descripcion) !important;
+}
+
+
+
+
+
+
+
+
+/* Títulos de secciones pequeñas (h5) */
+.Titutlo-Normal {
+    font-size: 1rem; /* 20px */
+    font-family: var(--fuente-principal)
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Ajustes para pantallas pequeñas (móviles, hasta 768px) */
+@media (max-width: 768px) {
+    .Titulo-Principal {
+        font-size: 1.2rem;
+        letter-spacing: 1.5px;
+        display: flex;
+        align-items: center;
+        align-content: center;
+    }
+
+    .Titulo-Principal-Secundario {
+        font-size: 1.2rem;
+        letter-spacing: 1.5px;
+        display: flex;
+        align-items: center;
+        align-content: center;
+        text-align: center;
+    }
+
+
+    .Subtitulo-Principal {
+        letter-spacing: 1.5px;
+        font-size: 1.2rem;
+    }
+
+    .Titulo-Especificaciones,
+    .Titulo-Especificaciones-oscura {
+        font-size: 1.3rem;
+    }
+
+    .Descripcion-Principal {
+        font-size: 1.1rem; /* 16px */
+        font-family: var(--fuente-principal);
+        color: var(--color-gris-descripcion);
+    }
+
+
+
+
+    .Titulo-Pasos {
+        font-size: 1rem !important;
+        letter-spacing: 1px;
+    }
+
+    .Parrafo-Lista,
+    .Parrafo-Principal {
+        font-size: 1rem; /* Ajuste para mejor legibilidad en pantallas pequeñas */
+    }
+
+    .Titutlo-Normal {
+        font-size: 0.8rem;
+    }
+
+    .precio-resaltado {
+        font-size: 15px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.content {
+    padding-top: 1.1rem;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+.blazor-error-boundary {
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNDkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxkZWZzPjxjbGlwUGF0aCBpZD0iY2xpcDAiPjxyZWN0IHg9IjIzNSIgeT0iNTEiIHdpZHRoPSI1NiIgaGVpZ2h0PSI0OSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMzUgLTUxKSI+PHBhdGggZD0iTTI2My41MDYgNTFDMjY0LjcxNyA1MSAyNjUuODEzIDUxLjQ4MzcgMjY2LjYwNiA1Mi4yNjU4TDI2Ny4wNTIgNTIuNzk4NyAyNjcuNTM5IDUzLjYyODMgMjkwLjE4NSA5Mi4xODMxIDI5MC41NDUgOTIuNzk1IDI5MC42NTYgOTIuOTk2QzI5MC44NzcgOTMuNTEzIDI5MSA5NC4wODE1IDI5MSA5NC42NzgyIDI5MSA5Ny4wNjUxIDI4OS4wMzggOTkgMjg2LjYxNyA5OUwyNDAuMzgzIDk5QzIzNy45NjMgOTkgMjM2IDk3LjA2NTEgMjM2IDk0LjY3ODIgMjM2IDk0LjM3OTkgMjM2LjAzMSA5NC4wODg2IDIzNi4wODkgOTMuODA3MkwyMzYuMzM4IDkzLjAxNjIgMjM2Ljg1OCA5Mi4xMzE0IDI1OS40NzMgNTMuNjI5NCAyNTkuOTYxIDUyLjc5ODUgMjYwLjQwNyA1Mi4yNjU4QzI2MS4yIDUxLjQ4MzcgMjYyLjI5NiA1MSAyNjMuNTA2IDUxWk0yNjMuNTg2IDY2LjAxODNDMjYwLjczNyA2Ni4wMTgzIDI1OS4zMTMgNjcuMTI0NSAyNTkuMzEzIDY5LjMzNyAyNTkuMzEzIDY5LjYxMDIgMjU5LjMzMiA2OS44NjA4IDI1OS4zNzEgNzAuMDg4N0wyNjEuNzk1IDg0LjAxNjEgMjY1LjM4IDg0LjAxNjEgMjY3LjgyMSA2OS43NDc1QzI2Ny44NiA2OS43MzA5IDI2Ny44NzkgNjkuNTg3NyAyNjcuODc5IDY5LjMxNzkgMjY3Ljg3OSA2Ny4xMTgyIDI2Ni40NDggNjYuMDE4MyAyNjMuNTg2IDY2LjAxODNaTTI2My41NzYgODYuMDU0N0MyNjEuMDQ5IDg2LjA1NDcgMjU5Ljc4NiA4Ny4zMDA1IDI1OS43ODYgODkuNzkyMSAyNTkuNzg2IDkyLjI4MzcgMjYxLjA0OSA5My41Mjk1IDI2My41NzYgOTMuNTI5NSAyNjYuMTE2IDkzLjUyOTUgMjY3LjM4NyA5Mi4yODM3IDI2Ny4zODcgODkuNzkyMSAyNjcuMzg3IDg3LjMwMDUgMjY2LjExNiA4Ni4wNTQ3IDI2My41NzYgODYuMDU0N1oiIGZpbGw9IiNGRkU1MDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvZz48L3N2Zz4=) no-repeat 1rem/1.8rem, #b32121;
+    padding: 1rem 1rem 1rem 3.7rem;
+    color: white;
+}
+
+    .blazor-error-boundary::after {
+        content: "An error has occurred."
+    }
+
+.loading-progress {
+    position: relative;
+    display: block;
+    width: 8rem;
+    height: 8rem;
+    margin: 20vh auto 1rem auto;
+}
+
+    .loading-progress circle {
+        fill: none;
+        stroke: #e0e0e0;
+        stroke-width: 0.6rem;
+        transform-origin: 50% 50%;
+        transform: rotate(-90deg);
+    }
+
+        .loading-progress circle:last-child {
+            stroke: #1b6ec2;
+            stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
+            transition: stroke-dasharray 0.05s ease-in-out;
+        }
+
+.loading-progress-text {
+    position: absolute;
+    text-align: center;
+    font-weight: bold;
+    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+}
+
+    .loading-progress-text:after {
+        content: var(--blazor-load-percentage-text, "Loading");
+    }
+
+code {
+    color: #c02d76;
+}

@@ -1,0 +1,98 @@
+﻿
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+
+
+<div class="planes-fondo">
+
+    <div class="contenedor-principal">
+
+        <div class="contenedor-izquierda">
+
+
+            <div class="contenedor-izquierda-imagen">
+                <img src="Images/Soluciones Web/08.webp" alt="Web arquitectura" class="slogan-img" loading="lazy" />
+            </div >
+
+            <div class="contenedor-izquierda-botones">
+
+                <!-- Web Básica: Ícono de estructura simple o inicio -->
+                <button class="plan-wb-btn" @onclick="@(() => ScrollToSection("web-basica"))">
+                    <i class="bi bi-house-door-fill"></i> <span>Web Básica</span>
+                </button>
+
+                <!-- Web Profesional: Ícono de portafolio, trabajo o contenido -->
+                <button class="plan-wb-btn" @onclick="@(() => ScrollToSection("web-profesional"))">
+                    <i class="bi bi-briefcase-fill"></i> <span>Web Profesional</span>
+                </button>
+
+                <!-- Web Avanzada: Ícono de engranaje o panel avanzado -->
+                <button class="plan-wb-btn" @onclick="@(() => ScrollToSection("web-avanzada"))">
+                    <i class="bi bi-gear-fill"></i> <span>Web Avanzada</span>
+                </button>
+
+
+
+
+            </div>
+       
+        </div>
+
+
+        <div class="contenedor-derecho">
+
+
+            <div class="contenedor-derecho-imagen">
+
+                <img src="Images/Soluciones Web/09.webp" alt="Web arquitectura" class="slogan-img" loading="lazy" />
+            </div>
+
+            <div class="contenedor-derecho-botones">
+
+
+                <button class="plan-wb-btn-adquirir1" @onclick="Web_Basico">
+                    Comprar por WhatsApp
+                </button>
+
+            
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+
+</div>
+
+@code{
+    private FsEstudioDTO empresa;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+
+        empresa = FsEstudioService.ObtenerInformacionEmpresa().FirstOrDefault();
+
+    }
+
+    private async Task Web_Basico()
+    {
+        var mensaje = "Hola, estoy interesado en adquirir alguno de sus planes que vi en su página.";
+        var telefonoLimpio = empresa.WhatsAppTelefono; // asegúrate que esto esté en tu clase
+        var whatsappUrl = $"https://wa.me/{telefonoLimpio}?text={Uri.EscapeDataString(mensaje)}";
+
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", whatsappUrl);
+    }
+
+
+
+
+    private async Task ScrollToSection(string id)
+    {
+        await JS.InvokeVoidAsync("scrollToElement", id);
+    }
+}

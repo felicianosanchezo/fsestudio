@@ -1,0 +1,513 @@
+﻿@page "/cliente-servicio-fila1/{IdServicio:int}"
+@using System.Text.RegularExpressions
+@inject IRepositorio repositorio
+@inject IJSRuntime JS
+@inject AuthenticationProviderJWT AuthProvider
+
+
+<div id="filaLocal1">
+<div class="contenedor-servicio">
+    <!-- Columna izquierda: Imagen de portada -->
+    <div class="columna-imagen-servicio">
+        <div class="contenedor-imagen">
+                <img src="@Servicio?.PortadaUrl" alt="Imagen de portada" loading="lazy">
+        </div>
+    </div>
+
+    <!-- Columna derecha: Información del servicio -->
+    <div class="columna-detalles-servicio">
+        <div class="subtitulo-servicio">
+                <h2 class="Subtitulo-Principal">Servicios de Arquitectura</h2>
+        </div>
+
+        <div class="titulo-servicio">
+                <h1 class="Titulo-Principal">@Servicio?.Nombre</h1>
+            </div>
+
+            <div class="descripcion-servicio">
+                <p class="Parrafo-Principal">@Servicio?.Descripcion</p>
+            </div>
+
+            <div class="text-center">
+                @for (int star = 1; star <= 5; star++)
+                {
+                    <i class="bi bi-star-fill @(star <= (Servicio?.Calificacion ?? 0) ? "estrella-llena" : "estrella-vacia")"></i>
+                }
+
+
+                    <div class="boton-info1" @onclick="AbrirModalInfo">
+                        <i class="bi bi-question-circle"></i> <!-- Icono de signo de interrogación -->
+                    </div>
+               
+                              
+            
+
+            </div>
+
+
+         
+
+
+            <div class="contenedor-botones">
+                <div class="contenedor-botones-transparente">
+                    <button class="btn-transparente @(especificacionesSeleccionadas ? "btn-seleccionado1" : "btn-default1")" @onclick="ToggleEspecificaciones">
+                        @(especificacionesSeleccionadas ? "Más Información" : "Más Información")
+                    </button>
+                </div>
+                <div class="contenedor-botones-azul">
+                    <button class="btn-azul @(solicitarservicio ? "btn-seleccionado" : "btn-default")" @onclick="ToggleSolicitarServicio">
+                        @(solicitarservicio ? "Ver Portafolio" : "Ver Portafolio")
+                    </button>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+
+</div>
+
+
+</div>
+
+
+@if (mostrarModal)
+{
+
+
+    @if (@Servicio?.IdServicio == 1)
+    {
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <div class="contendor-comentarios">
+                    <img src="/Images/Comentarios/Comentario1.png" alt="comentario 1" />
+                    <img src="/Images/Comentarios/Comentario2.png" alt="comentario 2" />
+                </div>
+                <div class="contenedor-pagos-botones">
+                    <button @onclick="CerrarModal" class="btn-cerrar">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
+
+    }
+
+}
+
+
+
+
+<div id="filaLocal2">
+
+    @if (especificacionesSeleccionadas)
+    {
+        <div class="contenedor-servicio-especificaciones">
+            <div class="contenedor-Especificaciones">
+                <div class="contenedor-Especificaciones-titulo">
+                    <h3 class ="Titulo-Especificaciones">Especificaciones</h3>
+                </div>
+                <div class="contenedor-Especificaciones-descripcion">
+                        @foreach (var item in FormatearEspecificaciones3(Servicio.Especificaciones))
+                        {
+                        <p class ="Parrafo-Lista">@((MarkupString)item)</p>
+                        }
+
+                </div>
+
+
+ 
+            </div>
+
+
+            <div class="contenedor-Especificaciones">
+
+
+
+
+
+
+                <div class="contenedor-Especificaciones-titulo" >
+                    <h3 class="Titulo-Especificaciones">Entregables</h3>
+                </div>
+                <div class="contenedor-Especificaciones-descripcion">
+                    @foreach (var item in FormatearEspecificaciones3(Servicio.Entregables))
+                    {
+                        <p class="Parrafo-Lista">@((MarkupString)item)</p>
+                    }
+
+                </div>
+
+                <div class="contenedor-Especificaciones-titulo"  style="background-color:transparent; border:1px;">
+                    <h3 class="Titulo-Especificaciones-oscura">Requisitos</h3>
+                </div>
+                <div class="contenedor-Especificaciones-descripcion">
+                    @foreach (var item in FormatearEspecificaciones3(Servicio.Requisitos_Cliente))
+                    {
+                        <p class="Parrafo-Lista">@((MarkupString)item)</p>
+                    }
+
+                </div>
+
+
+            </div>
+            <div class="contenedor-Especificaciones">
+
+               
+
+
+                <div class="contenedor-Especificaciones-titulo ">
+
+                    <h3 class="Titulo-Especificaciones">Garantía FS Estudio</h3>
+                </div>
+                <div class="contenedor-Especificaciones-descripcion">
+
+                    <div class="imagen-garantia">
+
+                    <img  src="/Images/Iconos/Garantia.png" alt="Garantia" />
+
+                    </div>
+                 
+                    
+                    
+                    @foreach (var item in FormatearEspecificaciones3(Servicio.Garantia))
+                    {
+                        <p class="Parrafo-Lista">@((MarkupString)item)</p>
+                    }
+
+                </div>
+
+
+
+
+
+
+            </div>
+        </div>
+    }
+
+
+</div>
+
+
+
+
+<style>
+    /* Estilos para la Galería de Imágenes */
+
+
+    .imagen-garantia {
+        display: flex;
+        align-content: center;
+        align-items: center;
+        justify-content: center; /* Añadido para centrar horizontalmente */
+        width: 100%;
+        height: 60px;
+        background-color: transparent;
+        margin: 15px 0px 60px 0px;
+    }
+
+        .imagen-garantia img {
+            display: flex;
+            width: 120px;
+            height:120px;
+            object-fit: cover;
+            border-radius: 8px;
+/*             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .imagen-garantia img:hover {
+                transform: scale(1.05);
+            }
+
+
+</style>
+
+
+
+<!-- Contenedor que se muestra/oculta al hacer clic en el botón "Especificaciones" -->
+
+@code {
+    [Parameter] public int IdServicio { get; set; }
+    private ServicioDTO Servicio { get; set; }
+    [Parameter] public EventCallback OnIrAFila2 { get; set; }
+    [Parameter] public EventCallback<ServicioDTO> OnSeleccionarServicio { get; set; }
+    // Método que invoca el EventCallback
+
+    private async Task IrAFila2()
+    {
+        if (OnIrAFila2.HasDelegate)
+        {
+            await OnIrAFila2.InvokeAsync(null); // Invocamos el método definido en el padre
+        }
+    }
+    private async Task Regresar_Servicio()
+    {
+        // Alternar entre seleccionar y deseleccionar el servicio
+
+        if (Servicio!=null)
+        {
+            // Si está seleccionado, invoca el servicio al componente padre
+            if (OnSeleccionarServicio.HasDelegate)
+            {
+                await OnSeleccionarServicio.InvokeAsync(Servicio);
+            }
+        }
+        else
+        {
+            // Si no está seleccionado, envía `null` al componente padre
+            if (OnSeleccionarServicio.HasDelegate)
+            {
+                await OnSeleccionarServicio.InvokeAsync(null);
+            }
+
+
+        }
+    }
+
+    private bool mostrarModal = false;
+    private void AbrirModalInfo() => mostrarModal = true;
+
+    private void CerrarModal() => mostrarModal = false;
+
+
+
+    private List<string> FormatearEspecificaciones(string? especificaciones)
+    {
+        var frasesFormateadas = new List<string>();
+
+        if (!string.IsNullOrEmpty(especificaciones))
+        {
+            var frases = especificaciones.Split('|');
+            foreach (var frase in frases)
+            {
+                if (!string.IsNullOrWhiteSpace(frase))
+                {
+                    var partes = frase.Split(':', 2);
+                    if (partes.Length == 2)
+                    {
+                        var parteEnNegrita = $"<strong>{partes[0].Trim()}:</strong>";
+                        var parteNormal = partes[1].Trim().TrimEnd('.');
+                        frasesFormateadas.Add($"{parteEnNegrita} {parteNormal}");
+                    }
+                    else
+                    {
+                        frasesFormateadas.Add(frase.Trim());
+                    }
+                }
+            }
+        }
+
+        return frasesFormateadas;
+    }
+    private List<string> FormatearEspecificaciones3(string? especificaciones)
+    {
+        var frasesFormateadas = new List<string>();
+
+        if (!string.IsNullOrEmpty(especificaciones))
+        {
+            var frases = especificaciones.Split('|');
+            foreach (var frase in frases)
+            {
+                if (!string.IsNullOrWhiteSpace(frase))
+                {
+                    var fraseLimpia = frase.Trim();
+
+                    // Detectar títulos principales entre [ ]
+                    if (Regex.IsMatch(fraseLimpia, @"^\[.*\]$"))
+                    {
+                        var titulo = fraseLimpia.Trim('[', ']');
+                        frasesFormateadas.Add($"<strong style=\"font-weight: bold;\">{titulo}</strong>");
+                    }
+                    // Detectar subtítulos como "a) texto:"
+                    else if (Regex.IsMatch(fraseLimpia, @"^[a-z]\)\s.*:$"))
+                    {
+                        frasesFormateadas.Add($"<strong>{fraseLimpia}</strong>");
+                    }
+                    // Detectar listas de nivel 3 con "-"
+                    else if (fraseLimpia.StartsWith("-"))
+                    {
+                        var contenidoLista = fraseLimpia.Substring(1).Trim();
+                        frasesFormateadas.Add($"<ul><li>{contenidoLista}</li></ul>");
+                    }
+                    // Si no coincide con ningún patrón, procesarlo como texto normal
+                    else
+                    {
+                        frasesFormateadas.Add(fraseLimpia);
+                    }
+                }
+            }
+        }
+
+        return frasesFormateadas;
+    }
+
+
+    private async Task Registrar_Visita(string Action)
+    {
+        try
+        {
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            // Verificar si el usuario está autenticado y asignar valores personalizados
+            var userName = user.Identity?.IsAuthenticated == true
+                ? AuthProvider.GetNombreUsuario()
+                : "UsuarioAnónimo";
+            var idUserName = user.Identity?.IsAuthenticated == true
+                ? AuthProvider.GetIdUsuario()
+                : 0;
+
+            // Crear el objeto visita con datos comunes
+            var visita = new VisitaDTO
+                {
+                    Pagina = Servicio.Nombre,
+                    IdServicio = Convert.ToString(IdServicio),
+                    Usuario = userName,
+                    IdUsuario = Convert.ToString(idUserName),
+                    DeviceType = await JS.InvokeAsync<string>("isMobileDevice"),
+                    BrowserInfo = await JS.InvokeAsync<string>("getBrowserInfo"),
+                    Referrer = await JS.InvokeAsync<string>("getReferrer"),
+                    Action = $"Acción registrada: {Action}",
+                    SessionStatus = user.Identity?.IsAuthenticated == true ? "Iniciada" : "Terminada",
+                    IpAddress = await JS.InvokeAsync<string>("getClientIp"),
+
+
+                };
+
+            visita.Location = await JS.InvokeAsync<string>("getLocationFromIp", visita.IpAddress);
+            var utmParams = await JS.InvokeAsync<Dictionary<string, string>>("getUTMParameters");
+
+            if (utmParams != null)
+            {
+                utmParams.TryGetValue("utm_source", out var source);
+                utmParams.TryGetValue("utm_medium", out var medium);
+                utmParams.TryGetValue("utm_campaign", out var campaign);
+                utmParams.TryGetValue("utm_term", out var term);
+                utmParams.TryGetValue("utm_content", out var content);
+
+                visita.TrafficSource = source;
+                visita.Medium = medium;
+                visita.Campaign = campaign;
+                visita.Term = term;
+                visita.Content = content;
+            }
+
+
+            // Obtener ubicación basada en IP
+            // visita.Location = await JS.InvokeAsync<string>("getLocationFromIp", visita.IpAddress);
+
+            // Enviar visita a la API
+
+
+            var httpResponse = await repositorio.Post("/api/registro/registrar-visita", visita);
+            if (httpResponse.Error)
+            {
+                Console.WriteLine("Error al registrar la visita.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al registrar la visita: {ex.Message}");
+        }
+    }
+
+
+
+
+
+    private async Task IrAFila2Local() => await JS.InvokeVoidAsync("scrollToElement", "filaLocal2");
+    private async Task IrAFila1Local() => await JS.InvokeVoidAsync("scrollToElement", "filaLocal1");
+
+    // Propiedad para controlar la visibilidad del modal
+    private bool MostrarEspecificaciones { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Servicio_Listar(IdServicio);
+    }
+
+    private async Task Servicio_Listar(int IdServicio)
+    {
+        var response = await repositorio.Get<ServicioDTO>($"/api/servicio/listar/{IdServicio}");
+        if (response?.Response != null)
+        {
+            Servicio = response.Response;
+        }
+
+
+
+
+
+
+
+
+
+        await Regresar_Servicio();
+    }
+    private bool especificacionesActivas = false;
+
+    // Método que alterna el estado
+    private void AlternarEspecificaciones()
+    {
+        especificacionesActivas = !especificacionesActivas;
+    }
+
+
+
+
+
+
+    private bool especificacionesSeleccionadas = false;
+
+    // Método para alternar el estado de las especificaciones
+    private async void ToggleEspecificaciones()
+    {
+        especificacionesSeleccionadas = !especificacionesSeleccionadas;
+
+        if (especificacionesSeleccionadas)
+        {
+
+            await Registrar_Visita("Especificaciones");
+            Console.WriteLine("Registro de Especificaciones");
+            await IrAFila2Local();
+        }
+        else
+        {
+            await IrAFila1Local();
+        }
+        StateHasChanged();
+    }
+    private bool solicitarservicio = false;
+
+    // Método para alternar el estado de las especificaciones
+    private async void ToggleSolicitarServicio()
+    {
+        solicitarservicio = !solicitarservicio;
+
+        if (solicitarservicio)
+        {
+
+            await IrAFila2();
+
+        }
+        else
+        {
+            
+        await IrAFila1Local();
+
+        }
+
+      
+
+
+
+
+
+    }
+
+
+
+}

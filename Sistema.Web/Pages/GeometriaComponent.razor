@@ -1,0 +1,63 @@
+﻿@page "/modelo3d"
+@inject IRepositorio Repositorio
+@inject IJSRuntime JS
+
+<h3>Visualización del Modelo 3D</h3>
+<div id="modelo3d" style="width: 100%; height: 500px;"></div>
+
+@code {
+    private List<ElementoGeometria> geometria = new();
+    private bool datosCargados = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var httpResponse = await Repositorio.Get<List<ElementoGeometria>>("api/revit/obtener-geometria");
+
+        if (!httpResponse.Error && httpResponse.Response != null)
+        {
+            geometria = httpResponse.Response;
+            datosCargados = true;
+            StateHasChanged(); // Forzar renderización para ejecutar OnAfterRenderAsync nuevamente
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (datosCargados)
+        {
+            datosCargados = false; // Evitar llamadas repetidas
+            await JS.InvokeVoidAsync("renderModeloDesdeAPI", "modelo3d", geometria);
+        }
+    }
+
+    public class ElementoGeometria
+    {
+        public int IdElemento { get; set; }
+        public string Categoria { get; set; }
+        public List<Vertice> Vertices { get; set; } = new();
+        public List<Cara> Caras { get; set; } = new();
+    }
+
+    public class Vertice
+    {
+        public int IdElemento { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
+    }
+
+    public class Cara
+    {
+        public int IdElemento { get; set; }
+        public double X1 { get; set; }
+        public double Y1 { get; set; }
+        public double Z1 { get; set; }
+        public double X2 { get; set; }
+        public double Y2 { get; set; }
+        public double Z2 { get; set; }
+        public double X3 { get; set; }
+        public double Y3 { get; set; }
+        public double Z3 { get; set; }
+    }
+
+}

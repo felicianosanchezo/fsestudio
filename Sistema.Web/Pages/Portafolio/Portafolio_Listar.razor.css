@@ -1,0 +1,181 @@
+﻿.dashboard-main2 {
+    padding: 100px;
+    background: #fdfefe;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch; /* Mejora el scroll en dispositivos táctiles */
+    overflow-x: auto; /* Permite el desplazamiento horizontal */
+    min-height: 800px;
+}
+
+.table-container2 {
+    width: 100%;
+    padding-bottom: 200px;
+    overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Mejora en móviles */
+}
+
+.table2 {
+    /* border-collapse: collapse;*/
+    border-collapse: collapse;
+    width: max-content; /* Fuerza el ancho según el contenido */
+    min-width: 900px; /* O más, según tus columnas */
+    margin-top: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    table-layout: auto;
+}
+
+    .table2 th, .table2 td {
+        border: 1px solid #abb2b9; /* Línea delgada gris alrededor del menú */
+        padding: 8px;
+        text-align: left;
+        color: #2471a3; /* Color azul oscuro para el texto y el icono */
+        font-size: 16px;
+
+    }
+
+
+
+
+    .table2 th {
+        background-color: #f0f3f4 !important; /* Fondo gris claro */
+        color: #1b4f72; /* Azul oscuro para los títulos */
+        font-weight: 600;
+        border-bottom: 2px solid #34495e; /* Cambia a tu color preferido */
+    }
+
+    .table2 tbody tr:nth-child(even) {
+        background-color: #fafafa;
+    }
+
+    .table2 tbody tr:nth-child(odd) {
+        background-color: #fafafa;
+    }
+
+
+
+/* Botones personalizados */
+.custom-btn {
+    background: none;
+    border: none;
+    color: #2471a3; /* Color azul oscuro para el texto y el icono */
+    font-size: 16px;
+    display: flex;
+    align-items: center; /* Alineación vertical */
+    padding: 0;
+    margin-right: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+    /* Ajustar el espaciado entre el icono y el texto */
+    .custom-btn i {
+        margin-right: 10px;
+        margin-left: 3px;
+        color: #01579b; /* Color del icono, igual que el texto */
+        transition: color 0.3s ease;
+    }
+
+    /* Hover efecto para los botones */
+    .custom-btn:hover {
+        color: #154360; /* Cambia el color al pasar el ratón */
+    }
+
+        .custom-btn:hover i {
+            color: #154360; /* Cambia el color del icono al pasar el ratón */
+        }
+
+
+
+
+
+
+
+
+
+
+
+.eliminar-button .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: -120px;
+    background-color: white;
+    border: 1px solid #dcdcdc;
+    width: 150px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none; /* Oculto por defecto */
+    z-index: 1;
+}
+
+.eliminar-button:hover .dropdown-menu {
+    display: block; /* Mostrar menú al hacer hover */
+}
+
+.dropdown-menu li {
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .dropdown-menu li:hover {
+        background-color: #f2f2f2; /* Hover en opciones del menú */
+    }
+
+    .dropdown-menu li a {
+        text-decoration: none;
+        color: #333;
+    }
+
+
+
+
+
+
+.col-descripcion {
+    width: 250px;
+}
+
+.col-especificaciones {
+    width: 180px;
+}
+
+
+
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+
+    .dashboard-main {
+        padding: 15px;
+    }
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto; /* Permitir desplazamiento horizontal en dispositivos pequeños */
+    }
+
+    .table {
+        font-size: 0.85rem; /* Fuente más pequeña para pantallas pequeñas */
+    }
+
+    .modificar-button, .eliminar-button {
+        padding: 4px 8px;
+        font-size: 0.75rem; /* Botones más pequeños en pantallas pequeñas */
+    }
+
+    .table th, .table td {
+        padding: 6px; /* Espaciado más compacto */
+    }
+}
+
+.icono-descarga {
+    padding: 0; /* Eliminar el padding */
+    margin-left: 0px; /* Añadir un pequeño margen a la izquierda del ícono si es necesario */
+    font-size: 1.2rem; /* Ajustar el tamaño del icono */
+    color: #2471a3; /* Color del ícono, lo puedes personalizar */
+}
+
+    .icono-descarga:hover {
+        color: #154360; /* Cambiar el color al pasar el mouse por el ícono */
+    }

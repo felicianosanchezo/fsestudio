@@ -1,0 +1,258 @@
+﻿@page "/servicio-listar"
+@inject NavigationManager navigationManager
+@inject IRepositorio repositorio
+@inject SweetAlertService sweetAlertService
+@inject AuthenticationProviderJWT AuthProvider
+@using System.Net
+@using Microsoft.AspNetCore.Components.Forms
+
+
+<div class="dashboard-main2">
+
+    <ListaGenerica MiLista="Servicios">
+        <Cargando>
+            <p>Estoy en ello....</p>
+        </Cargando>
+        <Cuerpo>
+            <div class="table-container2">
+
+                                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button class="custom-btn" @onclick="NavegarAServicioInsertar">
+                            <i class="bi bi-file-earmark-plus"></i> Nuevo Servicio
+                        </button>
+                    </div>
+                </div>
+                <br />
+                <table class="table2">
+                    <thead>
+
+
+                        <tr>
+                            <th style="width: 100px;">IdServicio</th>
+                            <th style="width: 150px;">Nombre</th>
+                            <th style="width: 300px;">Descripción</th>
+                            <th style="width: 130px;">Categoría</th>
+                            <th style="width: 90px;">Unidad</th>
+                            <th style="width: 450px;">Especificaciones</th>
+                            <th style="width: 150px;">Usuario</th>
+                            <th style="width: 150px;">Portada</th>
+                            <th style="width: 100px;">Estado</th>
+                            <th style="width: 450px;">Requisitos Cliente</th>
+                            <th style="width: 450px;">Entregables</th>
+                            <th style="width: 450px;">Etiquetas</th>
+                            <th style="width: 450px;">Requisitos Colaborador</th>
+                            <th style="width: 450px;">Dirigido</th>
+                            <th style="width: 450px;">Garantía</th>
+                            <th style="width: 150px;">Fecha Creación</th>
+                            <th style="width: 150px;">Fecha Modificación</th>
+                            <th style="width: 120px;">Modificar</th>
+                            <th style="width: 100px;">Más</th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+                        @if (Servicios != null && Servicios.Any())
+                        {
+                            @foreach (ServicioDTO c in Servicios)
+                            {
+                                <tr>
+                                    <td>@c.IdServicio</td>
+                                    <td>@c.Nombre</td>
+                                    <td>@c.Descripcion</td>
+                                    <td>@c.Categoria</td>
+                                    <td>@c.Unidad</td>
+                                    <td>@c.Especificaciones</td>
+                                    <td>@c.Usuario</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(c.PortadaUrl))
+                                        {
+                                            <div class="d-flex align-items-center custom-btn">
+                                                <img src="@c.PortadaUrl" alt="Portada" width="100px" style="object-fit: cover;" class="me-2" />
+                                                <a href="@c.PortadaUrl" target="_blank" download="@Path.GetFileName(c.PortadaUrl)">
+                                                    <i class="bi bi-download"></i>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span>No disponible</span>
+                                        }
+                                    </td>
+                                    <td>@c.Estado</td>
+                                    <td>@c.Requisitos_Cliente</td>
+                                    <td>@c.Entregables</td>
+                                    <td>@c.Etiquetas</td>
+                                    <td>@c.Requisitos_Colaborador</td>
+                                    <td>@c.Dirigido</td>
+                                    <td>@c.Garantia</td>
+                                    <td>@c.FechaCreacion</td>
+                                    <td>@c.FechaModificacion</td>
+                                    <td>
+                                        <NavLink class="custom-btn" href="@($"/servicio-actualizar/{c.IdServicio}")">
+                                            <i class="bi bi-pencil"></i> Modificar
+                                        </NavLink>
+
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-link p-0 m-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+
+
+
+
+
+
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0)" @onclick="() => ConfirmarEliminarServicio(c.IdServicio)">
+                                                        <i class="bi bi-trash me-2"></i> Eliminar Servicio
+                                                    </a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="#">Acción 3</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="18" class="text-center">No hay servicios disponibles.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </Cuerpo>
+    </ListaGenerica>
+
+</div>
+
+@code {
+    public List<ServicioDTO>? Servicios { get; set; }
+    private bool mostrarModalImagenes = false;
+    private int IdServicioSeleccionado;
+    private string? NombreServicioSeleccionado;
+    private int IdUsuario { get; set; }
+    private string? Rol { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            // Obtener el ID del usuario
+            IdUsuario = AuthProvider.GetIdUsuario();
+
+            // Obtener el rol del usuario desde los claims
+            var rolClaim = AuthProvider.GetRolUsuario();
+
+            if (rolClaim == "Administrador")
+            {
+                // Si el usuario es administrador, carga todos los servicios
+                await Cargar();
+            }
+            else
+            {
+                // Si el usuario no es administrador, carga solo los servicios asociados a su ID
+                await CargarPorIdUsuario(IdUsuario);
+            }
+        }
+        else
+        {
+            // Si el usuario no está autenticado, mostrar un mensaje de error
+            await sweetAlertService.FireAsync("Error", "Usuario no autenticado. Por favor, inicia sesión.", SweetAlertIcon.Error);
+        }
+    }
+
+    private async Task Cargar()
+    {
+        var response = await repositorio.Get<List<ServicioDTO>>("/api/servicio/listar");
+        if (response != null && response.Response != null)
+        {
+            Servicios = response.Response;
+        }
+    }
+
+    private async Task CargarPorIdUsuario(int idUsuario)
+    {
+        var response = await repositorio.Get<List<ServicioDTO>>($"/api/servicio/listar/{idUsuario}");
+        if (response != null && response.Response != null)
+        {
+            Servicios = response.Response;
+        }
+    }
+
+
+
+
+
+    private void NavegarAServicioInsertar()
+    {
+        navigationManager.NavigateTo("/servicio-insertar", forceLoad: false);
+    }
+
+    private void NavegarModificar(int idServicio)
+    {
+        navigationManager.NavigateTo($"/servicio/servicio-actualizar/{idServicio}");
+    }
+
+    private void AbrirModalImagenes(int idServicio, string nombreServicio)
+    {
+        IdServicioSeleccionado = idServicio;
+        NombreServicioSeleccionado = nombreServicio;
+        mostrarModalImagenes = true;
+    }
+
+    private void CerrarModal()
+    {
+        mostrarModalImagenes = false;
+    }
+
+
+    private async Task ConfirmarEliminarServicio(int idServicio)
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Estás seguro de eliminar este servicio?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                ConfirmButtonText = "Sí, eliminar",
+                CancelButtonText = "Cancelar"
+            });
+
+        if (!string.IsNullOrEmpty(result.Value))
+        {
+            await EliminarServicio(idServicio);
+        }
+    }
+
+    private async Task EliminarServicio(int idServicio)
+    {
+        var response = await repositorio.Delete($"api/servicio/eliminar/{idServicio}");
+        if (response != null && !response.Error)
+        {
+            await sweetAlertService.FireAsync("Eliminado", "El servicio ha sido eliminado correctamente.", SweetAlertIcon.Success);
+            await Cargar(); // Recargar la lista de servicios después de eliminar
+        }
+        else
+        {
+            await sweetAlertService.FireAsync("Error", "No se pudo eliminar el servicio.", SweetAlertIcon.Error);
+        }
+    }
+
+
+
+
+}

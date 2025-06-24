@@ -1,0 +1,123 @@
+﻿
+
+.dashboard-main {
+    padding: 30px;
+    background: #fdfefe;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch; /* Mejora el scroll en dispositivos táctiles */
+    overflow-x: auto; /* Permite el desplazamiento horizontal */
+}
+
+
+/* Contenedor principal de la tabla con scroll horizontal */
+.table-container {
+    width: 100%;
+    padding: 0 20px; /* Añadir márgenes laterales para centrar la tabla */
+    overflow-x: auto; /* Permitir desplazamiento horizontal */
+    margin-bottom: 20px; /* Espacio debajo de la tabla */
+}
+
+/* Tabla completa, manteniendo el diseño responsivo */
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 1200px; /* Definir un ancho mínimo para evitar desbordes en pantallas pequeñas */
+    margin-top: 12px;
+    margin-left: auto; /* Centrando la tabla en el contenedor */
+    margin-right: auto; /* Centrando la tabla en el contenedor */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+    /* Estilo de celdas y encabezados de la tabla */
+    .table th, .table td {
+        border: 1px solid #abb2b9; /* Línea delgada gris alrededor del menú */
+        padding: 8px;
+        text-align: left;
+        color: #2471a3; /* Color azul oscuro para el texto y el icono */
+        font-size: 16px;
+        transition: background-color 0.3s ease, color 0.3s ease; /* Transición para hover */
+    }
+
+    /* Estilo de los encabezados */
+    .table th {
+        background-color: #f0f3f4 !important; /* Fondo gris claro */
+        color: #1b4f72; /* Azul oscuro para los títulos */
+        font-weight: 600;
+        border-bottom: 2px solid #34495e; /* Cambia a tu color preferido */
+    }
+    .table td img {
+        width: 50px; /* Ajusta el ancho de las imágenes */
+        height: auto; /* Mantener la proporción de la imagen */
+    }
+
+    .table th:nth-child(5),
+    .table td:nth-child(5) {
+        width: 300px; /* Ajusta el valor del ancho según lo que necesites */
+    }
+    /* Estilos para filas impares y pares */
+    .table tbody tr:nth-child(even) {
+        background-color: #fafafa;
+    }
+
+    .table tbody tr:nth-child(odd) {
+        background-color: #fdfdfd;
+    }
+
+/* Estilos personalizados para los botones */
+.custom-btn {
+    background: none;
+    border: none;
+    color: #2471a3; /* Color azul oscuro para el texto y el icono */
+    font-size: 16px;
+    display: flex;
+    align-items: center; /* Alineación vertical */
+    padding: 0;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+    /* Efecto hover para botones */
+    .custom-btn:hover {
+        color: #154360; /* Cambia el color al pasar el ratón */
+    }
+
+/* Iconos de descarga */
+.icono-descarga {
+    padding: 0;
+    margin-left: 0px; /* Espacio reducido a la izquierda del ícono */
+    font-size: 1.2rem; /* Tamaño del icono */
+    color: #2471a3; /* Color del ícono */
+}
+
+    .icono-descarga:hover {
+        color: #154360; /* Color al hacer hover */
+    }
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+    .dashboard-main {
+        padding: 15px;
+    }
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto; /* Scroll horizontal en pantallas pequeñas */
+    }
+
+    .table {
+        font-size: 0.85rem; /* Tamaño de fuente más pequeño */
+    }
+
+        .table th, .table td {
+            padding: 6px; /* Espaciado más compacto */
+        }
+
+    .custom-btn {
+        font-size: 0.75rem; /* Tamaño más pequeño de los botones */
+    }
+}
+
+
+
+

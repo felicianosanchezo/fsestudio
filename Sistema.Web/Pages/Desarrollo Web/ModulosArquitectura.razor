@@ -1,0 +1,90 @@
+﻿@page "/modulos-web"
+
+<div class="modulos-container">
+
+    <h2 class="titulo-modulo">🔧 Módulos Operativos</h2>
+    @foreach (var m in operativos)
+    {
+        <div class="modulo-card">
+            <div class="modulo-nombre">@m.Nombre</div>
+            <div class="modulo-descripcion">@m.Descripcion</div>
+            @* <div class="modulo-precio">@m.Precio</div> *@
+            <div class="modulo-publico">🎯 @m.Publico</div>
+        </div>
+    }
+
+    <h2 class="titulo-modulo">🖼 Módulos Visuales</h2>
+    @foreach (var m in visuales)
+    {
+        <div class="modulo-card">
+            <div class="modulo-nombre">@m.Nombre</div>
+            <div class="modulo-descripcion">@m.Descripcion</div>
+            @* <div class="modulo-precio">@m.Precio</div> *@
+            <div class="modulo-publico">🎯 @m.Publico</div>
+        </div>
+    }
+
+    <h2 class="titulo-modulo">🗂 Módulos Administrativos</h2>
+    @foreach (var m in administrativos)
+    {
+        <div class="modulo-card">
+            <div class="modulo-nombre">@m.Nombre</div>
+            <div class="modulo-descripcion">@m.Descripcion</div>
+            @* <div class="modulo-precio">@m.Precio</div> *@
+            <div class="modulo-publico">🎯 @m.Publico</div>
+        </div>
+    }
+
+</div>
+
+@code {
+    public class ModuloWeb
+    {
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
+        public string Precio { get; set; }
+        public string Publico { get; set; }
+    }
+
+    List<ModuloWeb> operativos = new()
+    {
+        new() { Nombre = "Control de Destajos", Descripcion = "Pagos por actividad y avance de personal.", Precio = "$5,800", Publico = "Constructoras" },
+        new() { Nombre = "Seguimiento de Obra", Descripcion = "Fases, cronograma y % de avance visual.", Precio = "$6,500", Publico = "Ambos" },
+        new() { Nombre = "Bitácora de Obra", Descripcion = "Registro diario de actividades y fotos.", Precio = "$5,800", Publico = "Ambos" },
+        new() { Nombre = "Control de Compras", Descripcion = "Seguimiento de pedidos, proveedores y entregas.", Precio = "$5,200", Publico = "Constructoras" },
+        new() { Nombre = "Inventario de Materiales", Descripcion = "Control de entradas, salidas y existencias.", Precio = "$5,800", Publico = "Constructoras" },
+        new() { Nombre = "Control de Maquinaria", Descripcion = "Registro de uso, mantenimiento y reservas.", Precio = "$5,200", Publico = "Constructoras" },
+        new() { Nombre = "Gestión de Personal", Descripcion = "Altas, asignaciones y pagos semanales.", Precio = "$4,800", Publico = "Constructoras" },
+        new() { Nombre = "Subida de Evidencias", Descripcion = "Carga de fotos o videos por fase u obra.", Precio = "$4,500", Publico = "Ambos" },
+        new() { Nombre = "Administrador de Tareas", Descripcion = "Agenda con pendientes por usuario y fecha.", Precio = "$4,200", Publico = "Ambos" },
+        new() { Nombre = "Comparador de Presupuestos", Descripcion = "Carga y comparación de cotizaciones.", Precio = "$5,000", Publico = "Ambos" },
+        new() { Nombre = "Calculadora de Terreno", Descripcion = "Ingreso de medidas para sugerencias de diseño.", Precio = "$3,800", Publico = "Arquitectos" },
+        new() { Nombre = "Gestión de Proveedores", Descripcion = "Registro, historial y evaluación de proveedores.", Precio = "$4,500", Publico = "Constructoras" }
+    };
+
+    List<ModuloWeb> visuales = new()
+    {
+        new() { Nombre = "Portafolio Dinámico", Descripcion = "Galería editable de proyectos con filtros.", Precio = "$3,800", Publico = "Arquitectos" },
+        new() { Nombre = "Galería de Renders", Descripcion = "Renders por categoría o cliente.", Precio = "$3,800", Publico = "Arquitectos" },
+        new() { Nombre = "Diseño de Fachadas", Descripcion = "Formulario para solicitudes con referencias.", Precio = "$3,500", Publico = "Arquitectos" },
+        new() { Nombre = "Simulador de Viviendas", Descripcion = "Selector visual de modelo, fachada y acabado.", Precio = "$6,800", Publico = "Arquitectos" },
+        new() { Nombre = "Catálogo de Modelos", Descripcion = "Modelos de vivienda con fichas técnicas.", Precio = "$4,800", Publico = "Arquitectos" },
+        new() { Nombre = "Formulario de Servicios", Descripcion = "Selección de servicios y solicitud automática.", Precio = "$3,000", Publico = "Ambos" },
+        new() { Nombre = "Consultas Rápidas", Descripcion = "Sección de contacto rápido o preguntas frecuentes.", Precio = "$2,800", Publico = "Ambos" },
+        new() { Nombre = "Blog Técnico", Descripcion = "Publicación de contenido profesional del despacho.", Precio = "$3,600", Publico = "Arquitectos" },
+        new() { Nombre = "Generador de Planos", Descripcion = "Descarga privada de planos por disciplina o obra.", Precio = "$4,800", Publico = "Ambos" },
+        new() { Nombre = "Integración con WhatsApp y Maps", Descripcion = "Botones de contacto directo y ubicación.", Precio = "$2,800", Publico = "Ambos" }
+    };
+
+    List<ModuloWeb> administrativos = new()
+    {
+        new() { Nombre = "Gestión de Clientes", Descripcion = "Registro e historial de clientes y obras.", Precio = "$4,500", Publico = "Ambos" },
+        new() { Nombre = "Control de Pagos", Descripcion = "Seguimiento de abonos, anticipos y finiquitos.", Precio = "$4,500", Publico = "Ambos" },
+        new() { Nombre = "Panel de Clientes", Descripcion = "Vista privada con avances y documentos por obra.", Precio = "$6,000", Publico = "Ambos" },
+        new() { Nombre = "Firmas Digitales", Descripcion = "Firma de documentos desde el sitio (contratos, planos).", Precio = "$5,800", Publico = "Ambos" },
+        new() { Nombre = "Facturación en Línea", Descripcion = "Emisión y descarga de facturas o comprobantes.", Precio = "$6,500", Publico = "Ambos" },
+        new() { Nombre = "Presupuestos Online", Descripcion = "Simulación de costos y cotizaciones web.", Precio = "$4,500", Publico = "Ambos" },
+        new() { Nombre = "Panel de Control Interno", Descripcion = "Dashboard con KPIs: rentabilidad, avance, costos.", Precio = "$6,800", Publico = "Constructoras" },
+        new() { Nombre = "Solicitud de Renta de Maquinaria", Descripcion = "Formulario de solicitud con fechas y disponibilidad.", Precio = "$3,800", Publico = "Constructoras" }
+    };
+}

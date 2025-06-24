@@ -1,0 +1,50 @@
+.search-bar1 {
+    display: none; /* Oculta el buscador en pantallas pequeñas */
+}
+.boton-volver-arriba {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--color-verde-original);
+    color: white; /* Color de la flecha */
+    border: none;
+    border-radius: 50%; /* Círculo */
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra ligera */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .boton-volver-arriba:hover {
+        background-color: var(--color-dorado-original); /* Azul más oscuro al pasar el mouse */
+        color: white; /* Color de la flecha al pasar el mouse */
+    }
+
+
+@media (max-width: 768px) {
+
+    .boton-volver-arriba {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 30px;
+        height: 30px;
+    }
+
+        .boton-volver-arriba:hover {
+            background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+            color: white; /* Color de la flecha al pasar el mouse */
+        }
+
+
+
+
+
+
+
+}

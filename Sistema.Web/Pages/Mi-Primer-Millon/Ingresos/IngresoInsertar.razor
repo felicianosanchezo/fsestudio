@@ -1,0 +1,144 @@
+﻿@page "/ingreso-insertar"
+@using System.Text.Json
+@inject SweetAlertService sweetAlertService
+@inject IRepositorio repositorio
+@inject NavigationManager navigationManager
+@inject AuthenticationProviderJWT AuthProvider
+
+<IngresoFormulario @ref="ingresoForm" ingreso="ingreso" OnValidSubmit="Crear" Cancelar="Navegar" OnFieldChanged="ActualizarIngresoDetalle"> </IngresoFormulario>
+
+<div class="dashboard-main">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Cuenta</th>
+                <th>Porcentaje</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in ingreso.IngresoDetalle)
+            {
+                <tr>
+                    <td>@item.Cuenta</td>
+                    <td>@item.Porcentaje.ToString("F2")</td> <!-- Formatea Porcentaje como porcentaje -->
+                    <td>@item.Total.ToString("F2")</td> <!-- Formatea Total con 2 decimales -->
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private IngresoFormulario? ingresoForm;
+
+    private List<CuentaDTO> cuentas = new List<CuentaDTO>();
+
+    IngresoDTO ingreso = new IngresoDTO() { IngresoDetalle = new List<Ingreso_DetalleDTO>() };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            ingreso.IdUsuario = AuthProvider.GetIdUsuario(); // Asignar el idUsuario directamente desde los claims
+            await CargarDatosIniciales(ingreso.IdUsuario);
+            ActualizarIngresoDetalle();
+        }
+        else
+        {
+            // Manejo de caso cuando el usuario no está autenticado, por ejemplo, redirigir a la página de inicio de sesión
+            navigationManager.NavigateTo("/login");
+        }
+    }
+
+    private async Task CargarDatosIniciales(int idUsuario)
+    {
+        await CargarCuentas(idUsuario);
+    }
+
+    private async Task CargarCuentas(int idUsuario)
+    {
+        try
+        {
+            var response = await repositorio.Get<List<CuentaDTO>>($"api/cuenta/listar/{idUsuario}");
+            if (response != null && response.Response != null)
+            {
+                cuentas = response.Response;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al cargar cuentas: {ex.Message}");
+        }
+    }
+    private void ActualizarIngresoDetalle()
+    {
+        if (ingreso.Total == 0 && string.IsNullOrEmpty(ingreso.Total.ToString()))
+        {
+            ingreso.Total = 0;
+        }
+
+        ingreso.IngresoDetalle.Clear();
+        foreach (var cuenta in cuentas)
+        {
+            if (cuenta.Porcentaje > 0)
+            {
+                var porcentajeRedondeado = Math.Round(cuenta.Porcentaje * 100, 2); // Convertir a porcentaje
+                var totalCalculado = Math.Round(ingreso.Total * (decimal)cuenta.Porcentaje);
+
+                ingreso.IngresoDetalle.Add(new Ingreso_DetalleDTO
+                    {
+                        IdCuenta = cuenta.IdCuenta,
+                        Cuenta = cuenta.Nombre,
+                        Porcentaje = porcentajeRedondeado,
+                        Total = totalCalculado
+                    });
+            }
+        }
+    }
+
+
+
+    private async Task Crear()
+    {
+        if (ingreso.IdCategoria == 0 || ingreso.IdCartera == 0)
+        {
+            await sweetAlertService.FireAsync("Error", "Debe seleccionar una Categoría y Cartera válidas.", SweetAlertIcon.Error);
+            return;
+        }
+
+        // Verificación de contenido antes de enviar
+        var jsonIngreso = JsonSerializer.Serialize(ingreso, new JsonSerializerOptions { WriteIndented = true });
+        Console.WriteLine("Enviando Ingreso: " + jsonIngreso);
+
+        var httpResponse = await repositorio.Post("api/ingreso/insertar", ingreso);
+
+        if (httpResponse.Error)
+        {
+            var message = await httpResponse.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        var toast = sweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Toast = true,
+                Position = SweetAlertPosition.TopStart,
+                ShowConfirmButton = false,
+                Timer = 1000
+            });
+
+        await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Ingreso Agregado.");
+
+        Navegar();
+    }
+
+    private void Navegar()
+    {
+        ingresoForm!.formularioPostOk = true;
+        navigationManager.NavigateTo("/ingreso-listar");
+    }
+}

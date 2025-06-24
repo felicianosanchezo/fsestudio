@@ -1,0 +1,119 @@
+﻿.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-azul-oscuro2);
+    padding: 20px 60px;
+    position: relative;
+    z-index: 1;
+}
+
+.contact-info {
+    display: flex;
+    justify-content:space-between;
+    width: 100%;
+    gap: 15px;
+    background-color: transparent;
+}
+
+.contact-item {
+    color: white;
+    font-size: 36px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+    .contact-item i {
+        color: white;
+        font-size: 35px;
+        cursor: pointer;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+
+        .contact-item i:hover {
+            transform: scale(1.2);
+            color: var(--color-dorado-original); /* Cambiar el color del icono */
+        }
+
+
+
+.info-overlay {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina),var(--color-gris-claro1) );
+    width: auto;
+    padding: 30px;
+    border-top: 1px solid #ccd1d1;
+    overflow: hidden;
+}
+
+.info-card1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 450px;
+    background-color: transparent;
+    padding: 0px;
+    border: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+
+
+
+
+.info-card1 input,
+.info-card1 textarea {
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+    .info-card1 button {
+        display: flex; /* Activa el modo Flexbox */
+        justify-content: center; /* Centra el texto horizontalmente */
+        align-items: center; /* Centra el texto verticalmente */
+        background-color: var(--color-azul-turquesa);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 1.0em;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.1s ease;
+        width: 230px;
+        height: 45px;
+        text-align: center;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+        border: 3px solid #0097a7;
+    }
+
+        .info-card1 button:hover {
+            background-color: #138d75;
+            transform: scale(1.06); /* Aumento ligero */
+            color: white;
+            border: 3px solid #138d75;
+        }
+
+
+
+@media (max-width: 768px) {
+
+    .contact-item i {
+        color: white;
+        font-size: 27px;
+        cursor: pointer;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+
+
+    .footer-content {
+        padding: 15px 30px;
+    }
+   
+
+}

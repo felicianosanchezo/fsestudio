@@ -1,0 +1,104 @@
+﻿@page "/nosotros"
+<div class="nosotros-container1">
+    <div class="nosotros-content">
+        <br />
+        
+        <h1 class="Titulo-Principal">Nosotros</h1>
+
+        <hr />
+        <br />
+
+
+        <h3 class="Subtitlo-Nosotros">Misión</h3>
+        <p class="Descripcion-Principal">
+            <strong>FS Estudio</strong> es una empresa mexicana comprometida en ofrecer soluciones innovadoras en arquitectura y diseño, enfocándose en una experiencia completa y accesible para clientes y colaboradores. Nuestro objetivo es construir espacios que aporten valor y satisfacción a través de proyectos que reflejen creatividad, funcionalidad y calidad.
+        </p>
+        <br />
+        
+        <h3 class="Subtitlo-Nosotros">Historia</h3>
+        <p class="Descripcion-Principal">
+            Nuestra historia comenzó en Hermosillo, Sonora, el 23 de julio de 2013, como un taller de carpintería que enviaba productos a toda la República Mexicana. Aunque actualmente no realizamos trabajos de carpintería, seguimos dedicados a crear espacios funcionales y próximamente reanudaremos estos servicios para ampliar nuestra oferta.
+        </p>
+        <br />
+        <h3 class="Subtitlo-Nosotros">Servicios</h3>
+        <p class="Descripcion-Principal">
+            Con el tiempo, hemos ampliado nuestra experiencia hacia la arquitectura y todos sus servicios relacionados, adaptándonos a las necesidades de cada cliente. Nuestro equipo se especializa en el diseño de cocinas, mobiliario personalizado, modelado 3D, recorridos virtuales y maquetación de proyectos. A medida que crecemos, actualizamos nuestro menú de servicios en la página web para responder a las demandas del mercado y los gustos de nuestros clientes.
+        </p>
+        <br />
+        <h3 class="Subtitlo-Nosotros">Equipo</h3>
+        <p class="Descripcion-Principal">
+            Nuestro equipo está liderado por <strong>Feliciano Sánchez</strong>, Arquitecto y Desarrollador, junto con <strong>Laura Sánchez</strong>, especialista en relaciones públicas y marketing. Ambos están enfocados en expandir nuestra red de colaboradores, integrando a freelancers apasionados que comparten nuestra misión y trabajan con nosotros para crear proyectos de impacto positivo.
+        </p>
+        <br />
+        <h3 class="Subtitlo-Nosotros">Visión</h3>
+        <p class="Descripcion-Principal">
+            Aspiramos a ser una de las empresas de diseño líderes en México y, en el futuro, a nivel mundial. Nuestro propósito es construir relaciones de confianza y colaboración para ofrecer proyectos que no solo mejoren la vida de nuestros clientes, sino que también fortalezcan a los profesionales que colaboran con nosotros.
+        </p>
+        <br />
+        <p class="Descripcion-Principal">
+            Explora nuestras opciones y acompáñanos en esta aventura de crecimiento. <strong>FS Estudio está aquí para hacer realidad tus ideas.</strong>
+        </p>
+        <br />
+        <!-- Galería de Imágenes Representativas -->
+        <div class="imagen-galeria">
+            <img src="/Images/Nosotros/imagen1.jpg" alt="Diseño de cocinas" />
+            <img src="/Images/Nosotros/imagen2.jpg" alt="Modelado 3D" />
+            <img src="/Images/Nosotros/imagen3.jpg" alt="Mobiliario personalizado" />
+            <img src="/Images/Nosotros/imagen4.jpg" alt="Recorridos virtuales" />
+            <img src="/Images/Nosotros/imagen5.jpg" alt="Maquetación" />
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .nosotros-container1 {
+        background-color: var(--color-fondo-pagina);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px 15px;
+        min-height: 100vh;
+        font-family: var(--fuente-principal);
+        margin:0px;
+    }
+
+    .nosotros-content {
+        max-width: 900px;
+        background-color: white;
+        padding: 35px;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--color-gris-linea);
+        background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina), var(--color-gris-claro1));
+    }
+
+
+
+
+
+    /* Estilos para la Galería de Imágenes */
+    .imagen-galeria {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+        .imagen-galeria img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .imagen-galeria img:hover {
+                transform: scale(1.05);
+                box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+            }
+
+
+
+</style>

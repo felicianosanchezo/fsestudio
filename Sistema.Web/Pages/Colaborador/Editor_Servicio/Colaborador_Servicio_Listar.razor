@@ -1,0 +1,236 @@
+﻿@page "/colaborador-servicio-listar"
+@inject NavigationManager navigationManager
+@inject IRepositorio repositorio
+@inject SweetAlertService sweetAlertService
+@inject AuthenticationProviderJWT AuthProvider
+@using Sistema.Entidades.Dto;
+@using Sistema.Entidades.Dto.FsEstudio
+
+<div class="dashboard-main">
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <button class="custom-btn" @onclick="NavegarAInsertar">
+                <i class="bi bi-file-earmark-plus"></i> Nuevo Servicio Colaborador
+            </button>
+        </div>
+    </div>
+    <br />
+
+    @if (ColaboradorServicios != null && ColaboradorServicios.Any())
+    {
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>IdServicio_Colaborador</th>
+                        <th>IdServicio</th>
+                        <th>IdUsuario</th>
+                        <th>Nombre</th>
+                        <th>Unidad</th>
+                        <th>Precio</th>
+                        <th>Duración</th>
+                        <th>Notas</th>
+                        <th>PDF</th>
+                        <th>Video</th>
+                        <th>Imagen 1</th>
+                        <th>Imagen 2</th>
+                        <th>Imagen 3</th>
+                        <th>Imagen 4</th>
+                        <th>Imagen 5</th>
+                        <th>Imagen 6</th>
+                        <th>Estado</th>
+                        <th>Fecha Creación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var servicio in ColaboradorServicios)
+                    {
+                        <tr>
+                            <td>@servicio.IdServicio_Colaborador</td>
+                            <td>@servicio.IdServicio</td>
+                            <td>@servicio.IdUsuario</td>
+
+                            <td>@servicio.Nombre</td>
+                            <td>@servicio.Unidad</td>
+                            <td>@servicio.Precio</td>
+                            <td>@servicio.Duracion</td>
+                            <td>@servicio.Notas</td>
+
+                            <!-- Mostrar enlace de PDF -->
+                            <td>
+                                @if (!string.IsNullOrEmpty(servicio.ArchivoUrl))
+                                {
+                                    <a href="@servicio.ArchivoUrl" target="_blank" class="custom-btn">Ver PDF</a>
+                                }
+                                else
+                                {
+                                    <span>No disponible</span>
+                                }
+                            </td>
+
+                            <!-- Mostrar enlace de video -->
+                            <td>
+                                @if (!string.IsNullOrEmpty(servicio.VideoUrl))
+                                {
+                                    <a href="@servicio.VideoUrl" target="_blank" class="custom-btn">Ver Video</a>
+                                }
+                                else
+                                {
+                                    <span>No disponible</span>
+                                }
+                            </td>
+
+                            <!-- Mostrar imágenes adicionales -->
+                            @for (int i = 1; i <= 6; i++)
+                            {
+                                var imagenUrl = (string?)typeof(Colaborador_ServicioDTO).GetProperty($"ImagenUrl{i}")?.GetValue(servicio);
+                                <td>
+                                    @if (!string.IsNullOrEmpty(imagenUrl))
+                                    {
+                                        <div class="d-flex align-items-center custom-btn">
+                                            <img src="@imagenUrl" alt="Imagen @i" width="100px" style="object-fit: cover;" class="me-2" />
+                                            <a href="@imagenUrl" target="_blank" download="@Path.GetFileName(imagenUrl)">
+                                                <i class="bi bi-download"></i>
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span>No disponible</span>
+                                    }
+                                </td>
+                            }
+
+                            <td>@(servicio.Estado ? "Aprobado" : "Pendiente de Aprobación")</td>
+                            <td>@servicio.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                          
+                            
+                         
+
+
+
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-link p-0 m-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0)" @onclick="() => NavegarModificar(servicio.IdServicio_Colaborador)">
+                                                <i class="bi bi-pencil me-2"></i> Modificar
+                                            </a>
+                                        </li>
+
+
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0)" @onclick="() => ConfirmarEliminarServicio(servicio.IdServicio_Colaborador)">
+                                                <i class="bi bi-trash me-2"></i> Eliminar Servicio
+                                            </a>
+                                        </li>
+
+                                        <li><a class="dropdown-item" href="#">Acción 3</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p>No hay servicios disponibles.</p>
+    }
+</div>
+
+@code {
+    public List<Colaborador_ServicioDTO>? ColaboradorServicios { get; set; }
+    private int IdUsuario { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            // Obtener el ID del usuario autenticado
+            IdUsuario = AuthProvider.GetIdUsuario();
+
+            // Cargar los servicios colaboradores
+            await CargarColaboradorServicios();
+        }
+        else
+        {
+            await sweetAlertService.FireAsync("Error", "Usuario no autenticado. Por favor, inicia sesión.", SweetAlertIcon.Error);
+        }
+    }
+
+    private async Task CargarColaboradorServicios()
+    {
+        var response = await repositorio.Get<List<Colaborador_ServicioDTO>>("/api/colaborador/colaborador_servicio_listar");
+        if (response != null && response.Response != null)
+        {
+            ColaboradorServicios = response.Response;
+        }
+    }
+
+    private void NavegarAInsertar()
+    {
+        navigationManager.NavigateTo("/colaborador-servicio-insertar", forceLoad: false);
+    }
+
+    private void NavegarModificar(int idServicio)
+    {
+        navigationManager.NavigateTo($"/colaborador-servicio-editar/{idServicio}");
+    }
+
+
+    private async Task ConfirmarEliminarServicio(int idServicio)
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Estás seguro de eliminar este servicio colaborador?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                ConfirmButtonText = "Sí, eliminar",
+                CancelButtonText = "Cancelar"
+            });
+
+        if (!string.IsNullOrEmpty(result.Value))
+        {
+            await Colaborador_Servicio_Eliminar(idServicio);
+        }
+    }
+
+ 
+
+    private async Task Colaborador_Servicio_Eliminar(int idServicioColaborador)
+    {
+        // Llamar al método Delete del repositorio, con la URL correcta
+        var response = await repositorio.Delete($"api/colaborador/colaborador-servicio-eliminar/{idServicioColaborador}");
+
+        // Verificar si la respuesta es exitosa y no tiene errores
+        if (response != null && !response.Error)
+        {
+            // Mostrar SweetAlert de éxito si se eliminó correctamente
+            await sweetAlertService.FireAsync("Eliminado", "El servicio colaborador ha sido eliminado correctamente.", SweetAlertIcon.Success);
+
+            // Recargar la lista de servicios después de eliminar
+            await CargarColaboradorServicios();
+        }
+        else
+        {
+            // Mostrar SweetAlert de error si hubo un problema con la eliminación
+            await sweetAlertService.FireAsync("Error", "No se pudo eliminar el servicio colaborador.", SweetAlertIcon.Error);
+        }
+    }
+}
+
+

@@ -1,0 +1,139 @@
+﻿@page "/ingreso-formulario"
+@using System.ComponentModel.DataAnnotations
+@inject IRepositorio repositorio
+@inject AuthenticationProviderJWT AuthProvider
+
+
+<div class="dashboard-main">
+<EditForm EditContext="contextoEdicion" OnValidSubmit="OnValidSubmitHandler">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" />
+
+    <div class="mb-2">
+        <label for="Fecha" class="form-label">Fecha:</label>
+        <InputDate @bind-Value="ingreso.Fecha" class="form-control" />
+        <ValidationMessage For="@(() => ingreso.Fecha)" class="text-danger" />
+    </div>
+
+    <div class="mb-2">
+        <label for="Total" class="form-label">Total:</label>
+        <InputNumber @bind-Value="ingreso.Total" class="form-control" @oninput="ActualizarIngresoDetalleHandler" />
+        <ValidationMessage For="@(() => ingreso.Total)" class="text-danger" />
+    </div>
+
+    <div class="mb-2">
+        <label for="IdCartera" class="form-label">Cartera:</label>
+        <InputSelect @bind-Value="ingreso.IdCartera" class="form-control">
+            <option value="" selected>Seleccione Cartera</option>
+            @foreach (var cartera in carteras)
+            {
+                <option value="@cartera.IdCartera">@cartera.Nombre</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => ingreso.IdCartera)" class="text-danger" />
+    </div>
+
+    <div class="mb-2">
+        <label for="IdCategoria" class="form-label">Categoría:</label>
+        <InputSelect @bind-Value="ingreso.IdCategoria" class="form-control">
+            <option value="" selected>Seleccione Categoría</option>
+            @foreach (var categoria in categorias)
+            {
+                <option value="@categoria.IdCategoria">@categoria.Nombre</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => ingreso.IdCategoria)" class="text-danger" />
+    </div>
+
+    <div class="mb-2">
+        <label for="Concepto" class="form-label">Concepto:</label>
+        <InputText @bind-Value="ingreso.Concepto" class="form-control" />
+        <ValidationMessage For="@(() => ingreso.Concepto)" class="text-danger" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <button type="button" class="btn btn-danger" @onclick="CancelarHandler">Cancelar</button>
+</EditForm>
+</div>
+
+
+@code {
+    [Parameter] public IngresoDTO ingreso { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public EventCallback Cancelar { get; set; }
+    [Parameter] public EventCallback OnFieldChanged { get; set; }
+
+    public bool formularioPostOk { get; set; }
+
+    private EditContext contextoEdicion;
+    private List<CarteraDTO> carteras = new List<CarteraDTO>();
+    private List<CategoriaDTO> categorias = new List<CategoriaDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        contextoEdicion = new EditContext(ingreso);
+
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var idUsuario = AuthProvider.GetIdUsuario();
+            await CargarCarteras(idUsuario);
+            await CargarCategorias(idUsuario);
+        }
+    }
+
+    private async Task CargarCarteras(int idUsuario)
+    {
+        try
+        {
+            var response = await repositorio.Get<List<CarteraDTO>>($"api/cartera/listar/{idUsuario}");
+            if (response != null && response.Response != null)
+            {
+                carteras = response.Response;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al cargar carteras: {ex.Message}");
+        }
+    }
+
+    private async Task CargarCategorias(int idUsuario)
+    {
+        try
+        {
+            var response = await repositorio.Get<List<CategoriaDTO>>($"api/categoria/listar/{idUsuario}");
+            if (response != null && response.Response != null)
+            {
+                categorias = response.Response;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al cargar categorías: {ex.Message}");
+        }
+    }
+
+    private async Task OnValidSubmitHandler()
+    {
+        formularioPostOk = true;
+        await OnValidSubmit.InvokeAsync();
+    }
+
+    private void CancelarHandler()
+    {
+        formularioPostOk = true;
+        Cancelar.InvokeAsync();
+    }
+
+    private void ActualizarIngresoDetalleHandler(ChangeEventArgs e)
+    {
+        if (decimal.TryParse(e.Value?.ToString(), out var nuevoTotal))
+        {
+            ingreso.Total = nuevoTotal;
+        }
+        OnFieldChanged.InvokeAsync();
+    }
+}

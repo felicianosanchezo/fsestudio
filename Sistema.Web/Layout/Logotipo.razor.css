@@ -1,0 +1,115 @@
+﻿.custom-bar1 {
+  
+
+    display: flex;
+    justify-content: space-between; /* Centro horizontal del contenido de la barra */
+    align-items: center; /* Centro vertical del contenido de la barra */
+    padding: 20px 60px;
+    position: relative; /* Posiciona este contenedor de manera relativa para los hijos */
+    z-index: 1;
+    flex-wrap: nowrap; /* Evita que los elementos se muevan a una nueva línea en pantallas grandes */
+    height: 120px;
+    background-color: transparent;
+/*    overflow: hidden;*/
+}
+
+.bar-contenedor {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centra verticalmente los elementos dentro de .bar-contenedor */
+    position: absolute; /* Permite posicionar en el centro de .custom-bar1 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centra exactamente en ambos sentidos */
+    width:600px;
+}
+
+
+.social-media {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+}
+
+
+
+
+.logo-container {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.logo-img {
+    height: 45px;
+    width: auto;
+    transition: filter 0.3s ease;
+   margin-right:-45PX;
+   cursor:pointer;
+}
+
+    .logo-img:hover {
+        transform: scale(1.05);
+    }
+
+
+
+
+
+.social-icon {
+    font-size: 30px;
+    background-image: linear-gradient(to bottom, #D2AE6D, #B8934E);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: background-image 0.3s ease;
+}
+
+    .social-icon:hover {
+        background-image: linear-gradient(to bottom, #566573, #34495e);
+    }
+
+/* Estilos para pantallas pequeñas */
+@media (max-width: 768px) {
+    .custom-bar1 {
+        flex-direction: row; /* Mantén los elementos en una sola línea */
+        justify-content: space-between; /* Alinea el logo a la izquierda y los íconos a la derecha */
+        width: 100%;
+        padding: 15px; /* Ajusta el espaciado */
+        height:90px;
+    }
+
+    .logo-container {
+        flex: 0 0 auto;
+        justify-content: flex-start; /* Alinea el logo a la izquierda */
+        width: auto;
+    }
+
+    .logo-img {
+        height: 40px;
+        width: auto;
+        transition: filter 0.3s ease;
+    }
+
+    .social-media {
+        flex: 0 0 auto;
+        justify-content: flex-end; /* Alinea los íconos a la derecha */
+        width: auto;
+        gap: 15px;
+    }
+
+    .social-icon {
+        font-size: 30px;
+        background-image: linear-gradient(to bottom, #D2AE6D, #B8934E);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: background-image 0.3s ease;
+
+
+    }
+
+
+    .search-bar {
+        display: none; /* Oculta el buscador en pantallas pequeñas */
+    }
+}

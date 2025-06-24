@@ -1,0 +1,69 @@
+﻿@page "/en-construccion"
+
+
+@code {
+    [Parameter]
+
+    public string Message { get; set; } = "Estamos trabajando para abrir oportunidades de colaboración con freelancers. ¡Pronto podrás unirte a nuestro equipo!";
+}
+
+<div class="contenedor">
+    <div class="info-section">
+         <div class="message">
+            <h2>@Message</h2>
+            <p>Estamos construyendo un espacio donde los mejores talentos podrán colaborar y crecer con nosotros. Nuestro equipo está ajustando los últimos detalles para brindarte una plataforma que facilite la colaboración y potencie tus oportunidades de trabajo.</p>
+            <p>Mientras terminamos, te invitamos a explorar otras secciones o a contactarnos si tienes alguna pregunta.</p>
+            <p>¡Gracias por tu interés en formar parte de nuestro equipo!</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .contenedor {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: var(--color-fondo-pagina);
+        padding: 20px;
+    }
+
+    .info-section {
+        text-align: center;
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 100%;
+    }
+
+    .image-placeholder img {
+        width: 100px;
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+    .message h2 {
+        font-size: 1.8em;
+        color: #3a3a3a;
+        margin-bottom: 15px;
+    }
+
+    .message p {
+        font-size: 1em;
+        color: #606060;
+        line-height: 1.6;
+        margin-bottom: 10px;
+    }
+
+    main {
+        background-color: var(--color-fondo-pagina);
+        /* background: linear-gradient(to bottom right, #f8f9f9, #eaeded, #f8f9f9, #eaeded,#f8f9f9); */
+        min-height: 850px;
+    }
+</style>
+
+
+
+

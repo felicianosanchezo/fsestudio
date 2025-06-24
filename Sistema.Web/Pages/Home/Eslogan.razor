@@ -1,0 +1,76 @@
+﻿@inject IJSRuntime JS
+@inject IRepositorio repositorio
+@inject NavigationManager Navigation
+ @inject HttpClient Http
+
+
+<div class="contenedor-slogan">
+    <!-- Bloque de texto a la izquierda -->
+
+    <div class="slogan-texto">
+
+
+        <div class="titulo-slogan">
+            <h1 class="titulo-slogan-titulo">SOLUCIONES&nbsp;&nbsp;<span class="highlight">WEB</span></h1>
+        </div>
+
+
+
+        <div class="subtitulo-slogan">
+            <h2 class="subtitulo-slogan-subtitulo">Arquitectos & Constructores</h2>
+        </div>
+
+
+
+        <div class="descripcion-sologan">
+            <p class="descripcion-sologan-descripcion">
+                Potencia tu presencia digital como arquitecto o constructor con una web
+                personalizada que genera confianza y mejora tu forma de trabajar.✨
+            </p>
+        </div>
+
+        <div class="contenedor-botones">
+
+                <a @onclick="EnviarWhatsApp"  class="btn-solido">Comprar por WhatsApp</a>
+
+            <a href="/soluciones-web" class="btn-transparente">Más Información</a>
+
+        </div>
+
+
+    </div>
+
+    <!-- Imagen a la derecha -->
+    <div class="slogan-imagen">
+        <img src="Images/Soluciones Web/06.webp" alt="Web arquitectura" class="slogan-img" loading="lazy" />
+
+
+    </div>
+</div>
+
+
+
+@code {
+    private FsEstudioDTO empresa;
+    
+    protected override async Task OnInitializedAsync()
+    {
+
+
+        empresa = FsEstudioService.ObtenerInformacionEmpresa().FirstOrDefault();
+    }
+
+
+
+
+
+    private async Task EnviarWhatsApp()
+    {
+        var mensaje = $"Hola, estoy interesado en solucines web para arquitectos y constructores.";
+        var whatsappUrl = $"https://wa.me/{empresa.WhatsAppTelefono}?text={Uri.EscapeDataString(mensaje)}";
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", whatsappUrl);
+    }
+
+
+
+}

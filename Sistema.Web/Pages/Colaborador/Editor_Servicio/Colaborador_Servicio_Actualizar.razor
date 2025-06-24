@@ -1,0 +1,402 @@
+﻿@page "/colaborador-servicio-editar/{idServicioColaborador:int}"
+@inject IRepositorio repositorio
+@inject IJSRuntime js
+@inject AuthenticationProviderJWT AuthenticationStateProvider
+@inject SweetAlertService sweetAlertService
+@inject NavigationManager navigationManager
+@using System.Text.Json;
+@using System.Text;
+    using Sistema.Entidades.Dto.FsEstudio;
+
+<div class="servicio-container-fondo">
+    <div class="dashboard-main">
+        <EditForm Model="@servicioColaborador" OnValidSubmit="OnValidSubmit" enctype="multipart/form-data">
+            <!-- Título y descripción -->
+            <TituloConDescripcion Title="Editar servicio"
+                                  Description="Este es el formulario para actualizar un servicio." />
+
+            <!-- Selección del servicio -->
+            <div class="mb-3">
+                <label for="IdServicio" class="form-label">Servicio Seleccionado</label>
+                <InputSelect id="IdServicio" class="form-control" @bind-Value="servicioColaborador.IdServicio" @oninput="CargarDescripcionServicioInmediato" Disabled>
+                    @foreach (var servicioItem in listaServicios)
+                    {
+                        <option value="@servicioItem.IdServicio">@servicioItem.Nombre</option>
+                    }
+                </InputSelect>
+            </div>
+
+            @if (ActivarServicio && servicio != null)
+            {
+                <div class="mb-3">
+                    <!-- Imagen de Portada -->
+                    <label for="portada" class="form-label">Imagen de Portada</label>
+                    @if (!string.IsNullOrEmpty(servicio?.PortadaUrl))
+                    {
+                        <img src="@servicio.PortadaUrl" alt="Imagen de Portada" class="img-fluid" style="max-width:100%; height:auto;" />
+                    }
+                    else
+                    {
+                        <p>No se ha cargado una imagen de portada.</p>
+                    }
+
+                    <!-- Categoría -->
+                    <label for="categoria" class="form-label">Categoría</label>
+                    <InputText id="categoria" class="form-control" @bind-Value="servicio.Categoria" Disabled />
+
+                    <!-- Descripción -->
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <div class="form-control form-control-descripcion">
+                        @servicio.Descripcion
+                    </div>
+
+                    <!-- Especificaciones -->
+                    <label for="especificaciones" class="form-label">Especificaciones</label>
+                    <div class="form-control form-control-especificaciones">
+                        @foreach (var item in FormatearEspecificaciones(servicio.Especificaciones))
+                        {
+                            <p>@((MarkupString)item)</p>
+                        }
+                    </div>
+
+                    <!-- Unidad -->
+                    <label for="unidad" class="form-label">Unidad</label>
+                    <InputText id="unidad" class="form-control" @bind-Value="servicio.Unidad" Disabled />
+
+                    <!-- Precio (Editable) -->
+                    <label for="precio" class="form-label">Precio</label>
+                    <InputNumber id="precio" class="form-control" @bind-Value="servicioColaborador.Precio" />
+
+                    <!-- Notas (Editable) -->
+                    <label for="notas" class="form-label">Notas</label>
+                    <InputTextArea id="notas" class="form-control" @bind-Value="servicioColaborador.Notas" />
+
+                    <!-- Tiempo (Editable) -->
+                    <label for="tiempo" class="form-label">Tiempo (Horas)</label>
+                    <InputNumber id="tiempo" class="form-control" @bind-Value="servicioColaborador.Duracion" />
+
+                    <div class="contenedor-imagenes">
+
+                        <label for="imagenes" class="form-label">Seleccionar Min. 3 Imagenes</label>
+
+                        <div class="row">
+                            @for (int i = 1; i <= 6; i++)
+                            {
+                                var localIndex = i;
+                                var inputId = $"fileInput-{localIndex}";
+                                <div class="col-2">
+                                    <div class="image-square" @onclick='() => AbrirSelectorImagen(inputId)'>
+                                        <!-- Si la imagen es nula o vacía, se mostrará la imagen predeterminada -->
+                                        <img src="@((!string.IsNullOrEmpty(imagenRutas[localIndex - 1])) ? imagenRutas[localIndex - 1] : "/Images/Fondos/ImagenVacia.jpg")" alt="Imagen @localIndex" class="img-thumbnail" />
+                                        <InputFile id="@inputId" OnChange="(e) => SubirImagen(e, localIndex)" style="display:none" />
+
+                                        <!-- Botón de eliminar (Cerrar) -->
+                                        <button type="button" class="btn-eliminar" @onclick="() => EliminarImagen(localIndex)">
+                                            &times;
+                                        </button>
+                                    </div>
+
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+
+
+                    <!-- Carga de archivos PDF -->
+                    <div class="mb-3">
+                        <label for="archivoUrl" class="form-label">Cargar Archivo (PDF)</label>
+                        <InputFile id="archivoUrl" class="form-control" OnChange="OnFileSelected" accept=".pdf" />
+                    </div>
+
+                    <!-- Carga de video -->
+                    <div class="mb-3">
+                        <label for="videoUrl" class="form-label">Cargar Video</label>
+                        <InputFile id="videoUrl" class="form-control" OnChange="OnVideoSelected" accept="video/*" />
+                    </div>
+
+                    <div class="button-container">
+                        <button type="submit" class="custom-save-btn">
+                            <i class="bi bi-save"></i> Guardar
+                        </button>
+                    </div>
+                </div>
+            }
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int idServicioColaborador { get; set; } // Parámetro para recibir el ID
+
+    private const long MaxFileSize = 5 * 1024 * 1024;  // 5 MB
+    private const long MaxVideoSize = 100 * 1024 * 1024;  // 100 MB
+
+    private Colaborador_ServicioDTO servicioColaborador = new Colaborador_ServicioDTO();
+    private Colaborador_ServicioDTO servicioColaboradorOriginal = new Colaborador_ServicioDTO();
+    private List<ServicioDTO> listaServicios = new List<ServicioDTO>();
+    private ServicioDTO? servicio;  // El servicio seleccionado
+  
+    private bool ActivarServicio = false;
+    private List<string?> imagenRutas = new List<string?> { null, null, null, null, null, null };
+    private IBrowserFile? archivoSeleccionado;
+    private IBrowserFile? videoSeleccionado;
+    private int idUsuario;
+
+
+    private List<bool> imagenesMarcadasParaEliminar = new List<bool> { false, false, false, false, false, false };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            idUsuario = AuthenticationStateProvider.GetIdUsuario();
+            await Servicio_Listar();
+
+            // // Cargar los datos del servicio colaborador según el ID recibido
+             await ObtenerServicioColaboradorPorId(idServicioColaborador);
+        }
+        else
+        {
+            await sweetAlertService.FireAsync("Advertencia", "Por favor, inicia sesión para continuar.", SweetAlertIcon.Warning);
+            navigationManager.NavigateTo("/login");
+        }
+    }
+
+    private async Task Servicio_Listar()
+    {
+        var response = await repositorio.Get<List<ServicioDTO>>("/api/colaborador/servicio-listar");
+        if (response?.Response != null)
+        {
+            listaServicios = response.Response;
+        }
+    }
+
+    private async Task ObtenerServicioColaboradorPorId(int idServicioColaborador)
+    {
+        var response = await repositorio.Get<Colaborador_ServicioDTO>($"/api/colaborador/colaborador-servicio-obtener/{idServicioColaborador}");
+        if (response?.Response != null)
+        {
+            servicioColaborador = response.Response;
+            servicio = listaServicios.FirstOrDefault(s => s.IdServicio == servicioColaborador.IdServicio);
+            ActivarServicio = servicio != null;
+
+            // Guardar una copia de los datos originales para comparar cambios
+            servicioColaboradorOriginal = (Colaborador_ServicioDTO)servicioColaborador.Clone();
+
+
+
+            // Cargar imágen
+            // es si existen
+            imagenRutas[0] = servicioColaborador.ImagenUrl1;
+            imagenRutas[1] = servicioColaborador.ImagenUrl2;
+            imagenRutas[2] = servicioColaborador.ImagenUrl3;
+            imagenRutas[3] = servicioColaborador.ImagenUrl4;
+            imagenRutas[4] = servicioColaborador.ImagenUrl5;
+            imagenRutas[5] = servicioColaborador.ImagenUrl6;
+            // Continúa con las demás imágenes...
+        }
+        else
+        {
+            await sweetAlertService.FireAsync("Error", "No se pudo cargar el servicio", SweetAlertIcon.Error);
+            navigationManager.NavigateTo("/");
+        }
+    }
+
+    private async Task CargarDescripcionServicioInmediato(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int idServicio) && idServicio > 0)
+        {
+            servicioColaborador.IdServicio = idServicio;
+            servicio = listaServicios.FirstOrDefault(s => s.IdServicio == servicioColaborador.IdServicio);
+            ActivarServicio = servicio != null;
+        }
+        else
+        {
+            ActivarServicio = false;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+ 
+    private async Task OnValidSubmit()
+    {
+        var formData = new MultipartFormDataContent();
+
+        // Comparar y enviar solo campos modificados
+        if (servicioColaborador.Precio != servicioColaboradorOriginal.Precio)
+        {
+            formData.Add(new StringContent(servicioColaborador.Precio.ToString()), "Precio");
+        }
+        if (servicioColaborador.Duracion != servicioColaboradorOriginal.Duracion)
+        {
+            formData.Add(new StringContent(servicioColaborador.Duracion.ToString()), "Duracion");
+        }
+        if (servicioColaborador.Notas != servicioColaboradorOriginal.Notas)
+        {
+            formData.Add(new StringContent(servicioColaborador.Notas ?? string.Empty), "Notas");
+        }
+
+        // Procesar archivo PDF si se seleccionó uno nuevo
+        if (archivoSeleccionado != null)
+        {
+            var archivoStream = archivoSeleccionado.OpenReadStream(maxAllowedSize: MaxFileSize);
+            var archivoContent = new StreamContent(archivoStream);
+            archivoContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(archivoSeleccionado.ContentType);
+            formData.Add(archivoContent, "ArchivoPDF", archivoSeleccionado.Name);
+        }
+
+        // Procesar video si se seleccionó uno nuevo
+        if (videoSeleccionado != null)
+        {
+            var videoStream = videoSeleccionado.OpenReadStream(maxAllowedSize: MaxVideoSize);
+            var videoContent = new StreamContent(videoStream);
+            videoContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(videoSeleccionado.ContentType);
+            formData.Add(videoContent, "VideoUrl", videoSeleccionado.Name);
+        }
+
+        // Enviar solo las imágenes que se han modificado
+        for (int i = 1; i <= 6; i++)
+        {
+            var imagenOriginal = GetImagenOriginal(i);  // Obtener la URL de la imagen original
+            var imagenActual = imagenRutas[i - 1];  // La imagen actual seleccionada
+
+            if (!string.IsNullOrEmpty(imagenActual) && imagenActual != imagenOriginal)  // Si la imagen ha cambiado
+            {
+                formData.Add(ProcesarImagen(imagenActual), $"imagen{i}", $"Imagen{i}.jpg");
+            }
+            else if (imagenesMarcadasParaEliminar[i - 1] && !string.IsNullOrEmpty(imagenOriginal))
+            {
+                // Si la imagen está marcada para eliminar y había una original
+                formData.Add(new StringContent(imagenOriginal), "imagenesParaEliminar");  // Agregar la URL para eliminar
+            }
+        }
+
+
+
+
+        var httpResponse = await repositorio.PutMultipartContent($"/api/colaborador/servicio-actualizar/{idServicioColaborador}", formData);
+
+        if (httpResponse.Error)
+        {
+            var message = await httpResponse.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        await sweetAlertService.FireAsync("Éxito", "Servicio actualizado con éxito", SweetAlertIcon.Success);
+
+        navigationManager.NavigateTo("/");
+    }
+
+
+
+
+    private void EliminarImagen(int imagenId)
+    {
+        if (imagenId < 1 || imagenId > 6) return;
+
+        // Marcar la imagen para eliminación (visual)
+        imagenRutas[imagenId - 1] = null; // Eliminar visualmente
+        imagenesMarcadasParaEliminar[imagenId - 1] = true; // Marcar para eliminar en el backend
+
+        // Refrescar la UI
+        StateHasChanged();
+    }
+
+
+    private StreamContent ProcesarImagen(string base64Image)
+    {
+        var base64DataParts = base64Image.Split(',');
+        var base64Data = base64DataParts[1];
+        var imagenBytes = Convert.FromBase64String(base64Data);
+        var imagenStream = new MemoryStream(imagenBytes);
+        var imagenContent = new StreamContent(imagenStream);
+        imagenContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(base64DataParts[0].Contains("jpeg") ? "image/jpeg" : "image/png");
+        return imagenContent;
+    }
+
+    private async Task AbrirSelectorImagen(string inputId)
+    {
+        await js.InvokeVoidAsync("abrirSelectorDeArchivo", inputId);
+    }
+
+    private async Task SubirImagen(InputFileChangeEventArgs e, int imagenId)
+    {
+        if (imagenId < 1 || imagenId > 6) return;
+        while (imagenRutas.Count < 6) imagenRutas.Add(null); // Asegurar que siempre hay 6 slots
+
+        var archivo = e.File;
+        if (archivo.Size > MaxFileSize) return; // Evitar archivos grandes
+
+        using var stream = archivo.OpenReadStream(MaxFileSize);
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream);
+
+        // Reemplazar la imagen seleccionada
+        imagenRutas[imagenId - 1] = $"data:{archivo.ContentType};base64,{Convert.ToBase64String(memoryStream.ToArray())}";
+        imagenesMarcadasParaEliminar[imagenId - 1] = false; // Cancelar la eliminación si se selecciona una nueva imagen
+
+        await InvokeAsync(StateHasChanged); // Refrescar la UI
+    }
+
+
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        archivoSeleccionado = e.File;
+    }
+
+    private async Task OnVideoSelected(InputFileChangeEventArgs e)
+    {
+        videoSeleccionado = e.File;
+    }
+
+    private List<string> FormatearEspecificaciones(string? especificaciones)
+    {
+        var frasesFormateadas = new List<string>();
+        if (!string.IsNullOrEmpty(especificaciones))
+        {
+            var frases = especificaciones.Split('|');
+            foreach (var frase in frases)
+            {
+                if (!string.IsNullOrWhiteSpace(frase))
+                {
+                    var partes = frase.Split(':', 2);
+                    if (partes.Length == 2)
+                    {
+                        var parteEnNegrita = $"<strong>{partes[0].Trim()}:</strong>";
+                        var parteNormal = partes[1].Trim().TrimEnd('.');
+                        frasesFormateadas.Add($"{parteEnNegrita} {parteNormal}");
+                    }
+                    else
+                    {
+                        frasesFormateadas.Add(frase.Trim());
+                    }
+                }
+            }
+        }
+        return frasesFormateadas;
+    }
+   
+    
+    private string? GetImagenOriginal(int imagenId)
+    {
+        return imagenId switch
+        {
+            1 => servicioColaboradorOriginal.ImagenUrl1,
+            2 => servicioColaboradorOriginal.ImagenUrl2,
+            3 => servicioColaboradorOriginal.ImagenUrl3,
+            4 => servicioColaboradorOriginal.ImagenUrl4,
+            5 => servicioColaboradorOriginal.ImagenUrl5,
+            6 => servicioColaboradorOriginal.ImagenUrl6,
+            _ => null
+        };
+    }
+
+
+
+}

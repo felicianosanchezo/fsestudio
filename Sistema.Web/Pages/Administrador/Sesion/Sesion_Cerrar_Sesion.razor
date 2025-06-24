@@ -1,0 +1,31 @@
+﻿@page "/logout"
+@inject ILoginServicio loginService
+
+@inject NotificationHub notificationHub
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager navigationManager
+@inject ILoginServicio loginServicio
+
+@code {
+
+
+    private string? userName;
+
+    protected override async Task OnInitializedAsync()
+
+
+
+    {
+        // Llamar al servicio de logout para cerrar sesión
+        await loginServicio.LogoutAsync();
+
+        // Establecer userName como null o vacío
+        userName = null;
+
+        // Redirigir al usuario a la página de inicio o login
+        navigationManager.NavigateTo("/", true);
+
+    }
+
+
+}

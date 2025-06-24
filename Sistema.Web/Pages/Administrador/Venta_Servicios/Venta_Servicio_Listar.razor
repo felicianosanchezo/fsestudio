@@ -1,0 +1,253 @@
+﻿@page "/venta-servicio-listar"
+@inject NavigationManager navigationManager
+@inject IRepositorio repositorio
+@inject SweetAlertService sweetAlertService
+@inject AuthenticationProviderJWT AuthProvider
+@using System.Net
+@using Microsoft.AspNetCore.Components.Forms
+
+
+<div class="dashboard-main">
+
+    <ListaGenerica MiLista="Venta_Servicios">
+        <Cargando>
+            <p>Estoy en ello....</p>
+        </Cargando>
+        <Cuerpo>
+            <div class="table-container">
+
+                 <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Numero de Orden</th>
+                            <th>Nombre Comprador</th>
+                            <th>Nombre Colaborador</th>
+                            <th>Nombre Servicio</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Importe</th>
+                            <th>Total</th>
+                            <th>Descuento aplicado</th>
+                            <th>Numero de Revisiones</th>
+                            <th>Fecha Creación</th>
+                            <th>Fecha Entrega</th>
+                            <th>Metodo de pago</th>
+                            <th>Pago realizado</th>
+                            <th>Fecha de pago</th>
+                            <th>Fecha de Modificación</th>
+                            <th>Usuario de Modificación</th>
+                            <th>Calificacion</th>
+                            <th>Comentarios</th>
+                            <th>IdReferencia</th>
+                            <th>Clave</th>
+
+                            <th>Metodo de entrega</th>
+                            <th>Estado</th>
+                            <th>Modificar</th>
+                            <th>Más</th>
+
+
+              
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Venta_Servicios != null && Venta_Servicios.Any())
+                        {
+                            @foreach (Venta_ServicioDTO c in Venta_Servicios)
+                            {
+                                <tr>
+                                    <td>@c.IdVenta_Servicio</td>
+                                    <td>@c.NumeroOrden</td>
+                                    <td>@c.NombreComprador</td>
+                                    <td>@c.NombreColaborador</td>
+                                    <td>@c.NombreServicio</td>
+                                    <td>@c.Cantidad</td>
+                                    <td>@c.Precio</td>
+                                    <td>@c.Importe</td>
+                                    <td>@c.Total</td>
+                                    <td>@c.Descuento</td>
+                                    <td>@c.Revision</td>
+                                    <td>@c.FechaCreacion</td>
+                                    <td>@c.FechaEntregaEstimada</td>
+                                    <td>@c.MetodoPago</td>
+                                    <td>@c.PagoRealizado</td>
+                                    <td>@c.FechaPago</td>
+                                    <td>@c.FechaModificacion</td>
+                                    <td>@c.UsuarioModificacion</td>
+                                    <td>@c.Calificacion</td>
+                                    <td>@c.Comentarios</td>
+                                    <td>@c.IdTransaccion</td>
+                                    <td>@c.ClientSecret</td>
+
+
+
+                                    <td>@c.MetodoEntrega</td>
+                                    <td>@c.Estado</td>
+
+                                    <td>
+                                        <button class="custom-btn" @* @onclick="() => NavegarModificar(c.IdVenta_Servicio) *@">
+                                            <i class="bi bi-pencil"></i> Modificar
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-link p-0 m-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0)" @* @onclick="() => ConfirmarEliminarServicio(c.IdVenta_Servicio) *@">
+                                                        <i class="bi bi-trash me-2"></i> Eliminar Servicio
+                                                    </a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="#">Acción 3</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="12" class="text-center">No hay ventas de servicios disponibles.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </Cuerpo>
+    </ListaGenerica>
+
+</div>
+
+@code {
+    public List<Venta_ServicioDTO>? Venta_Servicios { get; set; }
+    private bool mostrarModalImagenes = false;
+    private int IdServicioSeleccionado;
+    private string? NombreServicioSeleccionado;
+    private int IdUsuario { get; set; }
+    private string? Rol { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            // Obtener el ID del usuario
+            IdUsuario = AuthProvider.GetIdUsuario();
+
+            // Obtener el rol del usuario desde los claims
+            var rolClaim = AuthProvider.GetRolUsuario();
+
+            if (rolClaim == "Administrador")
+            {
+                // Si el usuario es administrador, carga todos los servicios
+                await Cargar();
+            }
+            // else
+            // {
+            //     // Si el usuario no es administrador, carga solo los servicios asociados a su ID
+            //     await CargarPorIdUsuario(IdUsuario);
+            // }
+
+            //TAREA-PENDIENTE: MOSTAR VENTA A  COLABORADOR COMO ACLIENTE 
+        }
+        else
+        {
+            // Si el usuario no está autenticado, mostrar un mensaje de error
+            await sweetAlertService.FireAsync("Error", "Usuario no autenticado. Por favor, inicia sesión.", SweetAlertIcon.Error);
+        }
+    }
+
+    private async Task Cargar()
+    {
+        var response = await repositorio.Get<List<Venta_ServicioDTO>>("/api/cliente-servicio/listar");
+        if (response != null && response.Response != null)
+        {
+            Venta_Servicios = response.Response;
+        }
+    }
+
+    // private async Task CargarPorIdUsuario(int idUsuario)
+    // {
+    //     var response = await repositorio.Get<List<ServicioDTO>>($"/api/servicio/listar/{idUsuario}");
+    //     if (response != null && response.Response != null)
+    //     {
+               
+    //         Venta_Servicios = response.Response;
+    //     }
+    // }
+
+
+
+
+
+    private void NavegarAServicioInsertar()
+    {
+        navigationManager.NavigateTo("/servicio-insertar", forceLoad: false);
+    }
+
+    private void NavegarModificar(int idServicio)
+    {
+        navigationManager.NavigateTo($"/servicio/modificar/{idServicio}");
+    }
+
+    private void AbrirModalImagenes(int idServicio, string nombreServicio)
+    {
+        IdServicioSeleccionado = idServicio;
+        NombreServicioSeleccionado = nombreServicio;
+        mostrarModalImagenes = true;
+    }
+
+    private void CerrarModal()
+    {
+        mostrarModalImagenes = false;
+    }
+
+
+    private async Task ConfirmarEliminarServicio(int idServicio)
+    {
+        // var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+        //     {
+        //         Title = "Confirmación",
+        //         Text = "¿Estás seguro de eliminar este servicio?",
+        //         Icon = SweetAlertIcon.Warning,
+        //         ShowCancelButton = true,
+        //         ConfirmButtonText = "Sí, eliminar",
+        //         CancelButtonText = "Cancelar"
+        //     });
+
+        // if (!string.IsNullOrEmpty(result.Value))
+        // {
+        //     await EliminarServicio(idServicio);
+        // }
+    }
+
+    private async Task EliminarServicio(int idServicio)
+    {
+        // var response = await repositorio.Delete($"api/servicio/eliminar/{idServicio}");
+        // if (response != null && !response.Error)
+        // {
+        //     await sweetAlertService.FireAsync("Eliminado", "El servicio ha sido eliminado correctamente.", SweetAlertIcon.Success);
+        //     await Cargar(); // Recargar la lista de servicios después de eliminar
+        // }
+        // else
+        // {
+        //     await sweetAlertService.FireAsync("Error", "No se pudo eliminar el servicio.", SweetAlertIcon.Error);
+        // }
+    }
+
+
+
+
+}

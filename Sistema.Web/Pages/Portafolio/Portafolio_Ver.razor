@@ -1,0 +1,433 @@
+﻿@page "/portafolio/{IdProyecto:int}"
+
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject SweetAlertService SweetAlertService
+@inject IRepositorio repositorio
+
+@using System.Globalization
+
+<div class="proyecto-contenedor">
+
+    <!-- Fila 0: Carrusel de proyectos -->
+    <div id="filaLocal0" class="proyecto-contenedor-fila0">
+
+
+
+
+        <div class="contenedor-base-2 ">
+            <div class="nota-carrusel">
+                <a href="/portafolio" class="link-ver-todos">🔎 Ver todos los proyectos</a>
+            </div>
+        </div>
+
+
+        <div class="contenedor-base-1 ">
+
+            <button class="boton-carrusel" @onclick="AnteriorProyecto">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+
+            <div class="contenedor-carrusel-portafolio">
+
+                @foreach (var proyecto in ProyectosCarrusel)
+                {
+                    var esActivo = proyecto.IdPortafolio == IdProyecto;
+
+                    if (esActivo)
+                    {
+                        <div class="miniatura-carrusel activo"
+                             @onclick="() => NavegarADetalle(proyecto.IdPortafolio)"
+                             @ref="refMiniaturaActiva">
+                            <img src="@proyecto.PortadaUrl" alt="@proyecto.Nombre" loading="lazy" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="miniatura-carrusel"
+                             @onclick="() => NavegarADetalle(proyecto.IdPortafolio)">
+                            <img src="@proyecto.PortadaUrl" alt="@proyecto.Nombre" loading="lazy" />
+                        </div>
+                    }
+                }
+
+
+
+
+
+            </div>
+
+            <button class="boton-carrusel" @onclick="SiguienteProyecto">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Primera sección: Portada e información -->
+    <div id="filaLocal1">
+        <div class="proyecto-contenedor-fila1">
+
+            <!-- Imagen de portada -->
+            <div class="columna-imagen-proyecto"
+                 @onmouseover="MostrarTextoZoomPortada"
+                 @onmouseout="OcultarTextoZoomPortada"
+                 @onclick="ExpandirPortada">
+                <div class="contenedor-imagen-portada">
+                    <img src="@Proyecto?.PortadaUrl" alt="Imagen de portada" loading="lazy">
+                    @if (mostrarTextoZoomPortada)
+                    {
+                        <div class="overlay-texto">Haz clic para ampliar 🔍</div>
+                    }
+                </div>
+            </div>
+
+
+
+            <!-- Información del proyecto -->
+            <div class="columna-detalles-servicio">
+              
+                <div class="subtitulo-servicio">
+                    <h2 class="Subtitulo-Principal-portafolio">Proyecto</h2>
+                </div>
+
+                <div class="titulo-servicio">
+                    <h1 class="Titulo-Principal-portafolio">@Proyecto?.Nombre</h1>
+                </div>
+
+                <div class="descripcion-servicio">
+                    <p class="Parrafo-Principal-Grande">@Proyecto?.Descripcion</p>
+                </div>
+
+                <div class="contenedor-botones">
+                    <!-- Botón: Enviar correo para solicitar información -->
+                    <button class="boton-accion-portada" title="Solicitar Información" @onclick="EnviarCorreoInformacion">
+                        <i class="bi bi-envelope-at"></i> <span class="boton-texto">Más Información</span>
+                    </button>
+
+                    <button class="boton-accion-portada" title="Enviar WhatsApp" @onclick="EnviarWhatsApp">
+                        <i class="bi bi-whatsapp"></i> <span class="boton-texto">Enviar WhatsApp</span>
+                    </button>
+
+                    <button class="boton-accion-portada" title="Compartir Proyecto" @onclick="CompartirPorWhatsApp">
+                        <i class="bi bi-share-fill"></i> <span class="boton-texto">Compartir Proyecto</span>
+                    </button>
+
+
+         
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Segunda sección: Galería e información extra -->
+    <div id="filaLocal2">
+        <div class="proyecto-contenedor-fila2">
+
+            <!-- Columna 1: Especificaciones del Proyecto -->
+            <div class="columna-seleccion-colaboradores">
+                <div class="subtitulo-fila">
+                    <p class="Subtitulo-Principal-portafolio">Detalles</p>
+                </div>
+
+                <div class="titulo-fila">
+                    <p class="Titulo-Principal-portafolio">@Proyecto?.Categoria</p>
+                </div>
+
+              
+
+                    <div class="portafolio-areas">
+
+                        <div class="descripcion-servicio">
+                            <p class="Parrafo-Principal-Grande">@Proyecto?.Areas</p>
+                        </div>
+
+
+
+                    </div>
+                                                                               
+                    
+                    <div class="portafolio-especificaciones">
+
+                        <div class="contenedor-especificaciones">
+                            <div class="contenedor-especificaciones-bloques">
+                            <div class="especificaciones-etiqueta">Superficie Construida:</div>
+                            <div class="precio-resaltado-portafolio">@Proyecto?.SuperficieConstruidaM2.ToString("N2") m²</div>
+                            </div>
+                        </div>
+
+                    <div class="contenedor-especificaciones">
+                        <div class="contenedor-especificaciones-bloques">
+                            <div class="especificaciones-etiqueta">Superficie Terreno:</div>
+                                <div class="precio-resaltado-portafolio">@Proyecto?.SuperficieTerrenoM2.ToString("N2") m²</div>
+                            </div>
+                        </div>
+
+                    <div class="contenedor-especificaciones">
+                        <div class="contenedor-especificaciones-bloques">
+                            <div class="especificaciones-etiqueta">Ubicación:</div>
+                                <div class="precio-resaltado-portafolio">@Proyecto?.Ubicacion</div>
+                            </div>
+                        </div>
+
+                    <div class="contenedor-especificaciones">
+                        <div class="contenedor-especificaciones-bloques">
+                                <div class="especificaciones-etiqueta">Fecha Proyecto:</div>
+                                <div class="precio-resaltado-portafolio">@Proyecto?.Fecha.ToString("dd/MM/yyyy")</div>
+                            </div>
+                        </div>
+
+                  
+
+                    </div>
+           
+
+                <div class="portafolio-botones">
+                    <!-- Botón: Enviar correo para solicitar información -->
+                    <button class="boton-accion-portada" title="Enviar Correo" @onclick="EnviarCorreoInformacion">
+                        <i class="bi bi-envelope-at"></i> <span class="boton-texto">Más Información</span>
+                    </button>
+
+                    <button class="boton-accion-portada" title="Solicitar Cotización" @onclick="CotizaciónWhatsApp">
+                        <i class="bi bi-whatsapp"></i> <span class="boton-texto">Solicitar Cotización</span>
+                    </button>
+
+                    <button class="boton-accion-portada" title="Compartir Proyecto" @onclick="CompartirPorWhatsApp">
+                        <i class="bi bi-share-fill"></i> <span class="boton-texto">Compartir Proyecto</span>
+                    </button>
+
+
+                </div>
+
+
+
+
+
+            </div>
+
+            <div class="columna-imagen-principal" @onclick="MostrarImagenExpandida">
+                <div class="contenedor-imagen"
+                     @onmouseover="MostrarTextoZoomGaleria"
+                     @onmouseout="OcultarTextoZoomGaleria">
+                    <img src="@imagenSeleccionada" alt="Imagen Principal" class="imagen-principal">
+
+                    @if (mostrarTextoZoomGaleria)
+                    {
+                        <div class="overlay-texto">Haz clic para ampliar 🔍</div>
+                    }
+                </div>
+            </div>
+
+
+            <!-- Popup de imagen expandida -->
+            @if (mostrarImagenExpandida)
+            {
+                <div class="popup-imagen" @onclick="CerrarImagenExpandida">
+                    <img src="@imagenSeleccionada" alt="Imagen Expandida" class="popup-imagen-grande">
+                </div>
+            }
+            @if (mostrarPortadaExpandida)
+            {
+                <div class="popup-imagen" @onclick="CerrarPortadaExpandida">
+                    <img src="@Proyecto?.PortadaUrl" alt="Portada Expandida" class="popup-imagen-grande">
+                </div>
+            }
+
+
+            <!-- Columna 3: Miniaturas -->
+            <div class="columna-miniaturas">
+             
+                
+                @foreach (var imagen in ImagenesProyecto)
+                {
+                    <div class="miniatura" @onclick="() => ActualizarImagenSeleccionada(imagen)">
+                        <img src="@imagen" alt="Miniatura" class="@(imagenSeleccionada == imagen ? "miniatura-seleccionada" : "")">
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int IdProyecto { get; set; }
+
+    private PortafolioDTO? Proyecto { get; set; }
+
+    private List<string> ImagenesProyecto = new();
+    private string imagenSeleccionada = string.Empty;
+   
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        await CargarProyecto();
+        var lista = await repositorio.Get<List<PortafolioDTO>>("/api/portafolio/listar");
+        if (lista?.Response != null)
+            ProyectosCarrusel = lista.Response;
+
+        empresa = FsEstudioService.ObtenerInformacionEmpresa().FirstOrDefault();
+    }
+    private ElementReference refMiniaturaActiva;
+
+    private IDictionary<string, object>? ObtenerRef(ElementReference referencia)
+    {
+        refMiniaturaActiva = referencia;
+        return null;
+    }
+    private async Task CargarProyecto()
+    {
+        try
+        {
+            var response = await repositorio.Get<PortafolioDTO>($"/api/portafolio/proyecto/{IdProyecto}");
+            if (response?.Response != null)
+            {
+                Proyecto = response.Response;
+
+                ImagenesProyecto = new List<string>
+            {
+                Proyecto.Imagen1Url,
+                Proyecto.Imagen2Url,
+                Proyecto.Imagen3Url,
+                Proyecto.Imagen4Url,
+                Proyecto.Imagen5Url,
+                Proyecto.Imagen6Url
+            }.Where(img => !string.IsNullOrWhiteSpace(img)).ToList();
+
+                imagenSeleccionada = ImagenesProyecto.FirstOrDefault() ?? Proyecto.PortadaUrl ?? string.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            await SweetAlertService.FireAsync("Error", $"No se pudo cargar el proyecto: {ex.Message}", SweetAlertIcon.Error);
+        }
+    }
+
+    
+    private FsEstudioDTO empresa;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && refMiniaturaActiva.Context != null)
+        {
+            await JS.InvokeVoidAsync("scrollIntoViewIfNeeded", refMiniaturaActiva);
+        }
+    }
+
+    private void ActualizarImagenSeleccionada(string nuevaImagen)
+    {
+        imagenSeleccionada = nuevaImagen;
+    }
+
+
+
+
+    private async Task EnviarCorreoInformacion()
+    {
+        var email = empresa.Correo;
+        var subject = $"Interés en el proyecto {Proyecto?.Nombre}";
+        var body = $"Hola, estoy interesado en recibir más información sobre el proyecto {Proyecto?.Nombre}.";
+        var mailtoUrl = $"mailto:{email}?subject={Uri.EscapeDataString(subject)}&body={Uri.EscapeDataString(body)}";
+
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", mailtoUrl);
+    }
+
+    private async Task CompartirPorWhatsApp()
+    {
+        var mensaje = $"Te comparto este proyecto de FS Estudio: {Proyecto?.Nombre} - {Navigation.Uri}";
+        var whatsappUrl = $"https://wa.me/?text={Uri.EscapeDataString(mensaje)}";
+
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", whatsappUrl);
+    }
+
+
+    private async Task EnviarWhatsApp()
+    {
+        var mensaje = $"Hola, estoy interesado en el proyecto {Proyecto?.Nombre} que vi en su página.";
+        var whatsappUrl = empresa.WhatsApp; // asegúrate que tenga el mensaje ya incluido si lo necesitas
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", whatsappUrl);
+    }
+
+    private async Task CotizaciónWhatsApp()
+    {
+        var mensaje = $"Hola, estoy interesado en una Cotización.";
+        var whatsappUrl = empresa.WhatsApp; // asegúrate que tenga el mensaje ya incluido si lo necesitas
+        await JS.InvokeVoidAsync("abrirEnNuevaPestana", whatsappUrl);
+    }
+
+
+
+    private bool mostrarPortadaExpandida = false;
+    private bool mostrarImagenExpandida = false;
+    private bool mostrarTextoZoomGaleria = false;
+
+    private void MostrarImagenExpandida()
+    {
+        mostrarImagenExpandida = true;
+    }
+
+
+
+
+    private void ExpandirPortada()
+    {
+        if (!string.IsNullOrWhiteSpace(Proyecto?.PortadaUrl))
+        {
+            mostrarPortadaExpandida = true;
+        }
+    }
+    private void CerrarPortadaExpandida()
+    {
+        mostrarPortadaExpandida = false;
+    }
+
+    private void CerrarImagenExpandida()
+    {
+        mostrarImagenExpandida = false;
+    }
+
+    private bool mostrarTextoZoomPortada = false;
+
+    private void MostrarTextoZoomPortada() => mostrarTextoZoomPortada = true;
+    private void OcultarTextoZoomPortada() => mostrarTextoZoomPortada = false;
+
+    private void MostrarTextoZoomGaleria() => mostrarTextoZoomGaleria = true;
+    private void OcultarTextoZoomGaleria() => mostrarTextoZoomGaleria = false;
+
+
+
+    private List<PortafolioDTO> ProyectosCarrusel = new();
+
+    private void NavegarADetalle(int id)
+    {
+        if (id != IdProyecto)
+            Navigation.NavigateTo($"/portafolio/{id}", forceLoad: false);
+                         
+
+    }
+
+    private void AnteriorProyecto()
+    {
+        var idx = ProyectosCarrusel.FindIndex(p => p.IdPortafolio == Proyecto?.IdPortafolio);
+        if (idx > 0)
+            NavegarADetalle(ProyectosCarrusel[idx - 1].IdPortafolio);
+    }
+
+    private void SiguienteProyecto()
+    {
+        var idx = ProyectosCarrusel.FindIndex(p => p.IdPortafolio == Proyecto?.IdPortafolio);
+        if (idx >= 0 && idx < ProyectosCarrusel.Count - 1)
+            NavegarADetalle(ProyectosCarrusel[idx + 1].IdPortafolio);
+    }
+
+
+}

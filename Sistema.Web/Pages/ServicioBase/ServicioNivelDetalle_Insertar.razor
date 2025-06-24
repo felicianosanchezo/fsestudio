@@ -1,0 +1,218 @@
+﻿@page "/servicio-nivel-detalle-insertar/{IdServicio:int}"
+@inject HttpClient http
+@inject NavigationManager navigationManager
+@inject IJSRuntime js
+
+
+
+
+
+
+<div class="servicio-container-fondo">
+    <div class="dashboard-main">
+        <TituloConDescripcion Title=@($"{NombreServicio}")
+                              Description=@($"{Unidad}") />
+
+        @if (niveles.Count >= 3)
+        {
+            <EditForm Model="niveles" OnValidSubmit="Guardar">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <!-- Nivel 1 -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <strong>Nivel 1</strong>
+                    </div>
+                    <div class="card-body row g-3">
+                        @* Bloque común *@
+                        <div class="col-md-4">
+                            <label>Precio</label>
+                            <InputNumber @bind-Value="niveles[0].Precio" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Minutos</label>
+                            <InputNumber @bind-Value="niveles[0].Tiempo" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Activo</label><br />
+                            <InputCheckbox @bind-Value="niveles[0].Activo" class="form-check-input" />
+                        </div>
+
+                        <div class="col-12">
+                            <label>Descripción</label>
+                            <InputTextArea @bind-Value="niveles[0].Descripcion" class="form-control" />
+                        </div>
+
+                        <div class="col-12">
+                            <label>Checklist</label>
+                            <InputTextArea @bind-Value="niveles[0].Checklist" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nivel 2 -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <strong>Nivel 2</strong>
+                    </div>
+                    <div class="card-body row g-3">
+                        <div class="col-md-4">
+                            <label>Precio</label>
+                            <InputNumber @bind-Value="niveles[1].Precio" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Minutos</label>
+                            <InputNumber @bind-Value="niveles[1].Tiempo" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Activo</label><br />
+                            <InputCheckbox @bind-Value="niveles[1].Activo" class="form-check-input" />
+                        </div>
+
+                        <div class="col-12">
+                            <label>Descripción</label>
+                            <InputTextArea @bind-Value="niveles[1].Descripcion" class="form-control" />
+                        </div>
+
+                        <div class="col-12">
+                            <label>Checklist</label>
+                            <InputTextArea @bind-Value="niveles[1].Checklist" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nivel 3 -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <strong>Nivel 3</strong>
+                    </div>
+                    <div class="card-body row g-3">
+                        <div class="col-md-4">
+                            <label>Precio</label>
+                            <InputNumber @bind-Value="niveles[2].Precio" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Minutos</label>
+                            <InputNumber @bind-Value="niveles[2].Tiempo" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Activo</label><br />
+                            <InputCheckbox @bind-Value="niveles[2].Activo" class="form-check-input" />
+                        </div>
+
+                        <div class="col-12">
+                            <label>Descripción</label>
+                            <InputTextArea @bind-Value="niveles[2].Descripcion" class="form-control" />
+                        </div>
+
+                        <div class="col-12">
+                            <label>Checklist</label>
+                            <InputTextArea @bind-Value="niveles[2].Checklist" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar Niveles</button>
+            </EditForm>
+        }
+        else
+        {
+            <p>Cargando niveles...</p>
+        }
+
+
+ 
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int IdServicio { get; set; }
+    private string NombreServicio = "";
+    private string Unidad = "";
+
+    private List<ServicioNivelDetalleDTO> niveles = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Llamada para obtener nombre y unidad del servicio base
+            var response = await http.GetFromJsonAsync<ServicioNombreUnidad>($"/api/serviciobase/obtener-nombre-unidad/{IdServicio}");
+
+            if (response is not null)
+            {
+                NombreServicio = response.Nombre;
+                Unidad = response.Unidad;
+            }
+            else
+            {
+                await js.InvokeVoidAsync("Swal.fire", new
+                {
+                    icon = "warning",
+                    title = "Advertencia",
+                    text = "No se pudo cargar la información del servicio."
+                });
+            }
+
+            // Buscar si ya existen niveles para este servicio
+            var nivelesExistentes = await http.GetFromJsonAsync<List<ServicioNivelDetalleDTO>>($"/api/serviciobase/obtener-por-servicio/{IdServicio}");
+
+            if (nivelesExistentes != null && nivelesExistentes.Count > 0)
+            {
+                niveles = nivelesExistentes;
+            }
+            else
+            {
+                // Si no hay registros, crear nuevos vacíos
+                niveles = new List<ServicioNivelDetalleDTO>();
+                for (int i = 0; i < 3; i++)
+                {
+                    niveles.Add(new ServicioNivelDetalleDTO
+                        {
+                            IdServicio = IdServicio,
+                            Nombre = $"Nivel {i + 1}",
+                            Activo = true
+                        });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await js.InvokeVoidAsync("Swal.fire", new
+            {
+                icon = "error",
+                title = "Error",
+                text = "Error al cargar datos del servicio: " + ex.Message
+            });
+        }
+    }
+
+
+    private async Task Guardar()
+    {
+        var response = await http.PostAsJsonAsync("/api/serviciobase/insertar-masivo", niveles);
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            await js.InvokeVoidAsync("Swal.fire", new { icon = "error", title = "Error", text = error });
+            return;
+        }
+
+        await js.InvokeVoidAsync("Swal.fire", new { icon = "success", title = "Guardado", text = "Los niveles se guardaron correctamente." });
+        navigationManager.NavigateTo("/servicio-base-listar");
+    }
+
+    public class ServicioNombreUnidad
+    {
+        public string Nombre { get; set; } = "";
+        public string Unidad { get; set; } = "";
+    }
+}

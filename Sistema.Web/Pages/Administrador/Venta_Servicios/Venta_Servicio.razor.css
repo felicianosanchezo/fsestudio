@@ -1,0 +1,1189 @@
+﻿/* Estilo principal para Cliente_Servicio_Fila3 */
+
+
+.contenedor1 {
+    display: flex; /* Flexbox */
+    flex-direction: column; /* Los elementos hijos se apilan en una columna */
+    gap: 0px; /* Espacio entre los elementos */
+    width: 100%; /* Ocupa el 100% del ancho disponible */
+    max-width: 100%; /* Asegura que no exceda el ancho del contenedor padre */
+    height: 100%; /* Ocupa toda la altura disponible */
+    background-color: transparent;
+    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total */
+    overflow: hidden; /* Evita cualquier tipo de scroll */
+    padding: 60px; /* Espacio interno */
+}
+
+@media (max-width: 768px) {
+
+
+    .contenedor1 {
+        padding: 0px;
+        gap: 9px;
+  
+        
+        }
+
+    .contenedor-servicio{
+
+        border-radius:0px;
+
+
+    }
+
+}
+
+
+
+
+
+
+
+
+.Cliente_Servicio_Fila3 {
+    display: flex;
+    justify-content: space-between;
+    gap: 60px;
+    background-color: transparent;
+    padding: 0;
+    border-radius: 10px;
+    height: 450px;
+    transition: all 0.3s ease;
+    margin-bottom: 30px;
+    margin-top: 60px;
+}
+
+.contenedor-base {
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transition: all 0.3s ease;
+    flex-grow: 1;
+    flex-basis: 300px;
+    border: 1px solid #ccd1d1;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina), var(--color-gris-claro1));
+    border-radius: 15px;
+    overflow: hidden;
+
+}
+
+.columna-inicio {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    border: 3px solid #0097a7;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #0097a7;
+    transform: scale(1.06);
+    background-color: var(--color-gris-claro1);
+}
+
+
+.columna-inicio-seleccionado {
+    background-color: lightgreen;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    border: 3px solid var(--color-dorado-original);
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #0097a7;
+    pointer-events: none; /* Deshabilita la interacción */
+}
+
+
+
+/* Estilo del título del paso */
+.Medidas-fila1 {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid #ccd1d1;
+    background-color: var(--color-gris-claro1);
+}
+
+.boton-info {
+    border: none;
+    cursor: pointer;
+    font-size: 1.6em;
+    transition: color 0.3s ease;
+    background-color: transparent;
+}
+
+    .boton-info:hover {
+        color: #0056b3;
+    }
+
+    .boton-info i {
+        margin-left: 5px;
+        color: #0097a7;
+    }
+
+.Medidas-fila2 {
+   display:flex;
+    background-color:transparent;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px;
+
+  
+    border-bottom: 1px solid #ccd1d1;
+
+}
+
+.mensaje-seleccionar-colaborador {
+    color: red;
+    font-size: 1.2em;
+    text-align: center;
+    padding: 16px;
+    background-color: transparent;
+    width: 100%;
+    z-index: 1;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+
+
+
+
+.Medidas-fila3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+ 
+    background-color: var(--color-azul-turquesa);
+    height: 90px;
+    width: 100%;
+    padding: 0px;
+    overflow: hidden;
+    padding:0px 45px 0px 30px;
+
+}
+
+
+
+.contenedor-cupon{
+    display:flex;
+    height:100%;
+    background-color:transparent;
+
+
+}
+.contenedor-totales {
+    display: flex;
+    flex-direction: column; /* Coloca los elementos en columna */
+    justify-content: center;
+    align-items: center;
+    padding-top: 0px;
+    display: flex;
+    justify-content: center;
+    letter-spacing: 0px;
+
+    text-align: center;
+
+}
+
+.total-descuento {
+  
+    color: var(--color-gris-descripcion);
+    font-size:1.6rem;
+    font-weight:400;
+
+
+
+}
+
+.total-final {
+    color: var(--color-gris-descripcion);
+    font-size: 1.6rem;
+    font-weight: 400;
+}
+
+
+
+
+
+
+
+
+
+
+.contenedor-tiempo {
+    display: flex;
+    flex-direction: column; /* Coloca los elementos en una columna */
+    gap: 12px; /* Espacio entre los párrafos */
+    border-radius: 8px; /* Bordes redondeados */
+    color: var(--color-gris-descripcion);
+    /*font-weight: 500;*/
+    height: 100%;
+    width: 100%;
+}
+
+    .contenedor-tiempo p {
+        margin: 0; /* Elimina márgenes */
+        font-size: 1.6rem;
+        text-align: center; /* Alineación del texto */
+    }
+
+    
+
+
+.detalle-medidas{
+    display:flex;
+    margin:40px;
+    height:100%;
+}
+
+
+/* Contenedor del cupón */
+.contenedor-cupon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding:15px;
+}
+
+    .contenedor-cupon label {
+        font-weight: bold;
+        color: #3E5369;
+        font-size:1.2rem;
+    }
+
+    .contenedor-cupon input {
+        padding: 8px;
+        font-size: 1rem;
+        border: 1px solid #ccd1d1;
+        border-radius: 4px;
+        flex: 1;
+    }
+
+.validar-cupon {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #0097a7;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .validar-cupon:hover {
+        background-color: #007d8c;
+    }
+
+/* Mensaje de validación */
+.input-contenedor p {
+    color: #3E5369;
+    font-size: 1.6rem;
+    margin: 0;
+   
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.input-contenedor-medidas {
+    display: flex;
+    flex-direction: column; /* Coloca los elementos en columna */
+    justify-content: center;
+    align-items:center;
+}
+
+.validar-medidas {
+    display: flex;
+    flex-direction: column; /* Coloca los elementos en columna */
+ 
+    gap: 30px; /* Espacio entre cada conjunto de label e input */
+    margin-bottom: 16px;
+    width: 100%; /* Para que el contenedor ocupe todo el ancho disponible */
+}
+
+/* Contenedor de cada label e input */
+.contenedor-input {
+    display: flex;
+    flex-direction: column; /* Coloca el label e input en columna */
+    gap:100px; /* Espacio entre el label y el input */
+}
+
+/* Estilos del label */
+.label-medidas {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--color-gris-descripcion);
+}
+
+/* Estilos del input */
+.input-medidas {
+    padding: 10px;
+    font-size: 1.5rem;
+    color: var(--color-gris-descripcion);
+    border: 1px solid #ccd1d1;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    width: 80%; /* Ocupa todo el ancho del contenedor */
+}
+
+    .input-medidas:focus {
+        border-color: #0097a7;
+        box-shadow: 0 0 5px rgba(0, 151, 167, 0.5);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.columna-inicio .boton-siguiente {
+    display: flex; /* Activa el modo Flexbox */
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+
+    font-weight: 500;
+    background-color: transparent;
+    border: none;
+    color: var(--color-fondo-pagina);
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 60px;
+    height: 45px;
+    text-align: center;
+    /*    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    border: 3px solid #0097a7;*/
+}
+
+    .columna-inicio .boton-siguiente:hover {
+        transform: scale(1.09);
+        color:var(--color-fondo-pagina);
+       
+    }
+
+
+
+
+
+
+.columna-inicio .boton-carrito {
+    display: flex; /* Activa el modo Flexbox */
+
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    flex-direction: column; /* Coloca los elementos en columna */
+    font-weight: bold;
+    background-color: transparent;
+    border: none;
+    color: var(--color-fondo-pagina);
+    padding: 12px 24px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 250px;
+    height: 45px;
+    text-align: center;
+    /*    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    border: 3px solid #0097a7;*/
+}
+
+    .columna-inicio .boton-siguiente:hover {
+        transform: scale(1.09);
+        color: var(--color-fondo-pagina);
+    }
+
+/*    PANTALLAS PEQUEÑAS*/
+
+
+/* Estilos para pantallas pequeñas */
+@media (max-width: 768px) {
+    /* Ajusta el contenedor principal para hacer la vista más vertical */
+    .Cliente_Servicio_Fila3 {
+        flex-direction: column;
+        gap: 30px;
+        height: 100%;
+        padding:15px;
+        margin-bottom:0;
+        margin-top:0px;
+    }
+
+    /* Contenedor base - ocupa todo el ancho en dispositivos pequeños */
+    .contenedor-base {
+        flex-basis: auto;
+        width: 100%;
+        padding: 0px;
+        height: auto;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Elementos en columnas verticales en vez de filas */
+    .Medidas-fila1{
+        flex-direction: row;
+        gap: 0px;
+        padding: 9px;
+        text-align: center;
+        align-items: center;
+    }
+    .Medidas-fila3 {
+        flex-direction: row;
+        gap: 0px;
+        padding: 0px;
+        text-align: center;
+        align-items: center;
+        height:auto;
+    }
+
+
+
+    /* Ajustes en el contenedor de cupones para que ocupe todo el ancho */
+    .contenedor-cupon {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 5px;
+    }
+
+        /* Inputs y botones de cupon */
+        .contenedor-cupon input {
+            width: 100%;
+            font-size: 1rem;
+            padding: 6px;
+        }
+
+    .validar-cupon {
+        width: 100%;
+        padding: 8px;
+    }
+
+    /* Mensaje seleccionar colaborador */
+    .mensaje-seleccionar-colaborador {
+        font-size: 1rem;
+        padding: 12px;
+    }
+
+    /* Estilos para Medidas */
+    .Medidas-fila2 {
+        padding: 10px;
+        flex-direction: column;
+        height:270px;
+    }
+
+    /* Input contenedor de medidas y validaciones */
+    .input-contenedor-medidas, .validar-medidas {
+        width: 100%;
+        gap: 15px;
+    }
+
+    /* Inputs de medidas */
+    .input-medidas {
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    /* Botones dentro de columnas inicio */
+    .columna-inicio .boton-siguiente,
+    .columna-inicio .boton-carrito {
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    /* Contenedor totales en columnas y ajustado para una visualización más pequeña */
+    .contenedor-totales, .contenedor-tiempo {
+        gap: 15px;
+    }
+
+    /* Ajusta los textos para mantener buena lectura en dispositivos pequeños */
+    .total-descuento, .total-final, .label-medidas {
+        font-size: 1.2rem;
+
+    }
+
+
+
+
+        .contenedor-tiempo p {
+            margin: 0; /* Elimina márgenes */
+            font-size: 1.2rem;
+            text-align: center; /* Alineación del texto */
+        }
+
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.fila-Email {
+    display: flex;
+    flex-direction: column; /* Coloca los elementos en columna */
+    justify-content: center;
+    align-items: center;
+    /*gap: 45px;*/ /* Espacio entre las columnas */
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina), var(--color-gris-claro1));
+    height: auto; /* Asegura una altura fija para evitar que crezca demasiado */
+    /*padding: 60px;*/
+    border-radius: 15px;
+    border: 5px solid #0097a7;
+    box-sizing: border-box;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    margin-bottom: 60px;
+}
+
+
+
+
+
+.fila-resumen-total {
+    display: flex;
+    flex-direction: column; /* Coloca los elementos en columna */
+    justify-content: center;
+    align-items: center;
+    /*gap: 45px;*/ /* Espacio entre las columnas */
+    background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina), var(--color-gris-claro1));
+    height: auto; /* Asegura una altura fija para evitar que crezca demasiado */
+    /*padding: 60px;*/
+    border-radius: 15px;
+    border: 5px solid #0097a7;
+    box-sizing: border-box;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    margin-bottom: 0px;
+    height: auto;
+}
+/* RESUMEN TOTAL DE LA ORDEN */
+.resumen-encabezado {
+    display: flex;
+    flex-direction: row; /* Coloca los elementos en columna */
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-gris-claro1);
+    width: 100%;
+    height: 90px;
+    padding: 15px;
+   
+}
+
+
+
+
+
+.resumen-descripcion {
+    display: flex;
+    width: 100%;
+    height: auto;
+    padding: 60px;
+    gap: 30px;
+    color: var(--color-gris-descripcion);
+    font-size:1.1rem;
+}
+
+.resumen-columna-cliente {
+    display: flex;
+    justify-content: start; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    flex-direction: column; /* Coloca los elementos en columna */
+    background-color: transparent;
+    width: 100%;
+    height: auto;
+    border: 1px solid #ccd1d1;
+    border-radius: 15px;
+}
+.contenedor-descripciones {
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    flex-direction: column; /* Coloca los elementos en columna */
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    padding: 30px;
+    background-color: transparent;
+
+}
+
+
+
+
+.resumen-columna-servicio {
+    display: flex;
+    justify-content: start; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    flex-direction: column; /* Coloca los elementos en columna */
+
+    background-color: transparent;
+    width: 100%;
+    height: auto;
+    border: 1px solid #ccd1d1;
+    border-radius: 15px;
+}
+
+.Parrafo-Lista-entregables {
+    display: inline; /* o puedes usar inline-block */
+    vertical-align: middle;
+    margin-right: 10px;
+    align-content: center;
+    text-align:center;
+}
+
+
+
+
+
+
+.resumen-columna-totales {
+    display: flex;
+    justify-content: start; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    flex-direction: column; /* Coloca los elementos en columna */
+    background-color: transparent;
+    width: 100%;
+    height: auto;
+    border: 1px solid #ccd1d1;
+    border-radius: 15px;
+}
+
+
+.Subtitulos-Resumen
+{
+    color:var(--color-azul-turquesa);
+    padding:0;
+
+}
+
+
+
+
+
+
+
+.botones-pagar {
+    display: inline; /* o puedes usar inline-block */
+}
+
+.boton-Pagar-Tarjeta {
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    background-color: var(--color-azul-turquesa);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1em;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 230px;
+    height: 40px;
+    text-align: center;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Efecto hover para los botones */
+    .boton-Pagar-Tarjeta:hover {
+        background-color: #138d75;
+        transform: scale(1.06); /* Aumento ligero */
+        color: white;
+    }
+
+
+
+
+
+.boton-Pagar-Tranferencia, boton-Pagar-Tarjeta {
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    background-color: var(--color-azul-turquesa);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1em;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 240px;
+    height: 40px;
+    text-align: center;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+
+/* Efecto hover para los botones */
+    .boton-Pagar-Tranferencia:hover {
+        background-color: #138d75;
+        transform: scale(1.06); /* Aumento ligero */
+        color: white;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+.boton-resumen-atras {
+    display: flex;
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    background-color: var(--color-azul-turquesa);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1em;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 130px;
+    height: 40px;
+    text-align: center;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.boton-resumen-atras .btn:hover {
+    background-color: #138d75;
+    transform: scale(1.06); /* Aumento ligero */
+    color: white;
+    border: 3px solid #138d75;
+}
+
+
+.boton-resumen-siguiente {
+    display: flex;
+    width: 130px;
+
+}
+
+
+
+
+.dashboard-imagen1 {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: transparent;
+    padding: 0px;
+    display: flex;
+    position: center;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+    border-bottom: 1px solid #dddddd;
+    height: 80px;
+}
+
+.img-fluid1 {
+    width: 30%;
+    height: auto;
+    object-fit: cover; /* Asegura que la imagen cubra todo el espacio del contenedor sin distorsión */
+}
+
+
+@media (max-width: 768px) {
+    .fila-Email, .fila-resumen-total, .resumen-columna-cliente, .resumen-columna-servicio, .resumen-columna-totales {
+        padding: 0px;
+        margin-bottom: 30px;
+        margin-top: 0px;
+    }
+
+    .contenedor-descripciones {
+        padding: 15px;
+        display: flex;
+        justify-content: center;
+        align-items:center;
+        align-content:center;
+    }
+
+    .contenedor-descripciones p{
+        text-align:center;
+
+
+        align-content: center;
+    }
+        .contenedor-descripciones label {
+            text-align: center;
+            align-content: center;
+        }
+
+
+
+    .resumen-encabezado {
+   
+        gap: 15px;
+
+    }
+    .boton-resumen-siguiente {
+        width: 60px;
+        max-width: none;
+        padding: 10px;
+        font-size: 0.8em;
+    }
+
+    .img-fluid1 {
+        width: 45%;
+        height: auto;
+        object-fit: cover; /* Asegura que la imagen cubra todo el espacio del contenedor sin distorsión */
+    }
+
+    .resumen-descripcion {
+        flex-direction: column;
+        padding: 20px 10px;
+        gap: 15px;
+        font-size: 0.9rem;
+    }
+
+    .boton-resumen-atras{
+        width: 60px;
+        max-width: none;
+        padding: 10px;
+        font-size: 0.8em;
+
+    }
+
+
+    .boton-Pagar-Tarjeta, .boton-Pagar-Tranferencia {
+        width: 60%;
+        max-width: none;
+        padding: 10px;
+        font-size: 0.9em;
+    }
+
+    .Subtitulos-Resumen {
+        text-align: center;
+        font-size: 1rem;
+   
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Estilos para el modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: auto;
+    max-width: 36%;
+    overflow: hidden;
+
+}
+
+.contenedor-pagos-titulos {
+    text-align: center;
+    margin-bottom: 20px;
+
+
+}
+
+    .contenedor-pagos-titulos .titulo {
+        font-size: 1.4em;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .contenedor-pagos-titulos .subtitulo {
+        font-size: 0.9em;
+        color: #666;
+        margin-top: 5px;
+    }
+
+
+
+
+.contenedor-pagos-nombre,
+.contenedor-pagos-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 15px;
+    overflow:hidden;
+
+}
+
+    .contenedor-pagos-nombre label,
+    .contenedor-pagos-card label {
+        font-size: 0.9em;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .contenedor-pagos-nombre input,
+    .card-placeholder {
+        padding: 10px;
+        font-size: 1em;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        outline: none;
+        transition: border-color 0.3s;
+        width: 100%;
+    }
+
+        .contenedor-pagos-nombre input:focus,
+        .card-placeholder:focus {
+            border-color: #4CAF50;
+        }
+
+.card-placeholder {
+ 
+    align-items: center;
+    justify-content: center;
+    /*height: 60px;*/
+    background-color: #f9f9f9;
+    color: #888;
+    overflow:hidden;
+}
+
+.contenedor-pagos-botones {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-pagar,
+.btn-cerrar {
+    padding: 10px 20px;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-pagar {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+    .btn-pagar:hover {
+        background-color: #45a049;
+    }
+
+.btn-cerrar {
+    background-color: #ccc;
+    color: #333;
+}
+
+    .btn-cerrar:hover {
+        background-color: #bbb;
+    }
+
+
+
+
+
+
+.details-table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background: linear-gradient(135deg, var(--color-gris-claro1),#f4f6f7,var(--color-gris-claro1) );
+          margin-bottom:30px;
+}
+
+    .details-table th {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #dddddd;
+        width: 30%;
+        color: #515a5a;
+    }
+
+    .details-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #dddddd;
+        width: 70%;
+        color: #515a5a;
+    }
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 480px) {
+   
+    
+    .modal-overlay{
+        display:flex;
+        width:100%;
+        padding:9px;
+
+    }
+
+    .modal-content {
+        display:flex;
+        align-items:center;
+        padding: 15px; /* Reduce el padding para optimizar el espacio */
+        height:auto;
+        min-width :100%;
+    
+    }
+
+    .contenedor-pagos-titulos .titulo {
+        font-size: 1.1em; /* Reduce aún más el tamaño */
+    }
+
+    .contenedor-pagos-titulos .subtitulo {
+        font-size: 0.8em;
+    }
+
+    .contenedor-pagos-nombre input,
+    .card-placeholder {
+        font-size: 0.9em;
+    }
+
+    .btn-pagar,
+    .btn-cerrar {
+        font-size: 0.85em;
+    }
+
+
+
+
+    .details-table {
+        display: flex;
+        flex-direction:column;
+        width: 100%;
+        font-size:13px;
+        margin-bottom:30px;
+    }
+
+
+        .details-table thead {
+            display: none; /* Oculta el encabezado de la tabla */
+        }
+
+        .details-table tr {
+            display: flex;
+           /* flex-direction: column;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #dddddd;
+            padding: 10px;*/
+        }
+
+        .details-table td {
+            display: flex;
+   /*         justify-content: space-between;
+            padding: 8px 10px;*/
+            font-size: 0.95em;
+        /*    border: none;*/
+        }
+
+       
+
+
+
+
+
+
+}
+
+

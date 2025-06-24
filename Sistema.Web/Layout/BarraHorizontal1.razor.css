@@ -1,0 +1,56 @@
+﻿.custom-barra-horizontal {
+    background-color: #283C4F;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    font-size: 1rem;
+    color: #D4D4D4;
+    margin-top: 0.1px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.scrolling-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    position: relative;
+    animation: scroll-text 90s linear infinite;
+}
+
+.scrolling-block {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    padding-right: 350px; /* Ajusta el espacio entre bloques */
+}
+
+@keyframes scroll-text {
+    0% {
+        transform: translateX(100);
+    }
+
+    100% {
+        transform: translateX(-50%); /* Cambiamos a -50% ya que el contenido está duplicado */
+    }
+}
+
+.regular-text {
+    font-weight: 300;
+}
+
+.highlight-coupon, .highlight-phone, .highlight-hours {
+    color: #d5d8dc;
+    font-weight: 500;
+}
+
+
+/* Ocultar algunos bloques en pantallas pequeñas */
+/*@media (max-width: 768px) {*/
+   /* .scrolling-block:nth-child(2),*/
+    /*.scrolling-block:nth-child(3) {
+        display: none;
+    }
+}*/

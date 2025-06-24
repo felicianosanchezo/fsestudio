@@ -1,0 +1,302 @@
+﻿@page "/servicio-actualizar/{IdServicio:int}"
+@inject SweetAlertService sweetAlertService
+@inject NavigationManager navigationManager
+@inject IRepositorio repositorio
+@inject AuthenticationProviderJWT AuthenticationStateProvider
+@inject IJSRuntime JS
+
+
+
+
+<div class="servicio-container-fondo">
+
+
+    <div class="dashboard-main">
+
+        <TituloConDescripcion Title="Actualizar"
+                              Description="Este es el formulario para registrar un nuevo servicio. Por favor, complete todos los campos requeridos." />
+
+        <EditForm EditContext="contextoEdicion" OnValidSubmit="OnValidSubmit" enctype="multipart/form-data">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <!-- Nombre del Servicio -->
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre del Servicio</label>
+                <InputText id="nombre" class="form-control" @bind-Value="servicio.Nombre" />
+                <ValidationMessage For="@(() => servicio.Nombre)" />
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <InputTextArea id="descripcion" class="form-control form-control-descripcion" @bind-Value="servicio.Descripcion" />
+                <ValidationMessage For="@(() => servicio.Descripcion)" />
+            </div>
+
+            <!-- Categoría -->
+            <div class="mb-3">
+                <label for="categoria" class="form-label">Categoría</label>
+                <InputSelect id="categoria" class="form-control" @bind-Value="servicio.Categoria">
+                    <option value="">Seleccione una categoría</option>
+                    @foreach (var categoria in categorias)
+                    {
+                        <option value="@categoria.Nombre">@categoria.Nombre</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => servicio.Categoria)" />
+            </div>
+
+            <!-- Especificaciones -->
+            <div class="mb-3">
+                <label for="especificaciones" class="form-label">Especificaciones</label>
+                <InputTextArea id="especificaciones" class="form-control form-control-descripcion" @bind-Value="servicio.Especificaciones" />
+                <ValidationMessage For="@(() => servicio.Especificaciones)" />
+            </div>
+
+            <!-- Unidad -->
+            <div class="mb-3">
+                <label for="unidad" class="form-label">Unidad</label>
+                <InputText id="unidad" class="form-control" @bind-Value="servicio.Unidad" />
+                <ValidationMessage For="@(() => servicio.Unidad)" />
+            </div>
+
+            <!-- Estado -->
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="Estado" @bind="servicio.Estado" />
+                <label class="form-check-label" for="Estado">Estado (Activo/Inactivo)</label>
+            </div>
+
+            <!-- Requisitos del Cliente -->
+            <div class="mb-3">
+                <label for="requisitos_cliente" class="form-label">Requisitos del Cliente</label>
+                <InputTextArea id="requisitos_cliente" class="form-control form-control-descripcion" @bind-Value="servicio.Requisitos_Cliente" />
+                <ValidationMessage For="@(() => servicio.Requisitos_Cliente)" />
+            </div>
+
+            <!-- Entregables -->
+            <div class="mb-3">
+                <label for="entregables" class="form-label">Entregables</label>
+                <InputTextArea id="entregables" class="form-control form-control-descripcion" @bind-Value="servicio.Entregables" />
+                <ValidationMessage For="@(() => servicio.Entregables)" />
+            </div>
+
+            <!-- Etiquetas -->
+            <div class="mb-3">
+                <label for="etiquetas" class="form-label">Etiquetas</label>
+                <InputTextArea id="etiquetas" class="form-control form-control-descripcion" @bind-Value="servicio.Etiquetas" />
+                <ValidationMessage For="@(() => servicio.Etiquetas)" />
+            </div>
+
+            <!-- Requisitos del Colaborador -->
+            <div class="mb-3">
+                <label for="requisitosColaborador" class="form-label">Requisitos del Colaborador</label>
+                <InputTextArea id="requisitosColaborador" class="form-control form-control-descripcion"
+                               @bind-Value="servicio.Requisitos_Colaborador"                      />
+                <ValidationMessage For="@(() => servicio.Requisitos_Colaborador)" />
+            </div>
+
+
+
+
+
+            <!-- Dirigido a -->
+            <div class="mb-3">
+                <label for="dirigido" class="form-label">Dirigido a</label>
+                <InputTextArea id="dirigido" class="form-control" @bind-Value="servicio.Dirigido" />
+                <ValidationMessage For="@(() => servicio.Dirigido)" />
+            </div>
+
+            <!-- Garantía -->
+            <div class="mb-3">
+                <label for="garantia" class="form-label">Garantía</label>
+                <InputText id="garantia" class="form-control" @bind-Value="servicio.Garantia" />
+                <ValidationMessage For="@(() => servicio.Garantia)" />
+            </div>
+
+            <!-- Imagen de portada -->
+            <div class="mb-3">
+                <label for="portadaUrl" class="form-label">Cargar Imagen de Portada</label>
+                <InputFile id="portadaUrl" class="form-control" OnChange="OnImageSelected" accept="image/*" />
+            </div>
+
+            <!-- Botón Guardar -->
+            <div class="button-container">
+                <button type="submit" class="custom-save-btn">
+                    <i class="bi bi-save"></i> Guardar
+                </button>
+            </div>
+        </EditForm>
+
+
+    </div>
+
+</div>
+<style>
+
+    .form-control-altura {
+        background-color: orangered;
+        border: 1px solid #ced4da;
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-family: inherit;
+        width: 100%;
+               overflow: hidden; /* Evita el scroll */
+        resize: none; /* Evita el redimensionado manual */
+        min-height: 60px; /* Altura mínima opcional */
+    }
+
+
+</style>
+
+
+
+
+
+
+
+
+
+@code {
+    [Parameter] public int IdServicio { get; set; } // Recibe el Id del servicio a actualizar
+    private EditContext contextoEdicion = null!;
+    private ServicioDTO servicio = new ServicioDTO { Estado = true };
+    private IBrowserFile? imagenPortadaSeleccionada;
+    private List<Servicio_CategoriaDTO> categorias = new List<Servicio_CategoriaDTO>();
+    private int idUsuario;
+    private string? urlImagenExistente; // URL de la imagen existente
+
+
+
+    private async Task AjustarAlturaJS()
+    {
+        await JS.InvokeVoidAsync("ajustarAlturaTextArea",
+            await JS.InvokeAsync<IJSObjectReference>("document.getElementById", "requisitosColaborador"));
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        contextoEdicion = new EditContext(servicio);
+
+        // Obtener el estado de autenticación
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            idUsuario = AuthenticationStateProvider.GetIdUsuario();
+            await CargarCategorias();
+
+            // Cargar el servicio existente
+            await CargarServicio();
+        }
+        else
+        {
+            await sweetAlertService.FireAsync("Advertencia", "Por favor, inicia sesión para continuar.", SweetAlertIcon.Warning);
+            navigationManager.NavigateTo("/login");
+        }
+    }
+
+    private async Task CargarCategorias()
+    {
+        var httpResponse = await repositorio.Get<IEnumerable<Servicio_CategoriaDTO>>("/api/servicio/listar-categorias");
+        if (!httpResponse.Error && httpResponse.Response != null)
+        {
+            categorias = httpResponse.Response.ToList();
+        }
+        else
+        {
+            await sweetAlertService.FireAsync("Error", "Error al cargar las categorías.", SweetAlertIcon.Error);
+        }
+    }
+
+    private async Task CargarServicio()
+    {
+        var httpResponse = await repositorio.Get<ServicioDTO>($"/api/servicio/listar/{IdServicio}");
+        if (!httpResponse.Error && httpResponse.Response != null)
+        {
+            servicio = httpResponse.Response;
+            urlImagenExistente = servicio.PortadaUrl; // Guardar la URL de la imagen existente para su uso posterior
+        }
+        else
+        {
+            await sweetAlertService.FireAsync("Error", "Error al cargar el servicio.", SweetAlertIcon.Error);
+            navigationManager.NavigateTo("/servicio-listar");
+        }
+    }
+
+
+    private async Task OnImageSelected(InputFileChangeEventArgs e)
+    {
+        imagenPortadaSeleccionada = e.File;
+    }
+
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            var formData = new MultipartFormDataContent();
+
+            // Agregar el ID del servicio
+            formData.Add(new StringContent(servicio.IdServicio.ToString()), "IdServicio");
+
+            // Agregar los demás datos del servicio al formulario
+            formData.Add(new StringContent(servicio.Nombre), "Nombre");
+            formData.Add(new StringContent(servicio.Descripcion), "Descripcion");
+            formData.Add(new StringContent(servicio.Categoria), "Categoria");
+            formData.Add(new StringContent(servicio.Especificaciones), "Especificaciones");
+            formData.Add(new StringContent(servicio.Unidad), "Unidad");
+            formData.Add(new StringContent(servicio.Estado.ToString()), "Estado");
+            formData.Add(new StringContent(servicio.Requisitos_Cliente), "Requisitos_Cliente");
+            formData.Add(new StringContent(servicio.Entregables), "Entregables");
+            formData.Add(new StringContent(servicio.Etiquetas), "Etiquetas");
+            formData.Add(new StringContent(servicio.Requisitos_Colaborador), "Requisitos_Colaborador");
+            formData.Add(new StringContent(servicio.Dirigido), "Dirigido");
+            formData.Add(new StringContent(servicio.Garantia), "Garantia");
+            formData.Add(new StringContent(servicio.PortadaUrl), "PortadaUrl");
+            formData.Add(new StringContent(idUsuario.ToString()), "IdUsuario");
+
+            // Agregar la imagen de portada si se ha seleccionado una nueva
+            if (imagenPortadaSeleccionada != null)
+            {
+                // Cargar la nueva imagen de portada
+                var imagenStream = imagenPortadaSeleccionada.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024);
+                var imagenContent = new StreamContent(imagenStream);
+                imagenContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(imagenPortadaSeleccionada.ContentType);
+
+                var extensionImagen = Path.GetExtension(imagenPortadaSeleccionada.Name);
+                var nombrePortada = $"Portada{extensionImagen}";
+
+                formData.Add(imagenContent, "portada", nombrePortada);
+            }
+
+            // Realizar la solicitud de actualización al backend
+            var httpResponse = await repositorio.PutMultipartContent("/api/servicio/actualizar", formData);
+
+            // Manejar la respuesta del servidor
+            // if (httpResponse.Error)
+            // {
+            //     var message = await httpResponse.GetErrorMessageAsync();
+            //     await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            //     return;
+            // }
+
+            // await sweetAlertService.FireAsync("Éxito", "Servicio actualizado con éxito", SweetAlertIcon.Success);
+            navigationManager.NavigateTo("/servicio-listar");
+        }
+        catch (Exception ex)
+        {
+            var errorDTO = new ErrorDTO
+                {
+                    Mensaje = ex.Message,
+                    Detalles = ex.StackTrace,
+                    Fecha = DateTime.Now,
+                    MensajePersonalizado = "Servicio_Actualizar.razor, Error al actualizar el servicio"
+                };
+
+            await repositorio.Post("/api/registro/registrar-error", errorDTO);
+            await sweetAlertService.FireAsync("Error", "Ocurrió un error al actualizar el servicio.", SweetAlertIcon.Error);
+        }
+    }
+
+}

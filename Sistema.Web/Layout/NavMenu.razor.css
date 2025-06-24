@@ -1,0 +1,177 @@
+/* Definir variables globales de colores */
+:root {
+    
+    --dropdown-active-background: #f5b041; /* Define el nuevo color aquí (gris claro en este caso) */
+    --dropdown-hover-color: #45b39d; /* Color de hover en dropdown */
+}
+
+/* Estilos generales de la barra de navegación */
+.navbar {
+    background-color:#fdfefe !important; /* Fondo gris claro */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 0;
+   
+    border: 1px solid #d0d3d4; /* Línea delgada gris alrededor del menú */
+    display: flex;
+    align-items: center; /* Alineación vertical */
+    height: 60px;
+
+}
+
+.logo-img {
+    height: 30px; /* Establece la altura */
+    width: auto; /* El ancho se ajusta automáticamente para mantener la proporción */
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+.navbar-brand {
+    font-size: 16px;
+    font-weight: 500 !important; /* Grosor del texto */
+    color: #616a6b !important; /* Color gris oscuro para los enlaces */
+}
+
+.nav-link, .dropdown-toggle, .dropdown-item {
+    color: #626e70 !important; /* Color gris oscuro para los enlaces */
+    font-size: 17px;
+    display: flex;
+    align-items: center; /* Alineación vertical */
+    font-weight: 400 !important; /* Grosor regular */
+    margin-right: 1rem; /* Espacio entre los enlaces */
+}
+
+    .nav-link:hover, .dropdown-toggle:hover, .dropdown-item:hover {
+        color: #2980b9 !important; /* Color hover azul oscuro */
+    }
+
+/* Dropdown menú */
+.dropdown-menu {
+    background-color: #f2f4f4; /* Fondo casi blanco */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: .5px solid #d0d3d4; /* Borde delgado gris */
+}
+
+.dropdown-item {
+ /*   color: #626e70 !important;*/
+}
+
+    .dropdown-item:hover {
+        background-color: #229954 !important; /* Hover con un verde oscuro */
+    }
+
+    /* Nueva clase para el submenú seleccionado */
+    .dropdown-item.active, .dropdown-item:active {
+        background-color: #fb8c00 !important; /* Color de fondo cuando está activo */
+        color: #626e70 !important; /* Texto en negro */
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Estilos de navbar-toggler */
+.navbar-toggler {
+    display: none; /* Ocultar el botón de menú en pantallas grandes */
+}
+
+/* Media Query para pantallas medianas y pequeñas */
+@media (max-width: 992px) {
+    .navbar-toggler {
+        display: block; /* Mostrar el botón de menú */
+        position: relative;
+        z-index: 1051; /* Asegura que el botón toggle esté al frente */
+    }
+
+    .navbar-collapse {
+        background: linear-gradient(135deg, var(--color-gris-claro1), var(--color-fondo-pagina),var(--color-gris-claro1) );
+        padding: 2rem; /* Espacio interno del menú desplegable */
+        z-index: 1050; /* Asegura que el menú esté al frente */
+        position: absolute; /* Evita que empuje el contenido hacia arriba */
+        top: 60px; /* Ajustar según la altura de la barra de navegación */
+        left: 0; /* Alinea el menú con el lado izquierdo */
+        right: 0; /* Alinea el menú con el lado derecho */
+        margin: auto; /* Centra el menú */
+        width: 100%; /* Asegura que ocupe todo el ancho */
+        border-bottom: 1px solid #d0d3d4; /* Línea delgada gris alrededor del menú */
+    }
+
+    .navbar-nav .nav-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-link, .dropdown-toggle {
+        width: 100%; /* Enlaces ocupan todo el ancho */
+        margin-right: 0; /* Elimina margen adicional */
+        /*color: #2980b9 !important;*/ /* Enlaces en blanco para mejor visibilidad */
+    }
+    .custom-btn {
+        font-size: 17px;
+
+    }
+}
+
+/* Estilos para los botones personalizados de navegación */
+.custom-btn {
+    background: none;
+    border: none;
+    color: #2471a3; /* Color azul oscuro para el texto y el icono */
+    font-size: 17px;
+    display: flex;
+    align-items: center; /* Alineación vertical */
+    padding: 0;
+    margin-right: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+    .custom-btn i {
+        margin-right: 5px;
+        color: #01579b; /* Color del icono, igual que el texto */
+        transition: color 0.3s ease;
+    }
+
+    .custom-btn:hover {
+        color: #154360; /* Cambia el color al pasar el ratón */
+    }
+
+        .custom-btn:hover i {
+            color: #154360; /* Cambia el color del icono al pasar el ratón */
+        }
+
+/* Asegura que el botón tenga alineación en dispositivos pequeños */
+@media (max-width: 768px) {
+ 
+}
+
+/* Centrar el contenido dentro de la barra */
+.navbar-nav {
+    display: flex;
+    align-items: center; /* Asegura que todos los elementos dentro de la barra estén alineados verticalmente */
+}
+
+/* Estilos personalizados para el texto del usuario */
+.custom-user-text {
+    color: #2c3e50; /* Color personalizado (gris oscuro) */
+    font-size: 17px; /* Tamaño de fuente más grande */
+    font-weight: bold; /* Hace que el texto sea negrita */
+    text-transform: capitalize; /* Capitaliza el texto */
+    margin-right: 1rem; /* Añade un poco de espacio a la derecha */
+}
+
+    .custom-user-text:hover {
+        color: #1b4f72; /* Cambia el color cuando pasas el ratón por encima */
+    }
